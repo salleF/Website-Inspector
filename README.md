@@ -1,69 +1,74 @@
-# 🔍 Website Inspector
-> **Jogo educativo interativo de cibersegurança e educação digital para crianças de 10 a 12 anos.**
+# 🕹️ CyberKids Arcade — Central de Jogos de Segurança Digital
+> **Plataforma interativa de jogos educativos de cibersegurança e educação midiática para crianças de 10 a 12 anos.**
 
 ![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-blue.svg)
 ![Tecnologias](https://img.shields.io/badge/Tecnologias-HTML5%20%7C%20CSS3%20%7C%20JS%20%7C%20WebGL-orange.svg)
-![Ano](https://img.shields.io/badge/Est%C3%A9tica-Google%202006-red.svg)
+![Público](https://img.shields.io/badge/P%C3%BAblico-10%20a%2012%20anos-green.svg)
+![Status](https://img.shields.io/badge/Status-Online%20no%20GitHub%20Pages-brightgreen.svg)
 
 ---
 
-## 🎯 Sobre o Projeto
+## 🎯 Sobre a Plataforma
 
-O **Website Inspector** é um minigame educativo em página única (*Single-File Web App*) desenvolvido para ensinar alunos do ensino fundamental a identificar links perigosos, tentativas de *phishing*, malwares, enganos por digitação (*typosquatting*) e ciladas comuns na internet.
-
-Ambientado no visual clássico do **Google de 2006** e no antigo **Windows XP**, o jogo combina nostalgia retro com aprendizado prático de segurança digital em um ambiente divertido e imersivo.
+A **CyberKids Arcade** é uma central interativa de jogos acadêmicos inspirada na era de ouro dos portais web clássicos (como ClickJogos, Miniclip e Jogos360). Criada com propósitos pedagógicos, a plataforma prepara estudantes do Ensino Fundamental para navegar pela internet de maneira crítica, segura e consciente.
 
 ---
 
-## 🕹️ Mecânicas do Jogo
+## 🎮 Catálogo de Jogos da Central
 
-- 🕵️ **10 Rodadas de Investigação:** Cada fase apresenta uma pesquisa escolar ou busca do cotidiano infantil (como baixar jogos, pesquisar sobre o Sistema Solar, quizzes, skins de games, etc.).
-- 📊 **Progressão de Dificuldade Dinâmica (7 a 11 Links):** Os links exibidos em cada fase são sorteados procedurarmente de um banco classificado em 3 níveis de dificuldade:
-  - 🟢 **Fácil:** Golpes óbvios (*domínios `.xyz`, executáveis `.exe` em pesquisas de trabalhos de escola, promessas de celulares grátis*).
-  - 🟡 **Médio:** Falsos atalhos e cadastros de celulares (*sites não oficiais, instaladores modificados de terceiros, cobranças de SMS*).
-  - 🔴 **Difícil:** Phishing avançado e Typosquatting (*erros sutis de ortografia como `miinecraft.net`, `robllox.com`, `epiiicgames.com` e falsos subdomínios*).
-- 💡 **Feedback Educativo Instantâneo:** Ao avaliar cada link como 🟢 **É Seguro** ou 🔴 **É Cilada**, o aluno recebe uma explicação clara e pedagógica sobre o motivo.
-- ☠️ **Invasão de Vírus em Tempo Real:** Ao errar uma avaliação, o computador sofre danos! O sistema ganha glitches visuais progressivos e bugs de vírus SVG começam a se espalhar pela tela.
-- 🚨 **Alerta Retro Windows XP:** Telas de erro estilizadas como janelas do Windows XP alertam sobre o perigo detectado.
+### 1. 🔍 Website Inspector (Google 2006)
+- **Tema:** Leitura crítica de links, detecção de *phishing*, malwares e *typosquatting* (erros intencionais de digitação).
+- **Mecânica:** Os alunos viajam no tempo até a interface do **Google de 2006** (com efeitos de TV de Tubo CRT via WebGL e VHS) e analisam entre **7 e 11 links** em 10 rodadas de pesquisas escolares reais.
+- **Dificuldade:** Progressiva em 3 níveis (Fácil, Médio e Difícil).
 
----
+### 2. 🎭 Detector de Fakes & Golpes
+- **Tema:** Combate a *fake news*, boatos, mensagens fraudulentas e engenharia social.
+- **Mecânica:** Em um simulador de smartphone interativo (com apps de WhatsApp, Instagram, SMS e Portais de Notícias), os alunos julgam 10 mensagens reais entre **🟢 É Fato / Confiável** vs **🔴 É Fake / Golpe**.
 
-## 🖥️ Estética Retro & Efeitos Visuais
+### 3. 🔑 Cofre de Senhas Fortes *(Em Breve)*
+- Treinamento prático para criação de senhas robustas e proteção de contas.
 
-- 📺 **Shader WebGL CRT TV (Distorção de Tubo Barrel Distort):** Efeito 3D que simula a curvatura de vidro dos monitores de tubo antigos dos anos 2000.
-- 📼 **Overlay de Filtro VHS:** Efeito com linhas de varredura vintage (pode ser ligado/desligado no botão do cabeçalho).
-- 🌐 **Abas de Navegador Nostálgicas:** Navegação por abas clássicas com os logos originais do *Google Brasil*, *Orkut*, *Jogos360* e *MSN Hotmail*.
-- 🔟 **Paginação Google 10-O:** A logo histórica do Google (`Goooooooooogle`) atua como indicador das 10 rodadas, destacando a página atual em vermelho (`g-red`) e marcando rodadas concluídas com `✓`.
-- 🎵 **Sintetizador de Áudio 8-bit:** Efeitos sonoros gerados dinamicamente via **Web Audio API** (sem arquivos pesados de áudio externos).
+### 4. 🛡️ Guardião da Privacidade *(Em Breve)*
+- Conscientização sobre o que postar e compartilhar nas redes sociais vs o que deve ser mantido privado.
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🏆 Sistema de Perfil do Aluno e Conquistas
 
-Como o jogo foi desenvolvido em **arquitetura de arquivo único**, você não precisa instalar nenhuma dependência ou servidor Node.js!
+- **Escolha de Avatar:** 6 personagens temáticos (Detetive, Cyber Bot, Raposa, Gato Hacker, Mago, Heroína).
+- **Painel de Agente:** Nome personalizado e ranking progressivo (*Recruta Digital ➔ Detetive da Web ➔ Mestre da Segurança*).
+- **Galeria de Medalhas:**
+  - 🔍 *Mestre Inspetor de Links* (desbloqueada no Website Inspector).
+  - 🎭 *Caçador de Fakes* (desbloqueada no Detector de Fakes).
+  - 🏆 *Detetive Supremo* (ao concluir todas as missões).
+- **Salvamento Automático:** Todo o progresso e pontuação são salvos localmente no navegador via `localStorage`.
+- **Botão Resetar Turma:** Permite ao professor reiniciar os dados facilmente entre aulas diferentes.
 
-### 💻 Executar Localmente
-1. Baixe o código fonte ou clone este repositório.
-2. Abra o arquivo `index.html` (ou `detetive_web_game.html`) em qualquer navegador moderno (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari).
+---
 
-### 🌐 Publicar Online Gratuitamente (GitHub Pages)
-1. No seu repositório do GitHub, vá em **Settings** > **Pages**.
-2. Em **Source**, selecione a branch `main` e a pasta `/ (root)`.
-3. Clique em **Save**.
-4. Em menos de 1 minuto, seu jogo estará acessível online em:
-   ```text
-   https://salleF.github.io/Website-Inspector/
-   ```
+## 👨‍🏫 Guia do Professor & Atividade em Sala de Aula
+
+A plataforma conta com um modal integrado contendo um roteiro sugerido de **45 a 50 minutos** de aula:
+1. **Introdução (5 min):** Apresentação do papel de detetive e personalização do avatar.
+2. **Missão 1 - Website Inspector (15 min):** Análise dos links no Google 2006.
+3. **Missão 2 - Detector de Fakes (15 min):** Análise das mensagens no smartphone.
+4. **Roda de Conversa (10 min):** Debate sobre as armadilhas mais difíceis encontradas.
+
+---
+
+## 🌐 Como Acessar Online
+
+O projeto está publicado e disponível gratuitamente no GitHub Pages:
+👉 **[https://sallef.github.io/Website-Inspector/](https://sallef.github.io/Website-Inspector/)**
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **HTML5:** Estrutura semântica da aplicação e layouts da SERP.
-- **CSS3:** Estilização retro, keyframes de animação de vírus, efeito de balanço CRT e caixas de alerta.
-- **JavaScript (Vanilla ES6+):** Lógica do jogo, amostragem procedural de dificuldade, manipulação de DOM e gerenciamento de estado.
-- **WebGL (GLSL Fragment Shaders):** Processamento via GPU para distorção de tubo de TV CRT e vinheta.
-- **Web Audio API:** Geração de efeitos sonoros em tempo real de acertos (arpejo) e erros (varredura de frequência).
+- **HTML5 & CSS3:** Layout moderno de portal arcade, simulador de smartphone e estética retro 2006.
+- **JavaScript (Vanilla ES6+):** Lógica procedurador de fases, gerenciamento de estado e persistência no `localStorage`.
+- **WebGL (GLSL Fragment Shaders):** Efeito de tubo de monitor CRT e vinheta no Website Inspector.
+- **Web Audio API:** Efeitos sonoros retro gerados dinamicamente no navegador (sem arquivos pesados externos).
 
 ---
 

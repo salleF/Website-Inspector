@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detector de Fakes & Golpes — CyberKids Arcade</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --success: #10b981;
+      --success-dark: #059669;
+      --danger: #ef4444;
+      --danger-dark: #dc2626;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1e1b4b, #0f172a 80%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    /* TOP NAV HEADER */
+    .top-nav {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-back-hub {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-back-hub:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+    }
+
+    .game-stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .stat-pill {
+      background: rgba(15, 23, 42, 0.8);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-pill.lives { color: #f43f5e; }
+    .stat-pill.score { color: #fbbf24; }
+    .stat-pill.round { color: #38bdf8; }
+
+    /* MAIN GAME LAYOUT */
+    .game-container {
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 820px) {
+      .game-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* SMARTPHONE MOCKUP */
+    .phone-mockup {
+      background: #000000;
+      border: 10px solid #27272a;
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 580px;
+      position: relative;
+    }
+
+    .phone-camera-notch {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 18px;
+      background: #18181b;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    .phone-status-bar {
+      height: 32px;
+      background: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .phone-app-header {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .phone-app-header.whatsapp { background: #075e54; }
+    .phone-app-header.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .phone-app-header.sms { background: #2563eb; }
+    .phone-app-header.news { background: #c53030; }
+
+    .app-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .phone-screen-content {
+      flex: 1;
+      background: #e5ddd5;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .phone-screen-content.dark-theme {
+      background: #111b21;
+    }
+
+    /* CHAT BUBBLE / POST CARD */
+    .msg-bubble {
+      background: #ffffff;
+      color: #111827;
+      padding: 14px 16px;
+      border-radius: 14px 14px 14px 0px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 95%;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .phone-screen-content.dark-theme .msg-bubble {
+      background: #202c33;
+      color: #e9edef;
+    }
+
+    .msg-forwarded-tag {
+      font-size: 11px;
+      color: #64748b;
+      font-style: italic;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .msg-link-preview {
+      margin-top: 10px;
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .phone-screen-content.dark-theme .msg-link-preview {
+      background: #182229;
+      border-left-color: #38bdf8;
+    }
+
+    .msg-time {
+      text-align: right;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    /* RIGHT CONTROL PANEL */
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .mission-header h2 {
+      font-size: 20px;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .mission-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .decision-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-judge {
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      color: white;
+    }
+
+    .btn-judge.fact {
+      background: linear-gradient(135deg, #10b981, #047857);
+      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+    }
+    .btn-judge.fact:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-judge.fake {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+    }
+    .btn-judge.fake:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-judge:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* FEEDBACK CARD */
+    .feedback-card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .feedback-card.show { display: block; }
+    .feedback-card.correct {
+      border-left: 5px solid var(--success);
+    }
+    .feedback-card.wrong {
+      border-left: 5px solid var(--danger);
+    }
+
+    .feedback-title {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feedback-card.correct .feedback-title { color: var(--success); }
+    .feedback-card.wrong .feedback-title { color: var(--danger); }
+
+    .feedback-text {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .btn-next-round {
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .btn-next-round:hover {
+      background: linear-gradient(135deg, #4f46e5, #3730a3);
+      transform: translateY(-2px);
+    }
+
+    /* DETECTIVE TIPS BOX */
+    .detective-guide {
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+    .detective-guide h4 {
+      font-size: 12px;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .detective-guide ul {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .detective-guide li strong { color: #f1f5f9; }
+
+    /* GAME OVER SCREEN */
+    .gameover-screen {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 600px;
+      display: none;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .gameover-badge-icon {
+      font-size: 72px;
+      margin-bottom: 12px;
+      animation: float 2s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .gameover-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 8px;
+    }
+
+    .gameover-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .gameover-score-box {
+      background: rgba(15, 23, 42, 0.8);
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 24px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .gameover-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER NAV -->
+  <header class="top-nav">
+    <a href="index.html" class="btn-back-hub">
+      ⬅️ Central de Jogos
+    </a>
+    <div class="game-stats-bar">
+      <div class="stat-pill lives">❤️ Vidas: <span id="hud-lives">3</span></div>
+      <div class="stat-pill score">⭐ Pontos: <span id="hud-score">0</span></div>
+      <div class="stat-pill round">🎯 Rodada: <span id="hud-round">1</span>/10</div>
+    </div>
+  </header>
+
+  <!-- GAMEPLAY CONTAINER -->
+  <main class="game-container" id="stage-gameplay">
+
+    <!-- SMARTPHONE SIMULATOR -->
+    <div class="phone-mockup">
+      <div class="phone-camera-notch"></div>
+
+      <div class="phone-status-bar">
+        <span>14:30</span>
+        <span>📶 5G  🔋 100%</span>
+      </div>
+
+      <div class="phone-app-header whatsapp" id="app-header">
+        <div class="app-avatar" id="app-avatar">💬</div>
+        <div>
+          <div id="app-sender-name" style="font-size: 13px;">Grupo da Turma 6º B</div>
+          <div id="app-sender-status" style="font-size: 10px; opacity: 0.85;">online</div>
+        </div>
+      </div>
+
+      <div class="phone-screen-content" id="screen-content">
+        <div class="msg-bubble">
+          <div class="msg-forwarded-tag" id="msg-forward-tag">↗️ Encaminhada com frequência</div>
+          <div id="msg-body-text">Carregando mensagem...</div>
+          <div class="msg-link-preview" id="msg-link-box" style="display:none;"></div>
+          <div class="msg-time" id="msg-timestamp">14:28</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="control-panel">
+      <div class="mission-header">
+        <h2>🔍 Análise do Detetive</h2>
+        <p>Observe a mensagem ao lado com muita atenção. Verifique a fonte, o tom do texto e os links antes de dar seu veredito!</p>
+      </div>
+
+      <!-- JUDGMENT BUTTONS -->
+      <div class="decision-buttons" id="decision-actions">
+        <button class="btn-judge fact" onclick="judgeCurrentScenario(true)">
+          <span style="font-size: 24px;">🟢</span>
+          <span>É FATO / CONFIÁVEL</span>
+          <span style="font-size: 11px; opacity: 0.85; font-weight: normal;">Notícia ou aviso seguro</span>
+        </button>
+        <button class="btn-judge fake" onclick="judgeCurrentScenario(false)">
+          <span style="font-size: 24px;">🔴</span>
+          <span>É FAKE / GOLPE</span>
+          <span style="font-size: 11px; opacity: 0.85; font-weight: normal;">Boato, golpe ou perigo</span>
+        </button>
+      </div>
+
+      <!-- FEEDBACK CARD -->
+      <div class="feedback-card" id="feedback-box">
+        <div class="feedback-title" id="feedback-title"></div>
+        <div class="feedback-text" id="feedback-desc"></div>
+        <button class="btn-next-round" id="btn-next" onclick="nextRound()">Próxima Mensagem ➔</button>
+      </div>
+
+      <!-- TIPS BOX -->
+      <div class="detective-guide">
+        <h4>💡 Dicas do Caçador de Fakes:</h4>
+        <ul>
+          <li><strong>1. Tom Urgente ou Ameaçador:</strong> Textos dizendo *"COMPARTILHE ANTES QUE APAGUE"* costumam ser mentira.</li>
+          <li><strong>2. Promessas Grátis:</strong> Internet, Robux ou Pix de graça quase sempre são golpes de phishing.</li>
+          <li><strong>3. Pedidos de Código SMS:</strong> Nunca passe códigos de 6 dígitos que chegam no seu celular para ninguém!</li>
+          <li><strong>4. Cheque no Google:</strong> Se uma notícia bombástica for real, os maiores jornais estarão falando dela.</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- GAME OVER / VICTORY SCREEN -->
+  <section class="gameover-screen" id="stage-gameover">
+    <div class="gameover-badge-icon" id="go-icon">🏆</div>
+    <h2 class="gameover-title" id="go-title">Treinamento Concluído!</h2>
+    <p class="gameover-subtitle" id="go-subtitle">Você provou que não cai em fake news nem em golpes de internet!</p>
+
+    <div class="gameover-score-box" id="go-score">
+      Pontuação Final: 100 / 100 Pontos
+    </div>
+
+    <div class="gameover-actions">
+      <button class="btn-back-hub" onclick="restartGame()" style="background: linear-gradient(135deg, #10b981, #059669);">
+        🔄 Jogar Novamente
+      </button>
+      <a href="index.html" class="btn-back-hub">
+        🏠 Voltar para a Central
+      </a>
+    </div>
+  </section>
+
+  <script>
+    // =========================================
+    // 10 EDUCATIONAL SCENARIOS (FAKES VS FACTS)
+    // =========================================
+    const SCENARIOS = [
+      {
+        app: "whatsapp",
+        sender: "Tia Maria (Família)",
+        status: "visto por último hoje às 14:20",
+        avatar: "👵",
+        forwarded: true,
+        text: "🚨 *URGENTE!* O WhatsApp vai começar a cobrar R$ 5,00 por mensagem a partir de meia-noite! Encaminhe agora essa mensagem para 10 amigos para sua conta continuar grátis e o logo ficar azul! Não custa nada tentar!",
+        link: "",
+        isSafe: false,
+        reason: "Cilada Clássica! Correntes que ameaçam cobranças ou dizem que 'o app vai mudar de cor' são mentiras antigas usadas para espalhar spam."
+      },
+      {
+        app: "sms",
+        sender: "BANCO_ALERTA",
+        status: "SMS Oficial?",
+        avatar: "🏦",
+        forwarded: false,
+        text: "AVISO: Sua conta bancária foi temporariamente bloqueada por atividade suspeita. Regularize agora para evitar multa de R$ 500,00:",
+        link: "🔗 bit.ly/desbloqueio-banco-urgente-2026",
+        isSafe: false,
+        reason: "Golpe de Phishing! Bancos verdadeiros nunca enviam links encurtados (como bit.ly) pedindo para você desbloquear conta por SMS."
+      },
+      {
+        app: "news",
+        sender: "Portal G1 & BBC Ciência",
+        status: "Jornalismo Verificado",
+        avatar: "📰",
+        forwarded: false,
+        text: "Telescópio Espacial James Webb descobre vestígios de água congelada na atmosfera de planeta distante. Cientistas comemoram avanço na astronomia.",
+        link: "🔗 g1.globo.com/ciencia-e-saude/noticia/james-webb-agua.ghtml",
+        isSafe: true,
+        reason: "Fato Confiável! A notícia vem de portais jornalísticos respeitados, tem linguagem séria e cita dados científicos reais."
+      },
+      {
+        app: "instagram",
+        sender: "sorteios_brasil_oficial_premiado",
+        status: "Direct Message",
+        avatar: "🎁",
+        forwarded: false,
+        text: "🎉 PARABÉNS! Você foi um dos 10 sorteados para ganhar um *iPhone 15 Pro Max 512GB*! Para receber em casa, basta pagar o frete dos correios de R$ 29,90 via Pix no nosso link da bio hoje!",
+        link: "🔗 pagamentos-frete-iphone-gratis.site",
+        isSafe: false,
+        reason: "Golpe do Falso Sorteio! Ninguém dá celulares caros do nada. Pedir 'Pix de frete' é uma armadilha para roubar seu dinheiro."
+      },
+      {
+        app: "whatsapp",
+        sender: "Desconhecido (+55 11 98765-4321)",
+        status: "online",
+        avatar: "👤",
+        forwarded: false,
+        text: "Oi! Sou o Gabriel da sua sala de aula, troquei de número! Me ajuda rápido por favor? Chegou um código de 6 dígitos no seu SMS sem querer, me manda ele aqui pra eu conseguir entrar na minha conta?",
+        link: "",
+        isSafe: false,
+        reason: "Perigo Máximo! Esse código de 6 dígitos por SMS é a confirmação para clonar e roubar o SEU WhatsApp. Nunca passe códigos de segurança para ninguém!"
+      },
+      {
+        app: "news",
+        sender: "Saúde & Milagres Total",
+        status: "Blog de Dicas",
+        avatar: "🧪",
+        forwarded: true,
+        text: "🚨 ATENÇÃO: Médicos da Europa descobrem que comer chocolate antes de dormir queima 5kg de gordura e cura qualquer gripe! As indústrias farmacêuticas tentaram esconder esse segredo!",
+        link: "🔗 cura-milagrosa-segredo-revelado.xyz",
+        isSafe: false,
+        reason: "Fake News de Saúde! Promessas mágicas de curas fáceis e teorias conspiratórias ('tentaram esconder isso') são marcas registradas de boatos falsos."
+      },
+      {
+        app: "news",
+        sender: "Ministério da Saúde (gov.br)",
+        status: "Comunicado Oficial",
+        avatar: "🏛️",
+        forwarded: false,
+        text: "Campanha Nacional de Vacinação contra a Gripe e Sarampo começa na próxima segunda-feira em todas as escolas e postos de saúde de todo o Brasil.",
+        link: "🔗 gov.br/saude/pt-br/campanhas/vacinacao-2026",
+        isSafe: true,
+        reason: "Fato Seguro! Informação oficial de utilidade pública vinda diretamente do portal do governo (gov.br)."
+      },
+      {
+        app: "instagram",
+        sender: "Mundo_Curioso_Viral",
+        status: "Publicação Patrocinada",
+        avatar: "🦖",
+        forwarded: false,
+        text: "CHOCANTE: Soldados capturam dinossauro vivo que estava escondido na Floresta Amazônica! Veja a foto que chocou o mundo!",
+        link: "🔗 [Foto com borrões e dedos esquisitos gerada por Inteligência Artificial]",
+        isSafe: false,
+        reason: "Imagem Criada por IA / Boato! Imagens absurdas sem nenhuma cobertura nos grandes jornais são forjadas por IA apenas para ganhar curtidas."
+      },
+      {
+        app: "whatsapp",
+        sender: "Grupo dos Games",
+        status: "várias pessoas digitando...",
+        avatar: "🎮",
+        forwarded: true,
+        text: "🔥 O Governo liberou *50 GIGAS DE INTERNET 5G GRÁTIS* para todos os estudantes do Brasil! Clique no link, preencha seus dados e compartilhe com 5 grupos para ativar!",
+        link: "🔗 internet-gratis-para-estudantes-liberada.top/ativar",
+        isSafe: false,
+        reason: "Cilada! 'Internet grátis' em troca de compartilhar em grupos é um golpe para roubar seus dados cadastrais e espalhar vírus."
+      },
+      {
+        app: "news",
+        sender: "Minecraft & Mojang Studios",
+        status: "Canal Oficial de Atualizações",
+        avatar: "⛏️",
+        forwarded: false,
+        text: "Nova atualização oficial de Minecraft adicionará novos animais, blocos decorativos e melhorias de segurança nas contas dos jogadores no próximo mês.",
+        link: "🔗 minecraft.net/pt-br/article/new-update-announcement",
+        isSafe: true,
+        reason: "Fato Legítimo! Notícia oficial postada no site oficial dos criadores do jogo (minecraft.net)."
+      }
+    ];
+
+    let currentRound = 0;
+    let score = 0;
+    let lives = 3;
+    let audioCtx = null;
+
+    // =========================================
+    // RETRO AUDIO SYNTHESIS
+    // =========================================
+    function playAudioTone(type) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08);
+          osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        }
+      } catch(e) {}
+    }
+
+    function initGame() {
+      currentRound = 0;
+      score = 0;
+      lives = 3;
+      updateHUD();
+      loadScenario(currentRound);
+      document.getElementById('stage-gameplay').style.display = 'grid';
+      document.getElementById('stage-gameover').style.display = 'none';
+    }
+
+    function updateHUD() {
+      document.getElementById('hud-lives').innerText = lives;
+      document.getElementById('hud-score').innerText = score;
+      document.getElementById('hud-round').innerText = currentRound + 1;
+    }
+
+    function loadScenario(index) {
+      const data = SCENARIOS[index];
+      const headerEl = document.getElementById('app-header');
+      const avatarEl = document.getElementById('app-avatar');
+      const senderNameEl = document.getElementById('app-sender-name');
+      const senderStatusEl = document.getElementById('app-sender-status');
+      const forwardTagEl = document.getElementById('msg-forward-tag');
+      const msgBodyEl = document.getElementById('msg-body-text');
+      const linkBoxEl = document.getElementById('msg-link-box');
+      const screenContent = document.getElementById('screen-content');
+
+      // Set App Styles
+      headerEl.className = `phone-app-header ${data.app}`;
+      avatarEl.innerText = data.avatar;
+      senderNameEl.innerText = data.sender;
+      senderStatusEl.innerText = data.status;
+
+      if (data.app === 'whatsapp') {
+        screenContent.className = 'phone-screen-content';
+      } else {
+        screenContent.className = 'phone-screen-content dark-theme';
+      }
+
+      forwardTagEl.style.display = data.forwarded ? 'flex' : 'none';
+      msgBodyEl.innerText = data.text;
+
+      if (data.link) {
+        linkBoxEl.style.display = 'block';
+        linkBoxEl.innerText = data.link;
+      } else {
+        linkBoxEl.style.display = 'none';
+      }
+
+      // Reset controls
+      document.getElementById('feedback-box').className = 'feedback-card';
+      const btns = document.getElementById('decision-actions').querySelectorAll('button');
+      btns.forEach(b => b.disabled = false);
+    }
+
+    function judgeCurrentScenario(userChoseSafe) {
+      const data = SCENARIOS[currentRound];
+      const btns = document.getElementById('decision-actions').querySelectorAll('button');
+      btns.forEach(b => b.disabled = true);
+
+      const isCorrect = (userChoseSafe === data.isSafe);
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackDesc = document.getElementById('feedback-desc');
+
+      if (isCorrect) {
+        score += 10;
+        playAudioTone('correct');
+        feedbackBox.className = 'feedback-card show correct';
+        feedbackTitle.innerHTML = '✅ Muito Bem! Análise Perfeita (+10 pts)';
+      } else {
+        lives -= 1;
+        playAudioTone('wrong');
+        feedbackBox.className = 'feedback-card show wrong';
+        feedbackTitle.innerHTML = '❌ Atenção! Você caiu no boato (-1 Vida)';
+      }
+
+      feedbackDesc.innerText = data.reason;
+      updateHUD();
+    }
+
+    function nextRound() {
+      if (lives <= 0) {
+        showGameOver();
+        return;
+      }
+
+      if (currentRound < SCENARIOS.length - 1) {
+        currentRound++;
+        updateHUD();
+        loadScenario(currentRound);
+      } else {
+        showGameOver();
+      }
+    }
+
+    function showGameOver() {
+      document.getElementById('stage-gameplay').style.display = 'none';
+      document.getElementById('stage-gameover').style.display = 'block';
+
+      const goIcon = document.getElementById('go-icon');
+      const goTitle = document.getElementById('go-title');
+      const goSubtitle = document.getElementById('go-subtitle');
+      const goScore = document.getElementById('go-score');
+
+      const maxScore = SCENARIOS.length * 10;
+      goScore.innerText = `Pontuação Final: ${score} / ${maxScore} Pontos`;
+
+      if (lives > 0 && score >= 80) {
+        goIcon.innerText = '🏆';
+        goTitle.innerText = 'Mestre Caçador de Fakes!';
+        goSubtitle.innerText = 'Excelente! Você tem olhos clínicos e não se deixa enganar por mentiras na internet!';
+      } else if (lives > 0) {
+        goIcon.innerText = '🛡️';
+        goTitle.innerText = 'Detetive Aprovado!';
+        goSubtitle.innerText = 'Muito bom! Você já consegue identificar a maioria das tentativas de golpes!';
+      } else {
+        goIcon.innerText = '⚠️';
+        goTitle.innerText = 'Treinamento Finalizado!';
+        goSubtitle.innerText = 'Você perdeu suas vidas, mas aprendeu as dicas essenciais para se proteger na vida real!';
+      }
+
+      // Save to localStorage Hub Profile
+      saveProgressToHub('fake_detector', score, maxScore);
+    }
+
+    function saveProgressToHub(gameId, currentScore, maxScore) {
+      try {
+        let profile = JSON.parse(localStorage.getItem('cyberkids_profile') || '{}');
+        if (!profile.scores) profile.scores = {};
+        if (!profile.badges) profile.badges = [];
+
+        const prevScore = profile.scores[gameId] || 0;
+        if (currentScore > prevScore) {
+          profile.scores[gameId] = currentScore;
+        }
+
+        if (currentScore >= (maxScore * 0.5) && !profile.badges.includes('fake_hunter')) {
+          profile.badges.push('fake_hunter');
+        }
+
+        localStorage.setItem('cyberkids_profile', JSON.stringify(profile));
+      } catch(e) {}
+    }
+
+    function restartGame() {
+      initGame();
+    }
+
+    // Start on load
+    initGame();
+  </script>
+</body>
+</html>
