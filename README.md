@@ -1,4 +1,4 @@
-# 🔍 Detetive Web 2006 — Website Inspector
+# 🔍 Website Inspector
 > **Jogo educativo interativo de cibersegurança e educação digital para crianças de 10 a 12 anos.**
 
 ![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-blue.svg)
@@ -9,7 +9,7 @@
 
 ## 🎯 Sobre o Projeto
 
-O **Detetive Web 2006** (Website Inspector) é um minigame educativo em página única (*Single-File Web App*) desenvolvido para ensinar alunos do ensino fundamental a identificar links perigosos, tentativas de *phishing*, malwares, enganos por digitação (*typosquatting*) e ciladas comuns na internet.
+O **Website Inspector** é um minigame educativo em página única (*Single-File Web App*) desenvolvido para ensinar alunos do ensino fundamental a identificar links perigosos, tentativas de *phishing*, malwares, enganos por digitação (*typosquatting*) e ciladas comuns na internet.
 
 Ambientado no visual clássico do **Google de 2006** e no antigo **Windows XP**, o jogo combina nostalgia retro com aprendizado prático de segurança digital em um ambiente divertido e imersivo.
 
@@ -52,7 +52,7 @@ Como o jogo foi desenvolvido em **arquitetura de arquivo único**, você não pr
 3. Clique em **Save**.
 4. Em menos de 1 minuto, seu jogo estará acessível online em:
    ```text
-   https://seu-usuario.github.io/Website-Inspector/
+   https://salleF.github.io/Website-Inspector/
    ```
 
 ---
