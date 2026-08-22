@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberKids Arcade — Central de Jogos de Segurança Digital</title>
+  <title>Central de Jogos — Detetive Web</title>
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --accent: #f59e0b;
-      --accent-glow: rgba(245, 158, 11, 0.4);
-      --bg: #0b0f19;
-      --card-bg: #161e2e;
-      --card-hover: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --danger: #ef4444;
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --gold: #f59e0b;
+      --gold-light: #fef3c7;
+      --gold-dark: #b45309;
+      --orange: #f97316;
+      --orange-intense: #ea580c;
+      --orange-light: #ffedd5;
+      --border-color: #cbd5e1;
+      --border-dark: #0f172a;
     }
 
     * {
@@ -26,433 +27,391 @@
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    body {
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-      color: var(--text);
+    html, body {
+      width: 100%;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 16px 40px 16px;
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
     }
 
-    /* HEADER & BRAND */
-    .arcade-header {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px;
-      background: rgba(22, 30, 46, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      margin-bottom: 24px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      font-size: 36px;
-      background: linear-gradient(135deg, #6366f1, #f59e0b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.5));
-    }
-
-    .brand-title {
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(to right, #ffffff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .brand-subtitle {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #38bdf8;
-      font-weight: bold;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-action {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--text);
-      padding: 8px 16px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-    .btn-action:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-    .btn-action.teacher-guide {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      border: none;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    /* MAIN CONTAINER */
-    .main-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    /* STUDENT PROFILE / BADGE ROW */
-    .profile-dashboard {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 20px;
-      padding: 20px 24px;
+    /* FULLSCREEN EDGE-TO-EDGE 2-COLUMN LAYOUT */
+    .app-screen-layout {
       display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 24px;
-      align-items: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      grid-template-columns: 290px 1fr;
+      min-height: 100vh;
+      width: 100%;
     }
 
-    @media (max-width: 768px) {
-      .profile-dashboard {
+    @media (max-width: 860px) {
+      .app-screen-layout {
         grid-template-columns: 1fr;
-        text-align: center;
-      }
-      .arcade-header {
-        flex-direction: column;
-        gap: 14px;
       }
     }
 
-    .avatar-wrapper {
-      position: relative;
-      cursor: pointer;
-    }
-
-    .avatar-display {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #f59e0b);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 34px;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-      border: 3px solid rgba(255, 255, 255, 0.2);
-      transition: transform 0.2s;
-    }
-    .avatar-wrapper:hover .avatar-display {
-      transform: scale(1.08);
-    }
-
-    .avatar-change-hint {
-      position: absolute;
-      bottom: -4px;
-      right: -4px;
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-    }
-
-    .player-details {
+    /* =========================================
+       LEFT COLUMN: PROFILE SIDEBAR (GLUED TO LEFT)
+       ========================================= */
+    .sidebar-profile {
+      background: #ffffff;
+      border-right: 3px solid var(--border-dark);
+      padding: 24px 18px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    .player-name-row {
+    @media (max-width: 860px) {
+      .sidebar-profile {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 3px solid var(--border-dark);
+      }
+    }
+
+    .profile-card {
+      background: var(--gold-light);
+      border: 3px solid var(--border-dark);
+      padding: 18px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+
+    .avatar-frame {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--gold), var(--orange-intense));
+      border: 3px solid var(--border-dark);
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      font-size: 42px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border-dark);
+      transition: transform 0.15s;
+    }
+    .avatar-frame:hover {
+      transform: scale(1.06);
+    }
+
+    .avatar-btn-change {
+      background: #ffffff;
+      border: 2px solid var(--border-dark);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+      padding: 4px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .avatar-btn-change:hover {
+      background: var(--orange-light);
     }
 
     .player-name-input {
-      background: transparent;
-      border: none;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 2px 4px;
+      background: #ffffff;
+      border: 2px solid var(--border-dark);
+      padding: 6px 10px;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-main);
+      text-align: center;
+      width: 100%;
       outline: none;
-      width: 200px;
     }
     .player-name-input:focus {
-      border-bottom-color: #38bdf8;
+      background: #fef08a;
     }
 
-    .agent-rank-tag {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 3px 10px;
-      border-radius: 20px;
+    .rank-tag {
+      background: var(--orange-intense);
+      color: #ffffff;
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 900;
       text-transform: uppercase;
+      padding: 4px 10px;
+      border: 2px solid var(--border-dark);
+      box-shadow: 2px 2px 0px var(--border-dark);
+      letter-spacing: 0.5px;
     }
 
-    .player-stats-row {
+    /* SCORE BANNER */
+    .score-tile {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #ffffff;
+      border: 3px solid var(--border-dark);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+    .score-tile-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fef08a;
+      margin-bottom: 2px;
+    }
+    .score-tile-val {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 2px 2px 0px #7c2d12;
+    }
+
+    /* MEDALS CONTAINER */
+    .medals-section {
+      background: #ffffff;
+      border: 3px solid var(--border-dark);
+      padding: 14px;
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+    .medals-header {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 10px;
       display: flex;
-      gap: 20px;
-      font-size: 13px;
-      color: var(--text-muted);
+      justify-content: space-between;
     }
-    .stat-highlight {
-      color: #fbbf24;
-      font-weight: bold;
+    .medals-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
     }
-
-    /* BADGES STRIP */
-    .badges-container {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .badge-icon-item {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .medal-box {
+      height: 48px;
+      background: #f1f5f9;
+      border: 2px solid var(--border-dark);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
       position: relative;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    }
+    .medal-box.unlocked {
+      background: var(--gold-light);
+      border-color: var(--border-dark);
+      box-shadow: inset 0 0 0 2px var(--gold);
+    }
+    .medal-box.locked {
+      filter: grayscale(100%);
+      opacity: 0.3;
     }
 
-    .badge-icon-item.locked {
-      filter: grayscale(1);
-      opacity: 0.35;
-    }
-    .badge-icon-item.unlocked {
-      border-color: #f59e0b;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-      animation: badgeGlow 2s infinite alternate;
-    }
-
-    @keyframes badgeGlow {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.05); }
-    }
-
-    /* SECTION TITLE & CATEGORY FILTER */
-    .section-header-row {
+    /* SIDEBAR UTILITY BUTTONS */
+    .sidebar-btns {
+      margin-top: auto;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
     }
-
-    .category-pills {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .cat-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 20px;
+    .btn-side-util {
+      background: #eff6ff;
+      border: 2px solid var(--border-dark);
+      color: #1e3a8a;
+      padding: 8px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 800;
       cursor: pointer;
-      transition: all 0.2s;
+      text-align: center;
+      box-shadow: 2px 2px 0px var(--border-dark);
+      transition: transform 0.1s;
     }
-    .cat-btn.active, .cat-btn:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+    .btn-side-util:hover {
+      background: #dbeafe;
+      transform: translate(-1px, -1px);
+    }
+    .btn-side-util.reset {
+      background: #fff1f2;
+      color: #9f1239;
+    }
+    .btn-side-util.reset:hover {
+      background: #ffe4e6;
+    }
+
+    /* =========================================
+       RIGHT COLUMN: GAMES ARENA (FULL-WIDTH GLUED)
+       ========================================= */
+    .main-games-view {
+      padding: 24px;
+      background-color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    @media (max-width: 860px) {
+      .main-games-view {
+        padding: 16px;
+      }
+    }
+
+    /* HERO CALLOUT */
+    .hero-callout {
+      background: var(--gold-light);
+      border: 3px solid var(--border-dark);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+    .hero-callout h2 {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+    .hero-callout span {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--orange-intense);
     }
 
     /* GAMES GRID */
-    .games-grid {
+    .games-catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
     }
 
-    .game-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      overflow: hidden;
+    .game-play-card {
+      background: #ffffff;
+      border: 3px solid var(--border-dark);
       display: flex;
       flex-direction: column;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 6px 6px 0px var(--border-dark);
+      transition: all 0.2s ease;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
-    .game-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(99, 102, 241, 0.5);
-      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
+    .game-play-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0px var(--border-dark);
     }
 
-    .game-card-banner {
+    /* GAME POSTER BANNER */
+    .game-poster-box {
       height: 140px;
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 54px;
-      overflow: hidden;
+      font-size: 64px;
+      border-bottom: 3px solid var(--border-dark);
+      position: relative;
     }
-    .game-card-banner.inspector {
-      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    .game-poster-box.theme-cilada {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
     }
-    .game-card-banner.fake-detector {
-      background: linear-gradient(135deg, #831843, #ec4899);
+    .game-poster-box.theme-fake {
+      background: linear-gradient(135deg, #ea580c, #f97316);
     }
-    .game-card-banner.passwords {
-      background: linear-gradient(135deg, #064e3b, #10b981);
+    .game-poster-box.theme-senha {
+      background: linear-gradient(135deg, #059669, #10b981);
     }
-    .game-card-banner.privacy {
-      background: linear-gradient(135deg, #78350f, #f59e0b);
+    .game-poster-box.theme-privacidade {
+      background: linear-gradient(135deg, #d97706, #fbbf24);
     }
 
-    .game-card-badge {
+    .status-badge-chip {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 10px;
+      right: 10px;
+      background: #ffffff;
+      border: 2px solid var(--border-dark);
+      font-size: 11px;
+      font-weight: 900;
       padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 800;
+      box-shadow: 2px 2px 0px var(--border-dark);
       text-transform: uppercase;
+    }
+    .status-badge-chip.ready {
+      background: #86efac;
+      color: #064e3b;
+    }
+    .status-badge-chip.soon {
+      background: #fde047;
+      color: #713f12;
+    }
+
+    /* GAME CARD BODY */
+    .game-card-main {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      gap: 16px;
+    }
+
+    .game-title-text {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .game-bottom-action {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .record-pill-row {
+      background: var(--gold-light);
+      border: 2px solid var(--border-dark);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--gold-dark);
+    }
+
+    .btn-game-launch {
+      background: linear-gradient(180deg, #f97316, #ea580c);
+      color: #ffffff;
+      border: 3px solid var(--border-dark);
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 3px 3px 0px var(--border-dark);
+      cursor: pointer;
+      display: block;
+      transition: all 0.15s;
       letter-spacing: 0.5px;
     }
-    .game-card-badge.available {
-      background: #10b981;
-      color: #064e3b;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    .btn-game-launch:hover {
+      background: linear-gradient(180deg, #ea580c, #c2410c);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border-dark);
     }
-    .game-card-badge.coming-soon {
-      background: #f59e0b;
-      color: #78350f;
-    }
-
-    .game-card-body {
-      padding: 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .game-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: white;
-      margin-bottom: 6px;
-    }
-
-    .game-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 16px;
-      flex: 1;
-    }
-
-    .game-meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: #cbd5e1;
-      margin-bottom: 16px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .btn-play-game {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: white;
-      text-decoration: none;
-      padding: 12px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-      border: none;
-      cursor: pointer;
-    }
-    .btn-play-game:hover {
-      background: linear-gradient(135deg, #4f46e5, #3730a3);
-      transform: translateY(-2px);
-    }
-    .btn-play-game.disabled {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
+    .btn-game-launch.disabled {
+      background: #e2e8f0;
+      color: #94a3b8;
       cursor: not-allowed;
       box-shadow: none;
       transform: none !important;
     }
 
-    /* MODAL POPUPS */
-    .modal-backdrop {
+    /* MODALS (FLAT CRISP BOXES) */
+    .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.7);
       z-index: 10000;
       display: flex;
       align-items: center;
@@ -462,360 +421,304 @@
       pointer-events: none;
       transition: opacity 0.2s ease;
     }
-    .modal-backdrop.show {
+    .modal-overlay.show {
       opacity: 1;
       pointer-events: auto;
     }
 
-    .modal-box {
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
+    .modal-flat-box {
+      background: #ffffff;
+      border: 4px solid var(--border-dark);
       width: 100%;
-      max-width: 600px;
+      max-width: 540px;
       padding: 24px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 8px 8px 0px var(--border-dark);
       max-height: 85vh;
       overflow-y: auto;
     }
 
-    .modal-header {
+    .modal-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--border-dark);
     }
-    .modal-header h3 {
+    .modal-head h3 {
       font-size: 20px;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-weight: 900;
     }
-    .modal-close-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 20px;
+    .modal-btn-x {
+      background: #fee2e2;
+      border: 2px solid var(--border-dark);
+      font-weight: 900;
+      padding: 4px 10px;
       cursor: pointer;
     }
 
-    .modal-content-body {
-      font-size: 14px;
-      color: #cbd5e1;
-      line-height: 1.6;
-    }
-    .modal-content-body h4 {
-      color: #fbbf24;
-      margin: 14px 0 6px 0;
-    }
-    .modal-content-body ul {
-      margin-left: 20px;
-      margin-bottom: 12px;
-    }
-
-    /* AVATAR PICKER GRID */
-    .avatar-grid {
+    /* AVATAR GRID */
+    .avatar-flat-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-top: 14px;
     }
-
-    .avatar-choice-btn {
-      background: rgba(15, 23, 42, 0.8);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 16px;
-      font-size: 36px;
+    .avatar-pick-card {
+      background: #f8fafc;
+      border: 3px solid var(--border-dark);
+      padding: 14px;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      box-shadow: 3px 3px 0px var(--border-dark);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
+      transition: transform 0.1s;
     }
-    .avatar-choice-btn:hover {
-      border-color: #6366f1;
-      transform: scale(1.05);
+    .avatar-pick-card:hover {
+      background: var(--gold-light);
+      transform: translate(-2px, -2px);
     }
-    .avatar-label {
+    .avatar-pick-card span:first-child {
+      font-size: 38px;
+    }
+    .avatar-pick-card span:last-child {
       font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* FOOTER */
-    .arcade-footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      font-weight: 900;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="arcade-header">
-    <div class="brand-logo">
-      <div class="brand-icon">🕹️</div>
-      <div>
-        <div class="brand-title">CyberKids Arcade</div>
-        <div class="brand-subtitle">Central de Jogos de Segurança Digital</div>
-      </div>
-    </div>
+  <!-- EDGE-TO-EDGE 2-COLUMN APP LAYOUT -->
+  <div class="app-screen-layout">
 
-    <div class="header-actions">
-      <button class="btn-action teacher-guide" onclick="openTeacherModal()">
-        👨‍🏫 Guia do Professor
-      </button>
-      <button class="btn-action" onclick="resetStudentProgress()">
-        🔄 Resetar Turma
-      </button>
-    </div>
-  </header>
+    <!-- LEFT COLUMN: SIDEBAR PERFIL (GRUDADO NA ESQUERDA) -->
+    <aside class="sidebar-profile">
 
-  <!-- MAIN WRAPPER -->
-  <main class="main-wrapper">
-
-    <!-- STUDENT AGENT PROFILE DASHBOARD -->
-    <section class="profile-dashboard">
-      <div class="avatar-wrapper" onclick="openAvatarModal()" title="Clique para trocar seu avatar">
-        <div class="avatar-display" id="player-avatar-icon">🕵️‍♂️</div>
-        <div class="avatar-change-hint">✏️</div>
-      </div>
-
-      <div class="player-details">
-        <div class="player-name-row">
-          <input type="text" class="player-name-input" id="player-name-field" value="Agente Secreto" onchange="updatePlayerName(this.value)" placeholder="Digite seu nome">
-          <span class="agent-rank-tag" id="player-rank-tag">Nível 1 • Recruta Digital</span>
+      <div class="profile-card">
+        <div class="avatar-frame" id="player-avatar-icon" onclick="openAvatarModal()" title="Clique para trocar seu avatar">
+          🕵️‍♂️
         </div>
-        <div class="player-stats-row">
-          <div>Pontuação Total: <span class="stat-highlight" id="stat-total-score">0</span> pts</div>
-          <div>Medalhas: <span class="stat-highlight" id="stat-badges-count">0</span> / 4</div>
-          <div>Missões Concluídas: <span class="stat-highlight" id="stat-missions-done">0</span> / 2</div>
+        <button class="avatar-btn-change" onclick="openAvatarModal()">Trocar Avatar</button>
+
+        <div style="width: 100%; margin-top: 4px;">
+          <input type="text" class="player-name-input" id="player-name-field" value="Agente Secreto" onchange="updatePlayerName(this.value)" placeholder="Seu Nome">
+        </div>
+
+        <div class="rank-tag" id="player-rank-tag">
+          Nível 1 • Recruta
         </div>
       </div>
 
-      <div class="badges-container">
-        <div class="badge-icon-item locked" id="badge-link-inspector" title="Medalha: Mestre Inspetor de Links (Jogue o Website Inspector)">
-          🔍
-        </div>
-        <div class="badge-icon-item locked" id="badge-fake-hunter" title="Medalha: Caçador de Fakes (Jogue o Detector de Fakes)">
-          🎭
-        </div>
-        <div class="badge-icon-item locked" id="badge-passwords" title="Medalha: Guardião de Senhas (Em Breve)">
-          🔑
-        </div>
-        <div class="badge-icon-item locked" id="badge-supreme" title="Medalha: Detetive Supremo da Web">
-          🏆
-        </div>
+      <!-- PLACAR DE PONTOS -->
+      <div class="score-tile">
+        <div class="score-tile-label">⭐ Pontos Conquistados</div>
+        <div class="score-tile-val" id="stat-total-score">0</div>
       </div>
-    </section>
 
-    <!-- SECTION TITLE & FILTERS -->
-    <div class="section-header-row">
-      <h2 class="section-title">🎮 Missões de Treinamento</h2>
-      <div class="category-pills">
-        <button class="cat-btn active" onclick="filterGames('all')">Todos os Jogos</button>
-        <button class="cat-btn" onclick="filterGames('available')">Disponíveis Agora</button>
-        <button class="cat-btn" onclick="filterGames('links')">Navegação & Links</button>
-        <button class="cat-btn" onclick="filterGames('social')">Fakes & Redes</button>
-      </div>
-    </div>
-
-    <!-- GAMES GRID -->
-    <div class="games-grid" id="games-grid-container">
-
-      <!-- GAME 1: WEBSITE INSPECTOR (GOOGLE 2006) -->
-      <article class="game-card" data-category="links available">
-        <div class="game-card-banner inspector">
-          <span>🔍</span>
-          <span class="game-card-badge available">🟢 Disponível</span>
+      <!-- MEDALHAS CONQUISTADAS -->
+      <div class="medals-section">
+        <div class="medals-header">
+          <span>🏅 Medalhas</span>
+          <span id="stat-badges-count" style="color:var(--orange-intense);">0 / 4</span>
         </div>
-        <div class="game-card-body">
-          <div>
-            <h3 class="game-title">Website Inspector 2006</h3>
-            <p class="game-desc">
-              Viaje no tempo até o Google de 2006! Analise 10 buscas escolares na web e aprenda a diferenciar links seguros de ciladas com vírus, phishing e malwares.
-            </p>
+        <div class="medals-grid">
+          <div class="medal-box locked" id="badge-link-inspector" title="Medalha: Mestre dos Links">
+            🔍
           </div>
-          <div>
-            <div class="game-meta-row">
-              <span>🎯 Dificuldade: <strong>Progressiva (3 Níveis)</strong></span>
-              <span>⭐ Recorde: <strong id="record-inspector">0 pts</strong></span>
+          <div class="medal-box locked" id="badge-fake-hunter" title="Medalha: Caçador de Fakes">
+            🎭
+          </div>
+          <div class="medal-box locked" id="badge-passwords" title="Medalha: Guardião de Senhas">
+            🔑
+          </div>
+          <div class="medal-box locked" id="badge-supreme" title="Medalha: Detetive Supremo">
+            🏆
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTOES DE UTILIDADE -->
+      <div class="sidebar-btns">
+        <button class="btn-side-util" onclick="openTeacherModal()">
+          👨‍🏫 Guia da Atividade
+        </button>
+        <button class="btn-side-util reset" onclick="resetStudentProgress()">
+          🔄 Resetar Turma
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT COLUMN: ARENA DE JOGOS (GRUDADA NA DIREITA) -->
+    <main class="main-games-view">
+
+      <!-- HERO CALLOUT -->
+      <div class="hero-callout">
+        <h2>Escolha um Jogo e Comece! 🚀</h2>
+        <span>Jogue e Ganhe Pontos</span>
+      </div>
+
+      <!-- GRID DE JOGOS DIRETOS -->
+      <div class="games-catalog-grid">
+
+        <!-- JOGO 1: WEBSITE INSPECTOR -->
+        <article class="game-play-card">
+          <div class="game-poster-box theme-cilada">
+            <span>🔍</span>
+            <div class="status-badge-chip ready">🟢 Jogar</div>
+          </div>
+          <div class="game-card-main">
+            <div class="game-title-text">
+              Descubra se é uma Cilada!
             </div>
-            <a href="website-inspector.html" class="btn-play-game">
-              ▶️ Jogar Website Inspector
-            </a>
-          </div>
-        </div>
-      </article>
-
-      <!-- GAME 2: DETECTOR DE FAKES & GOLPES -->
-      <article class="game-card" data-category="social available">
-        <div class="game-card-banner fake-detector">
-          <span>🎭</span>
-          <span class="game-card-badge available">🟢 Disponível</span>
-        </div>
-        <div class="game-card-body">
-          <div>
-            <h3 class="game-title">Detector de Fakes & Golpes</h3>
-            <p class="game-desc">
-              Pegue seu smartphone de detetive! Analise mensagens de WhatsApp, correntes, notícias científicas e supostos sorteios para desmascarar boatos.
-            </p>
-          </div>
-          <div>
-            <div class="game-meta-row">
-              <span>🎯 Dificuldade: <strong>Médio (10 Rodadas)</strong></span>
-              <span>⭐ Recorde: <strong id="record-fakes">0 pts</strong></span>
+            <div class="game-bottom-action">
+              <div class="record-pill-row">
+                <span>Recorde:</span>
+                <strong id="record-inspector">0 pts</strong>
+              </div>
+              <a href="website-inspector.html" class="btn-game-launch">
+                ▶ JOGAR AGORA
+              </a>
             </div>
-            <a href="fake-detector.html" class="btn-play-game">
-              ▶️ Jogar Detector de Fakes
-            </a>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- GAME 3: COFRE DE SENHAS (EM BREVE) -->
-      <article class="game-card" data-category="links">
-        <div class="game-card-banner passwords">
-          <span>🔑</span>
-          <span class="game-card-badge coming-soon">🟡 Em Breve</span>
-        </div>
-        <div class="game-card-body">
-          <div>
-            <h3 class="game-title">Cofre de Senhas Fortes</h3>
-            <p class="game-desc">
-              Aprenda os segredos para criar senhas impenetráveis contra invasores e descubra porque datas de aniversário e 123456 são tão perigosas.
-            </p>
+        <!-- JOGO 2: DETECTOR DE FAKES NO CELULAR -->
+        <article class="game-play-card">
+          <div class="game-poster-box theme-fake">
+            <span>🎭</span>
+            <div class="status-badge-chip ready">🟢 Jogar</div>
           </div>
-          <div>
-            <div class="game-meta-row">
-              <span>🎯 Dificuldade: <strong>Fácil / Médio</strong></span>
-              <span>🔒 Status: <strong>Em Desenvolvimento</strong></span>
+          <div class="game-card-main">
+            <div class="game-title-text">
+              Fato ou Fake no Celular!
             </div>
-            <button class="btn-play-game disabled" onclick="alert('Este minigame estará disponível na próxima atualização da Central!')">
-              🔒 Em Breve
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- GAME 4: GUARDIÃO DA PRIVACIDADE (EM BREVE) -->
-      <article class="game-card" data-category="social">
-        <div class="game-card-banner privacy">
-          <span>🛡️</span>
-          <span class="game-card-badge coming-soon">🟡 Em Breve</span>
-        </div>
-        <div class="game-card-body">
-          <div>
-            <h3 class="game-title">Guardião da Privacidade</h3>
-            <p class="game-desc">
-              Descubra o que é seguro compartilhar em fotos e vídeos nas redes sociais e o que deve ser mantido em segredo para proteger sua família.
-            </p>
-          </div>
-          <div>
-            <div class="game-meta-row">
-              <span>🎯 Dificuldade: <strong>Médio</strong></span>
-              <span>🔒 Status: <strong>Em Desenvolvimento</strong></span>
+            <div class="game-bottom-action">
+              <div class="record-pill-row">
+                <span>Recorde:</span>
+                <strong id="record-fakes">0 pts</strong>
+              </div>
+              <a href="fake-detector.html" class="btn-game-launch">
+                ▶ JOGAR AGORA
+              </a>
             </div>
-            <button class="btn-play-game disabled" onclick="alert('Este minigame estará disponível na próxima atualização da Central!')">
-              🔒 Em Breve
-            </button>
           </div>
-        </div>
-      </article>
+        </article>
 
-    </div>
+        <!-- JOGO 3: SENHAS FORTES -->
+        <article class="game-play-card">
+          <div class="game-poster-box theme-senha">
+            <span>🔑</span>
+            <div class="status-badge-chip soon">🟡 Em Breve</div>
+          </div>
+          <div class="game-card-main">
+            <div class="game-title-text">
+              Crie sua Senha Secreta!
+            </div>
+            <div class="game-bottom-action">
+              <div class="record-pill-row" style="background:#f1f5f9; color:#64748b;">
+                <span>Status:</span>
+                <strong>Em Produção</strong>
+              </div>
+              <button class="btn-game-launch disabled" onclick="alert('Este jogo estará disponível em breve!')">
+                🔒 EM BREVE
+              </button>
+            </div>
+          </div>
+        </article>
 
-  </main>
+        <!-- JOGO 4: ESCUDO DE PRIVACIDADE -->
+        <article class="game-play-card">
+          <div class="game-poster-box theme-privacidade">
+            <span>🛡️</span>
+            <div class="status-badge-chip soon">🟡 Em Breve</div>
+          </div>
+          <div class="game-card-main">
+            <div class="game-title-text">
+              Escudo de Privacidade!
+            </div>
+            <div class="game-bottom-action">
+              <div class="record-pill-row" style="background:#f1f5f9; color:#64748b;">
+                <span>Status:</span>
+                <strong>Em Produção</strong>
+              </div>
+              <button class="btn-game-launch disabled" onclick="alert('Este jogo estará disponível em breve!')">
+                🔒 EM BREVE
+              </button>
+            </div>
+          </div>
+        </article>
 
-  <!-- TEACHER / CLASSROOM GUIDE MODAL -->
-  <div class="modal-backdrop" id="modal-teacher">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>👨‍🏫 Guia do Professor & Atividade em Sala</h3>
-        <button class="modal-close-btn" onclick="closeTeacherModal()">✖</button>
       </div>
-      <div class="modal-content-body">
-        <p>A <strong>Central CyberKids</strong> foi desenhada para aulas interativas de Cibersegurança e Educação Midiática para alunos de <strong>10 a 12 anos (5º ao 7º ano)</strong>.</p>
 
-        <h4>🎯 Habilidades Trabalhadas:</h4>
-        <ul>
-          <li><strong>Leitura Crítica de URLs:</strong> Identificação de Typosquatting (erros de digitação intencionais) e falsos subdomínios.</li>
-          <li><strong>Checagem de Fatos:</strong> Diferenciação entre notícias confiáveis, correntes alarmistas e golpes de engenharia social.</li>
-          <li><strong>Prevenção a Golpes:</strong> Cuidado com pedidos de códigos SMS, falsos prêmios e downloads perigosos.</li>
-        </ul>
+    </main>
 
-        <h4>⏱️ Sugestão de Dinâmica de Aula (45 min):</h4>
-        <ul>
-          <li><strong>1. Introdução (5 min):</strong> Explique o papel dos "Detetives da Web" e peça para cada aluno digitar seu nome no painel.</li>
-          <li><strong>2. Missão 1 - Website Inspector (15 min):</strong> Os alunos jogam e analisam os links nos resultados do Google.</li>
-          <li><strong>3. Missão 2 - Detector de Fakes (15 min):</strong> Os alunos analisam as mensagens do celular.</li>
-          <li><strong>4. Debate & Encerramento (10 min):</strong> Pergunte: <em>"Qual foi a cilada mais difícil de descobrir?"</em>.</li>
-        </ul>
+  </div>
 
-        <div style="text-align: center; margin-top: 18px;">
-          <button class="btn-action teacher-guide" onclick="closeTeacherModal()">Entendi, vamos começar!</button>
-        </div>
+  <!-- MODAL DO PROFESSOR -->
+  <div class="modal-overlay" id="modal-teacher">
+    <div class="modal-flat-box">
+      <div class="modal-head">
+        <h3>👨‍🏫 Guia da Atividade</h3>
+        <button class="modal-btn-x" onclick="closeTeacherModal()">X</button>
+      </div>
+      <div style="font-size:14px; line-height:1.6; color:#1e293b;">
+        <p><strong>🎯 Objetivo:</strong> Ensinar crianças de 10 a 12 anos a navegar na web com atenção contra vírus, phishing e mentiras.</p>
+        <br>
+        <p><strong>⏱️ Dinâmica Rápida:</strong></p>
+        <ol style="margin-left:20px; margin-top:8px;">
+          <li>Cada aluno coloca seu nome e avatar.</li>
+          <li>Jogam o <strong>Descubra se é uma Cilada</strong> (analisar links).</li>
+          <li>Jogam o <strong>Fato ou Fake no Celular</strong> (analisar mensagens).</li>
+          <li>Debate final sobre quem conquistou mais medalhas!</li>
+        </ol>
       </div>
     </div>
   </div>
 
-  <!-- AVATAR PICKER MODAL -->
-  <div class="modal-backdrop" id="modal-avatar">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>🎨 Escolha seu Avatar de Agente</h3>
-        <button class="modal-close-btn" onclick="closeAvatarModal()">✖</button>
+  <!-- MODAL DE TROCA DE AVATAR -->
+  <div class="modal-overlay" id="modal-avatar">
+    <div class="modal-flat-box">
+      <div class="modal-head">
+        <h3>🎨 Escolha seu Avatar</h3>
+        <button class="modal-btn-x" onclick="closeAvatarModal()">X</button>
       </div>
-      <div class="modal-content-body">
-        <p>Selecione o personagem que melhor representa seu estilo de investigação:</p>
-
-        <div class="avatar-grid">
-          <button class="avatar-choice-btn" onclick="selectAvatar('🕵️‍♂️', 'Detetive da Web')">
-            <span>🕵️‍♂️</span>
-            <span class="avatar-label">Detetive</span>
-          </button>
-          <button class="avatar-choice-btn" onclick="selectAvatar('🤖', 'Cyber Bot')">
-            <span>🤖</span>
-            <span class="avatar-label">Cyber Bot</span>
-          </button>
-          <button class="avatar-choice-btn" onclick="selectAvatar('🦊', 'Raposa Esperta')">
-            <span>🦊</span>
-            <span class="avatar-label">Raposa</span>
-          </button>
-          <button class="avatar-choice-btn" onclick="selectAvatar('🐱', 'Gato Guardião')">
-            <span>🐱</span>
-            <span class="avatar-label">Gato Hacker</span>
-          </button>
-          <button class="avatar-choice-btn" onclick="selectAvatar('🧙‍♂️', 'Mago dos Dados')">
-            <span>🧙‍♂️</span>
-            <span class="avatar-label">Mago</span>
-          </button>
-          <button class="avatar-choice-btn" onclick="selectAvatar('🦸‍♀️', 'Heroína Digital')">
-            <span>🦸‍♀️</span>
-            <span class="avatar-label">Heroína</span>
-          </button>
+      <div class="avatar-flat-grid">
+        <div class="avatar-pick-card" onclick="selectAvatar('🕵️‍♂️', 'Detetive')">
+          <span>🕵️‍♂️</span>
+          <span>Detetive</span>
+        </div>
+        <div class="avatar-pick-card" onclick="selectAvatar('🤖', 'Cyber Bot')">
+          <span>🤖</span>
+          <span>Cyber Bot</span>
+        </div>
+        <div class="avatar-pick-card" onclick="selectAvatar('🦊', 'Raposa')">
+          <span>🦊</span>
+          <span>Raposa</span>
+        </div>
+        <div class="avatar-pick-card" onclick="selectAvatar('🐱', 'Gato')">
+          <span>🐱</span>
+          <span>Gato</span>
+        </div>
+        <div class="avatar-pick-card" onclick="selectAvatar('🧙‍♂️', 'Mago')">
+          <span>🧙‍♂️</span>
+          <span>Mago</span>
+        </div>
+        <div class="avatar-pick-card" onclick="selectAvatar('🦸‍♀️', 'Heroína')">
+          <span>🦸‍♀️</span>
+          <span>Heroína</span>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- FOOTER -->
-  <footer class="arcade-footer">
-    <div>CyberKids Arcade © 2026 — Plataforma Educacional de Cibersegurança e Proteção Infantil na Web.</div>
-    <div>Desenvolvido com fins acadêmicos e pedagógicos • Licença Aberta MIT</div>
-  </footer>
 
   <script>
     // =========================================
-    // PROFILE & PROGRESS MANAGER (localStorage)
+    // PERFIL & PROGRESSO (localStorage)
     // =========================================
     const DEFAULT_PROFILE = {
       name: "Agente Secreto",
@@ -847,63 +750,54 @@
     function renderDashboard() {
       const profile = loadProfile();
 
-      // Render Avatar and Name
       document.getElementById('player-avatar-icon').innerText = profile.avatar;
       document.getElementById('player-name-field').value = profile.name;
 
-      // Calculate Total Score & Missions Done
       const scoreInspector = profile.scores.website_inspector || 0;
       const scoreFakes = profile.scores.fake_detector || 0;
       const totalScore = scoreInspector + scoreFakes;
 
-      let missionsDone = 0;
-      if (scoreInspector > 0) missionsDone++;
-      if (scoreFakes > 0) missionsDone++;
-
       document.getElementById('stat-total-score').innerText = totalScore;
-      document.getElementById('stat-missions-done').innerText = missionsDone;
       document.getElementById('record-inspector').innerText = `${scoreInspector} pts`;
       document.getElementById('record-fakes').innerText = `${scoreFakes} pts`;
 
-      // Update Badges UI
       const badges = profile.badges || [];
       const badgeInspector = document.getElementById('badge-link-inspector');
       const badgeFakes = document.getElementById('badge-fake-hunter');
       const badgeSupreme = document.getElementById('badge-supreme');
 
       if (badges.includes('link_inspector')) {
-        badgeInspector.className = 'badge-icon-item unlocked';
+        badgeInspector.className = 'medal-box unlocked';
       } else {
-        badgeInspector.className = 'badge-icon-item locked';
+        badgeInspector.className = 'medal-box locked';
       }
 
       if (badges.includes('fake_hunter')) {
-        badgeFakes.className = 'badge-icon-item unlocked';
+        badgeFakes.className = 'medal-box unlocked';
       } else {
-        badgeFakes.className = 'badge-icon-item locked';
+        badgeFakes.className = 'medal-box locked';
       }
 
       if (badges.includes('link_inspector') && badges.includes('fake_hunter')) {
-        badgeSupreme.className = 'badge-icon-item unlocked';
+        badgeSupreme.className = 'medal-box unlocked';
         if (!badges.includes('supreme_detective')) {
           badges.push('supreme_detective');
           profile.badges = badges;
           saveProfile(profile);
         }
       } else {
-        badgeSupreme.className = 'badge-icon-item locked';
+        badgeSupreme.className = 'medal-box locked';
       }
 
-      document.getElementById('stat-badges-count').innerText = badges.length;
+      document.getElementById('stat-badges-count').innerText = `${badges.length} / 4`;
 
-      // Update Rank Level
       const rankEl = document.getElementById('player-rank-tag');
       if (totalScore >= 500) {
-        rankEl.innerText = 'Nível 3 • Mestre da Segurança 🏆';
+        rankEl.innerText = 'Nível 3 • Mestre 🏆';
       } else if (totalScore >= 100) {
-        rankEl.innerText = 'Nível 2 • Detetive da Web 🛡️';
+        rankEl.innerText = 'Nível 2 • Detetive 🛡️';
       } else {
-        rankEl.innerText = 'Nível 1 • Recruta Digital 🔍';
+        rankEl.innerText = 'Nível 1 • Recruta 🔍';
       }
     }
 
@@ -924,34 +818,12 @@
     }
 
     function resetStudentProgress() {
-      if (confirm('Tem certeza que deseja resetar os pontos e medalhas para iniciar uma nova turma de alunos?')) {
+      if (confirm('Deseja zerar os pontos e medalhas para iniciar uma nova turma?')) {
         localStorage.removeItem('cyberkids_profile');
         renderDashboard();
       }
     }
 
-    // =========================================
-    // CATEGORY FILTERS
-    // =========================================
-    function filterGames(category) {
-      const buttons = document.querySelectorAll('.cat-btn');
-      buttons.forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-
-      const cards = document.querySelectorAll('.game-card');
-      cards.forEach(card => {
-        const cardCats = card.getAttribute('data-category') || '';
-        if (category === 'all' || cardCats.includes(category)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // =========================================
-    // MODAL HANDLERS
-    // =========================================
     function openTeacherModal() {
       document.getElementById('modal-teacher').classList.add('show');
     }
@@ -966,7 +838,6 @@
       document.getElementById('modal-avatar').classList.remove('show');
     }
 
-    // Close modals when clicking outside
     window.addEventListener('click', (e) => {
       const teacherModal = document.getElementById('modal-teacher');
       const avatarModal = document.getElementById('modal-avatar');
@@ -974,7 +845,6 @@
       if (e.target === avatarModal) closeAvatarModal();
     });
 
-    // Initialize Dashboard on Load
     renderDashboard();
   </script>
 </body>
