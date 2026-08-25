@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detector de Fakes & Golpes — CyberKids Arcade</title>
+  <title>Ajude a Vovó: Fato ou Fake! — Central de Jogos</title>
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #3730a3;
-      --success: #10b981;
-      --success-dark: #059669;
-      --danger: #ef4444;
-      --danger-dark: #dc2626;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --primary-orange: #ea580c;
+      --primary-gold: #f59e0b;
+      --bg-dark: #0f172a;
+      --text-dark: #1e293b;
+      --border-dark: #0f172a;
+      --bubble-fact: #dcfce7;
+      --bubble-fake: #fee2e2;
     }
 
     * {
@@ -25,661 +22,856 @@
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    body {
-      background: radial-gradient(circle at top, #1e1b4b, #0f172a 80%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px;
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #271406;
+      color: var(--text-dark);
+      user-select: none;
     }
 
-    /* TOP NAV HEADER */
-    .top-nav {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 18px;
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-back-hub {
+    /* SUBTLE CORNER RETURN BUTTON */
+    .corner-hub-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: #ffffff;
+      border: 3px solid var(--border-dark);
+      color: var(--text-dark);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 8px 14px;
+      box-shadow: 3px 3px 0px var(--border-dark);
+      z-index: 100;
+      text-transform: uppercase;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: bold;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-    .btn-back-hub:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
-    }
-
-    .game-stats-bar {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .stat-pill {
-      background: rgba(15, 23, 42, 0.8);
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
       gap: 6px;
+      transition: transform 0.1s;
     }
-    .stat-pill.lives { color: #f43f5e; }
-    .stat-pill.score { color: #fbbf24; }
-    .stat-pill.round { color: #38bdf8; }
-
-    /* MAIN GAME LAYOUT */
-    .game-container {
-      width: 100%;
-      max-width: 900px;
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 24px;
-      align-items: start;
+    .corner-hub-btn:hover {
+      background: var(--primary-gold);
+      color: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border-dark);
     }
 
-    @media (max-width: 820px) {
-      .game-container {
-        grid-template-columns: 1fr;
+    /* =========================================
+       THE LIVING ROOM STAGE (REALISTIC COZY ROOM)
+       ========================================= */
+    .room-stage-wrapper {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 40px;
+    }
+
+    @media (max-width: 960px) {
+      .room-stage-wrapper {
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 16px;
       }
     }
 
-    /* SMARTPHONE MOCKUP */
-    .phone-mockup {
-      background: #000000;
-      border: 10px solid #27272a;
-      border-radius: 40px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 580px;
-      position: relative;
+    /* Real cozy grandma living room photo backdrop */
+    .cozy-room-backdrop {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url('Imagens/Gemini_Generated_Image_fm92wqfm92wqfm92.jpeg');
+      background-size: cover;
+      background-position: center bottom;
+      filter: blur(2px) brightness(0.9);
+      transform: scale(1.03);
+      z-index: 1;
     }
 
-    .phone-camera-notch {
+    .room-overlay-tint {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 75% 60%, transparent 40%, rgba(15, 23, 42, 0.4) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* =========================================
+       LEFT / CENTER: GRANDMA CHARACTER & SPEECH
+       ========================================= */
+    .grandma-character-section {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100vh;
+      max-width: 580px;
+      padding-bottom: 0px;
+    }
+
+    /* GRANDMA SPEECH BUBBLE */
+    .grandma-bubble-box {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 4px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 16px 20px;
+      box-shadow: 6px 6px 0px var(--border-dark);
+      position: relative;
+      margin-bottom: 12px;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Bubble pointer tail */
+    .grandma-bubble-box::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 60px;
+      border-width: 16px 12px 0;
+      border-style: solid;
+      border-color: var(--border-dark) transparent;
+      display: block;
+      width: 0;
+    }
+    .grandma-bubble-box::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 62px;
+      border-width: 12px 10px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+      z-index: 1;
+    }
+
+    .grandma-speaker-tag {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--primary-orange);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .patience-mood-label {
+      font-size: 11px;
+      padding: 2px 8px;
+      border: 2px solid var(--border-dark);
+      border-radius: 12px;
+      font-weight: 900;
+      background: #fef08a;
+      color: #713f12;
+    }
+
+    .grandma-text-line {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.45;
+    }
+
+    .tip-box-inline {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px dashed #cbd5e1;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .btn-next-msg-action {
+      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+      color: #ffffff;
+      border: 3px solid var(--border-dark);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--border-dark);
+      text-transform: uppercase;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-next-msg-action:hover {
+      background: linear-gradient(180deg, #2563eb, #1e40af);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border-dark);
+    }
+
+    /* GRANDMA REAL CHARACTER IMAGE */
+    .grandma-avatar-hero {
+      width: 100%;
+      max-width: 440px;
+      height: 52vh;
+      max-height: 440px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
+      pointer-events: none;
+    }
+
+    .grandma-photo-img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .grandma-photo-img.mood-suspicious {
+      transform: rotate(-3deg) scale(1.02);
+      filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));
+    }
+    .grandma-photo-img.mood-angry {
+      transform: scale(1.04);
+      filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.7));
+      animation: angryShake 0.4s infinite alternate;
+    }
+
+    @keyframes angryShake {
+      0% { transform: scale(1.04) rotate(-1deg); }
+      100% { transform: scale(1.04) rotate(1deg); }
+    }
+
+    /* =========================================
+       RIGHT / FOREGROUND: HAND HOLDING SMARTPHONE
+       ========================================= */
+    .foreground-phone-rig {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 16px;
+      width: 380px;
+    }
+
+    @media (max-width: 960px) {
+      .foreground-phone-rig {
+        width: 320px;
+      }
+    }
+
+    /* THE GRANDMA'S HAND EXTENDED TOWARDS CAMERA */
+    .hand-holding-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .grandma-hand-behind {
+      position: absolute;
+      bottom: -40px;
+      left: -50px;
+      width: 220px;
+      height: auto;
+      z-index: 5;
+      pointer-events: none;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.7));
+      transform: rotate(12deg);
+      transition: transform 0.2s ease;
+    }
+
+    /* SMARTPHONE DEVICE - REALISTIC VERTICAL RATIO */
+    .smartphone-case {
+      width: 290px;
+      height: 480px;
+      background: #000000;
+      border: 8px solid #1f2937;
+      border-radius: 40px;
+      box-shadow:
+        0 25px 50px rgba(0,0,0,0.85),
+        0 0 0 4px #000000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      background-color: #0f172a;
+      z-index: 10;
+      transform: rotate(-1deg);
+      transition: transform 0.2s ease;
+    }
+    .smartphone-case:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    @media (max-width: 440px) {
+      .smartphone-case {
+        width: 280px;
+        height: 440px;
+      }
+      .grandma-hand-behind {
+        width: 180px;
+        left: -35px;
+      }
+    }
+
+    .phone-notch-bar {
       position: absolute;
       top: 6px;
       left: 50%;
       transform: translateX(-50%);
-      width: 90px;
-      height: 18px;
+      width: 80px;
+      height: 14px;
       background: #18181b;
       border-radius: 10px;
-      z-index: 10;
+      z-index: 50;
     }
 
-    .phone-status-bar {
-      height: 32px;
+    .phone-status-strip {
+      height: 28px;
       background: #0f172a;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 16px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 800;
       color: #94a3b8;
+      z-index: 10;
     }
 
-    .phone-app-header {
-      padding: 10px 14px;
+    /* NOTIFICATION DRAWER / BAR */
+    .phone-notification-feed {
+      background: #1e293b;
+      border-bottom: 2px solid #334155;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      color: white;
-      font-weight: bold;
-      font-size: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      justify-content: space-between;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      z-index: 10;
     }
-    .phone-app-header.whatsapp { background: #075e54; }
-    .phone-app-header.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-    .phone-app-header.sms { background: #2563eb; }
-    .phone-app-header.news { background: #c53030; }
+    .notif-badge-pill {
+      background: #ef4444;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 900;
+      animation: pulseAlert 1.5s infinite alternate;
+    }
+    @keyframes pulseAlert {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
 
-    .app-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: white;
+    /* PHONE APP HEADER & SCREEN GROUND */
+    .phone-app-header-bar {
+      padding: 8px 12px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 18px;
+      gap: 8px;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 13px;
     }
+    .phone-app-header-bar.whatsapp { background: #075e54; }
+    .phone-app-header-bar.sms { background: #1d4ed8; }
+    .phone-app-header-bar.insta { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+    .phone-app-header-bar.news { background: #b91c1c; }
 
-    .phone-screen-content {
+    .phone-chat-screen {
       flex: 1;
-      background: #e5ddd5;
-      padding: 16px;
-      overflow-y: auto;
+      background: #efeae2;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      overflow-y: auto;
       position: relative;
     }
-    .phone-screen-content.dark-theme {
+    .phone-chat-screen.dark-view {
       background: #111b21;
     }
 
-    /* CHAT BUBBLE / POST CARD */
-    .msg-bubble {
+    /* MESSAGE BUBBLE ON PHONE */
+    .chat-bubble-card {
       background: #ffffff;
-      color: #111827;
-      padding: 14px 16px;
-      border-radius: 14px 14px 14px 0px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      font-size: 14px;
-      line-height: 1.5;
-      max-width: 95%;
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 12px 12px 12px 0px;
+      padding: 12px 14px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+      font-size: 13.5px;
+      color: #0f172a;
+      line-height: 1.45;
+      animation: popIn 0.3s ease;
     }
-    .phone-screen-content.dark-theme .msg-bubble {
+    .phone-chat-screen.dark-view .chat-bubble-card {
       background: #202c33;
       color: #e9edef;
     }
 
-    .msg-forwarded-tag {
+    .msg-forward-tag {
       font-size: 11px;
       color: #64748b;
       font-style: italic;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    .msg-link-preview {
-      margin-top: 10px;
+    .msg-link-box {
+      margin-top: 8px;
       background: #f1f5f9;
-      border-left: 4px solid var(--primary);
-      padding: 8px 10px;
-      border-radius: 6px;
+      border-left: 4px solid var(--primary-orange);
+      padding: 6px 8px;
       font-size: 12px;
+      border-radius: 4px;
+      word-break: break-all;
     }
-    .phone-screen-content.dark-theme .msg-link-preview {
+    .phone-chat-screen.dark-view .msg-link-box {
       background: #182229;
       border-left-color: #38bdf8;
     }
 
-    .msg-time {
+    .msg-time-stamp {
       text-align: right;
       font-size: 10px;
       color: #94a3b8;
       margin-top: 6px;
     }
 
-    /* RIGHT CONTROL PANEL */
-    .control-panel {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    /* =========================================
+       PLAYER'S SPEECH BUBBLE BUTTONS (NETO)
+       ========================================= */
+    .player-actions-row {
+      width: 100%;
       display: flex;
-      flex-direction: column;
-      gap: 18px;
+      gap: 10px;
+      margin-top: 12px;
+      z-index: 20;
     }
 
-    .mission-header h2 {
-      font-size: 20px;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .mission-header p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .decision-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .btn-judge {
-      padding: 16px;
+    .btn-player-bubble {
+      flex: 1;
+      background: #ffffff;
+      border: 3px solid var(--border-dark);
       border-radius: 14px;
-      border: none;
-      font-size: 15px;
-      font-weight: bold;
+      padding: 12px 10px;
+      box-shadow: 4px 4px 0px var(--border-dark);
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      color: white;
+      gap: 4px;
+      text-align: center;
+      transition: all 0.15s;
     }
 
-    .btn-judge.fact {
-      background: linear-gradient(135deg, #10b981, #047857);
-      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+    .btn-player-bubble.fact {
+      background: var(--bubble-fact);
+      border-color: #065f46;
+      box-shadow: 4px 4px 0px #065f46;
     }
-    .btn-judge.fact:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
-    }
-
-    .btn-judge.fake {
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
-    }
-    .btn-judge.fake:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+    .btn-player-bubble.fact:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #065f46;
     }
 
-    .btn-judge:disabled {
-      opacity: 0.5;
+    .btn-player-bubble.fake {
+      background: var(--bubble-fake);
+      border-color: #991b1b;
+      box-shadow: 4px 4px 0px #991b1b;
+    }
+    .btn-player-bubble.fake:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #991b1b;
+    }
+
+    .btn-player-bubble:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none !important;
-      box-shadow: none !important;
+      box-shadow: 2px 2px 0px #000000 !important;
     }
 
-    /* FEEDBACK CARD */
-    .feedback-card {
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 14px;
+    .btn-player-bubble span:first-child {
+      font-size: 20px;
+    }
+    .btn-player-bubble span:last-child {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    /* =========================================
+       GRANDMA EXPULSION / GAMEOVER MODAL
+       ========================================= */
+    .expulsion-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      display: none;
-      animation: fadeIn 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
     }
-    .feedback-card.show { display: block; }
-    .feedback-card.correct {
-      border-left: 5px solid var(--success);
-    }
-    .feedback-card.wrong {
-      border-left: 5px solid var(--danger);
+    .expulsion-modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .feedback-title {
-      font-size: 15px;
-      font-weight: bold;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .feedback-card.correct .feedback-title { color: var(--success); }
-    .feedback-card.wrong .feedback-title { color: var(--danger); }
-
-    .feedback-text {
-      font-size: 13px;
-      color: #e2e8f0;
-      line-height: 1.5;
-    }
-
-    .btn-next-round {
-      background: linear-gradient(135deg, #6366f1, #4338ca);
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
-      transition: all 0.2s;
-    }
-    .btn-next-round:hover {
-      background: linear-gradient(135deg, #4f46e5, #3730a3);
-      transform: translateY(-2px);
-    }
-
-    /* DETECTIVE TIPS BOX */
-    .detective-guide {
-      background: rgba(30, 41, 59, 0.5);
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
-    }
-    .detective-guide h4 {
-      font-size: 12px;
-      color: #fbbf24;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .detective-guide ul {
-      list-style: none;
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .detective-guide li strong { color: #f1f5f9; }
-
-    /* GAME OVER SCREEN */
-    .gameover-screen {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 40px 24px;
+    .expulsion-box {
+      background: #ffffff;
+      border: 5px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 32px 24px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
       width: 100%;
-      max-width: 600px;
-      display: none;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 10px 10px 0px var(--border-dark);
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .gameover-badge-icon {
+    .expulsion-icon {
       font-size: 72px;
       margin-bottom: 12px;
-      animation: float 2s infinite ease-in-out;
     }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.9); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(6px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .gameover-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: #38bdf8;
+    .expulsion-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f172a;
       margin-bottom: 8px;
     }
-
-    .gameover-subtitle {
+    .expulsion-desc {
       font-size: 15px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .gameover-score-box {
-      background: rgba(15, 23, 42, 0.8);
-      padding: 16px;
-      border-radius: 14px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.5;
       margin-bottom: 24px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #fbbf24;
-      border: 1px solid rgba(251, 191, 36, 0.3);
     }
 
-    .gameover-actions {
+    .expulsion-score {
+      background: var(--gold-light);
+      border: 3px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #b45309;
+      margin-bottom: 24px;
+    }
+
+    .expulsion-btns {
       display: flex;
       gap: 12px;
       justify-content: center;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER NAV -->
-  <header class="top-nav">
-    <a href="index.html" class="btn-back-hub">
-      ⬅️ Central de Jogos
-    </a>
-    <div class="game-stats-bar">
-      <div class="stat-pill lives">❤️ Vidas: <span id="hud-lives">3</span></div>
-      <div class="stat-pill score">⭐ Pontos: <span id="hud-score">0</span></div>
-      <div class="stat-pill round">🎯 Rodada: <span id="hud-round">1</span>/10</div>
-    </div>
-  </header>
+  <!-- SUBTLE CORNER RETURN BUTTON -->
+  <a href="index.html" class="corner-hub-btn">
+    ⬅️ Central
+  </a>
 
-  <!-- GAMEPLAY CONTAINER -->
-  <main class="game-container" id="stage-gameplay">
+  <!-- MAIN SCENERY STAGE -->
+  <div class="room-stage-wrapper">
 
-    <!-- SMARTPHONE SIMULATOR -->
-    <div class="phone-mockup">
-      <div class="phone-camera-notch"></div>
+    <!-- COZY ROOM BACKGROUND IMAGE -->
+    <div class="cozy-room-backdrop"></div>
+    <div class="room-overlay-tint"></div>
 
-      <div class="phone-status-bar">
-        <span>14:30</span>
-        <span>📶 5G  🔋 100%</span>
-      </div>
+    <!-- =========================================
+         LEFT COLUMN: GRANDMA & SPEECH BUBBLE
+         ========================================= -->
+    <div class="grandma-character-section">
 
-      <div class="phone-app-header whatsapp" id="app-header">
-        <div class="app-avatar" id="app-avatar">💬</div>
-        <div>
-          <div id="app-sender-name" style="font-size: 13px;">Grupo da Turma 6º B</div>
-          <div id="app-sender-status" style="font-size: 10px; opacity: 0.85;">online</div>
+      <!-- GRANDMA'S SPEECH BUBBLE (DYNAMIC REACTION) -->
+      <div class="grandma-bubble-box" id="grandma-bubble">
+        <div class="grandma-speaker-tag">
+          <span id="grandma-speaker-name">Vovó Jurema pergunta:</span>
+          <span class="patience-mood-label" id="grandma-patience-tag">👵😊 Paciência: Calma</span>
         </div>
-      </div>
 
-      <div class="phone-screen-content" id="screen-content">
-        <div class="msg-bubble">
-          <div class="msg-forwarded-tag" id="msg-forward-tag">↗️ Encaminhada com frequência</div>
-          <div id="msg-body-text">Carregando mensagem...</div>
-          <div class="msg-link-preview" id="msg-link-box" style="display:none;"></div>
-          <div class="msg-time" id="msg-timestamp">14:28</div>
+        <div class="grandma-text-line" id="grandma-dialogue-text">
+          "Oi meu netinho querido! Dá uma olhada nessa notificação que apitou no meu celular... Posso confiar ou é golpe?"
         </div>
-      </div>
-    </div>
 
-    <!-- CONTROL PANEL -->
-    <div class="control-panel">
-      <div class="mission-header">
-        <h2>🔍 Análise do Detetive</h2>
-        <p>Observe a mensagem ao lado com muita atenção. Verifique a fonte, o tom do texto e os links antes de dar seu veredito!</p>
-      </div>
+        <div class="tip-box-inline" id="grandma-tip-line" style="display:none;"></div>
 
-      <!-- JUDGMENT BUTTONS -->
-      <div class="decision-buttons" id="decision-actions">
-        <button class="btn-judge fact" onclick="judgeCurrentScenario(true)">
-          <span style="font-size: 24px;">🟢</span>
-          <span>É FATO / CONFIÁVEL</span>
-          <span style="font-size: 11px; opacity: 0.85; font-weight: normal;">Notícia ou aviso seguro</span>
-        </button>
-        <button class="btn-judge fake" onclick="judgeCurrentScenario(false)">
-          <span style="font-size: 24px;">🔴</span>
-          <span>É FAKE / GOLPE</span>
-          <span style="font-size: 11px; opacity: 0.85; font-weight: normal;">Boato, golpe ou perigo</span>
+        <button class="btn-next-msg-action" id="btn-next-message" style="display:none;" onclick="nextMessageRound()">
+          Ver Próxima Notificação ➔
         </button>
       </div>
 
-      <!-- FEEDBACK CARD -->
-      <div class="feedback-card" id="feedback-box">
-        <div class="feedback-title" id="feedback-title"></div>
-        <div class="feedback-text" id="feedback-desc"></div>
-        <button class="btn-next-round" id="btn-next" onclick="nextRound()">Próxima Mensagem ➔</button>
-      </div>
-
-      <!-- TIPS BOX -->
-      <div class="detective-guide">
-        <h4>💡 Dicas do Caçador de Fakes:</h4>
-        <ul>
-          <li><strong>1. Tom Urgente ou Ameaçador:</strong> Textos dizendo *"COMPARTILHE ANTES QUE APAGUE"* costumam ser mentira.</li>
-          <li><strong>2. Promessas Grátis:</strong> Internet, Robux ou Pix de graça quase sempre são golpes de phishing.</li>
-          <li><strong>3. Pedidos de Código SMS:</strong> Nunca passe códigos de 6 dígitos que chegam no seu celular para ninguém!</li>
-          <li><strong>4. Cheque no Google:</strong> Se uma notícia bombástica for real, os maiores jornais estarão falando dela.</li>
-        </ul>
+      <!-- GRANDMA CHARACTER ART (REAL ILLUSTRATION IMAGE) -->
+      <div class="grandma-avatar-hero">
+        <img src="Imagens/Vozinha_cropped.png" onerror="this.src='Imagens/Vozinha.png'" class="grandma-photo-img" id="grandma-char-img" alt="Vovó Jurema">
       </div>
 
     </div>
 
-  </main>
+    <!-- =========================================
+         RIGHT / FOREGROUND: HAND HOLDING PHONE & PLAYER BUTTONS
+         ========================================= -->
+    <div class="foreground-phone-rig">
 
-  <!-- GAME OVER / VICTORY SCREEN -->
-  <section class="gameover-screen" id="stage-gameover">
-    <div class="gameover-badge-icon" id="go-icon">🏆</div>
-    <h2 class="gameover-title" id="go-title">Treinamento Concluído!</h2>
-    <p class="gameover-subtitle" id="go-subtitle">Você provou que não cai em fake news nem em golpes de internet!</p>
+      <div class="hand-holding-container">
+        <!-- GRANDMA'S HAND EXTENDED TOWARDS VIEWER -->
+        <img src="Imagens/Mao_cropped.png" onerror="this.src='Imagens/mão da vozinha.png'" class="grandma-hand-behind" alt="Mão da Vovó">
 
-    <div class="gameover-score-box" id="go-score">
-      Pontuação Final: 100 / 100 Pontos
+        <!-- GRANDMA'S SMARTPHONE (HELD IN HER HAND) -->
+        <div class="smartphone-case">
+          <div class="phone-notch-bar"></div>
+
+          <div class="phone-status-strip">
+            <span>15:45</span>
+            <span>📶 4G  🔋 85%</span>
+          </div>
+
+          <!-- NOTIFICATION DRAWER / BAR -->
+          <div class="phone-notification-feed">
+            <span>🔔 Notificações Restantes:</span>
+            <span class="notif-badge-pill" id="notif-counter-badge">10 Pendentes</span>
+          </div>
+
+          <!-- APP HEADER -->
+          <div class="phone-app-header-bar whatsapp" id="phone-app-top">
+            <span style="font-size:16px;" id="phone-app-ico">💬</span>
+            <div style="flex:1;">
+              <div id="phone-sender-name" style="font-size:12px;">Dona Neide (Hidroginástica)</div>
+              <div id="phone-sender-status" style="font-size:9px; opacity:0.85;">online</div>
+            </div>
+          </div>
+
+          <!-- CHAT SCREEN GROUND -->
+          <div class="phone-chat-screen" id="phone-screen-area">
+            <div class="chat-bubble-card">
+              <div class="msg-forward-tag" id="msg-forward-indicator">↗️ Encaminhada com frequência</div>
+              <div id="msg-text-body">Carregando notificação da vovó...</div>
+              <div class="msg-link-box" id="msg-link-holder" style="display:none;"></div>
+              <div class="msg-time-stamp" id="msg-time-tag">15:42</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAYER'S SPEECH BUBBLE BUTTONS (NETO) -->
+      <div class="player-actions-row">
+        <!-- BOTAO FATO -->
+        <button class="btn-player-bubble fact" onclick="playerDecide(true)">
+          <span>🟢</span>
+          <span>"Vovó, isso é VERDADE!"</span>
+        </button>
+
+        <!-- BOTAO FAKE -->
+        <button class="btn-player-bubble fake" onclick="playerDecide(false)">
+          <span>🔴</span>
+          <span>"Vovó, é CILADA / GOLPE!"</span>
+        </button>
+      </div>
+
     </div>
 
-    <div class="gameover-actions">
-      <button class="btn-back-hub" onclick="restartGame()" style="background: linear-gradient(135deg, #10b981, #059669);">
-        🔄 Jogar Novamente
-      </button>
-      <a href="index.html" class="btn-back-hub">
-        🏠 Voltar para a Central
-      </a>
+  </div>
+
+  <!-- EXPULSION / GAMEOVER MODAL -->
+  <div class="expulsion-modal-overlay" id="modal-expulsion">
+    <div class="expulsion-box">
+      <div class="expulsion-icon" id="expulsion-icon-badge">👵🚪</div>
+      <h2 class="expulsion-title" id="expulsion-title-text">A Vovó perdeu a paciência!</h2>
+      <p class="expulsion-desc" id="expulsion-desc-text">
+        "Chega menino! Você não tá me ajudando nada, só me fez passar vergonha no grupo da hidroginástica! Vai pro seu quarto jogar videogame!"
+      </p>
+
+      <div class="expulsion-score" id="expulsion-score-pill">
+        Pontuação Final: 0 / 100 Pontos
+      </div>
+
+      <div class="expulsion-btns">
+        <button class="corner-hub-btn" onclick="restartGame()" style="background:var(--primary-gold); color:#ffffff; position:static;">
+          🔄 Tentar Ajudar de Novo
+        </button>
+        <a href="index.html" class="corner-hub-btn" style="position:static;">
+          🏠 Voltar à Central
+        </a>
+      </div>
     </div>
-  </section>
+  </div>
 
   <script>
     // =========================================
-    // 10 EDUCATIONAL SCENARIOS (FAKES VS FACTS)
+    // 10 GRANDMA'S PHONE SCENARIOS (FAKES & SCAMS)
     // =========================================
     const SCENARIOS = [
       {
         app: "whatsapp",
-        sender: "Tia Maria (Família)",
-        status: "visto por último hoje às 14:20",
-        avatar: "👵",
+        appIcon: "💬",
+        sender: "Dona Neide (Grupo da Hidroginástica)",
+        status: "visto por último hoje às 15:40",
         forwarded: true,
-        text: "🚨 *URGENTE!* O WhatsApp vai começar a cobrar R$ 5,00 por mensagem a partir de meia-noite! Encaminhe agora essa mensagem para 10 amigos para sua conta continuar grátis e o logo ficar azul! Não custa nada tentar!",
+        text: "🚨 *AVISO URGENTE!* O WhatsApp vai começar a cobrar R$ 5,00 por mensagem a partir de hoje à noite! Repasse para 10 amigas agora para seu aplicativo continuar de graça e o ícone ficar verde limão!",
         link: "",
         isSafe: false,
-        reason: "Cilada Clássica! Correntes que ameaçam cobranças ou dizem que 'o app vai mudar de cor' são mentiras antigas usadas para espalhar spam."
+        grandmaSuccess: "Ai meu netinho esperto! Que bom que te perguntei, já ia mandar no grupo da hidroginástica toda assustada!",
+        grandmaFail: "Ai meu Deus, caí no boato! Mandei pra todas as minhas amigas da igreja e passei vergonha...",
+        explanation: "Correntes de WhatsApp que ameaçam cobranças ou dizem que o aplicativo vai 'mudar de cor' são mentiras antigas usadas para espalhar spam."
       },
       {
         app: "sms",
-        sender: "BANCO_ALERTA",
-        status: "SMS Oficial?",
-        avatar: "🏦",
+        appIcon: "📱",
+        sender: "BANCO_INSS_ALERTA",
+        status: "SMS Recebido",
         forwarded: false,
-        text: "AVISO: Sua conta bancária foi temporariamente bloqueada por atividade suspeita. Regularize agora para evitar multa de R$ 500,00:",
-        link: "🔗 bit.ly/desbloqueio-banco-urgente-2026",
+        text: "PREZADA APOSENTADA: Seu benefício do INSS foi bloqueado por pendência cadastral. Clique urgente no link para não perder o pagamento:",
+        link: "🔗 bit.ly/desbloqueio-inss-urgente-2026",
         isSafe: false,
-        reason: "Golpe de Phishing! Bancos verdadeiros nunca enviam links encurtados (como bit.ly) pedindo para você desbloquear conta por SMS."
+        grandmaSuccess: "Deus me livre! Esses golpistas queriam roubar minha aposentadoria! Obrigada por me avisar, anjinho!",
+        grandmaFail: "Misericórdia! Quase cliquei no link do bandido fingindo ser do banco! Meu coração quase parou!",
+        explanation: "Bancos e o INSS nunca enviam links encurtados (como bit.ly) pedindo para você clicar e desbloquear pagamentos por SMS."
       },
       {
         app: "news",
-        sender: "Portal G1 & BBC Ciência",
-        status: "Jornalismo Verificado",
-        avatar: "📰",
+        appIcon: "📰",
+        sender: "Portal G1 & Jornal Nacional",
+        status: "Notícia Verificada",
         forwarded: false,
-        text: "Telescópio Espacial James Webb descobre vestígios de água congelada na atmosfera de planeta distante. Cientistas comemoram avanço na astronomia.",
-        link: "🔗 g1.globo.com/ciencia-e-saude/noticia/james-webb-agua.ghtml",
+        text: "Vacinação gratuita contra gripe e pneumonia para idosos e crianças começa na próxima segunda-feira em todos os postos de saúde de graça.",
+        link: "🔗 g1.globo.com/saude/campanha-vacinacao-postos.ghtml",
         isSafe: true,
-        reason: "Fato Confiável! A notícia vem de portais jornalísticos respeitados, tem linguagem séria e cita dados científicos reais."
-      },
-      {
-        app: "instagram",
-        sender: "sorteios_brasil_oficial_premiado",
-        status: "Direct Message",
-        avatar: "🎁",
-        forwarded: false,
-        text: "🎉 PARABÉNS! Você foi um dos 10 sorteados para ganhar um *iPhone 15 Pro Max 512GB*! Para receber em casa, basta pagar o frete dos correios de R$ 29,90 via Pix no nosso link da bio hoje!",
-        link: "🔗 pagamentos-frete-iphone-gratis.site",
-        isSafe: false,
-        reason: "Golpe do Falso Sorteio! Ninguém dá celulares caros do nada. Pedir 'Pix de frete' é uma armadilha para roubar seu dinheiro."
+        grandmaSuccess: "Que maravilha meu bem! Vou avisar seu avô para irmos ao postinho tomar nossa vacina!",
+        grandmaFail: "Ué meu anjo, mas essa notícia era de verdade do posto de saúde! Quase perdi a campanha de vacinação!",
+        explanation: "Notícias de saúde de portais jornalísticos sérios (G1, BBC, gov.br) são confiáveis e ajudam na proteção da família."
       },
       {
         app: "whatsapp",
-        sender: "Desconhecido (+55 11 98765-4321)",
+        appIcon: "💬",
+        sender: "Desconhecido (+55 11 97777-8888)",
         status: "online",
-        avatar: "👤",
         forwarded: false,
-        text: "Oi! Sou o Gabriel da sua sala de aula, troquei de número! Me ajuda rápido por favor? Chegou um código de 6 dígitos no seu SMS sem querer, me manda ele aqui pra eu conseguir entrar na minha conta?",
+        text: "Oi Vó! É seu neto! Troquei de número de celular porque meu aparelho quebrou! Você pode pagar uma conta de R$ 850 no Pix pra mim urgente? Te pago amanhã cedo sem falta!",
+        link: "🔗 Chave Pix: pagamento.celular@gmail.com",
+        isSafe: false,
+        grandmaSuccess: "Mas que bandido sem vergonha querendo se passar por você! Ainda bem que você está aqui do meu lado!",
+        grandmaFail: "Ai meu Jesus! Quase fiz um Pix achando que era você precisando de ajuda! Esse é o golpe do falso parente!",
+        explanation: "O 'Golpe do Falso Parente' é muito comum: bandidos usam fotos e fingem ser netos ou filhos pedindo dinheiro no Pix em números desconhecidos."
+      },
+      {
+        app: "news",
+        appIcon: "🧪",
+        sender: "Curandeiros da Web",
+        status: "Blog Desconhecido",
+        forwarded: true,
+        text: "🚨 ATENÇÃO: Médicos da Europa provaram que beber vinagre quente com alho em jejum cura qualquer dor no corpo e queima 10kg em 3 dias! Os hospitais tentaram esconder essa receita milagrosa!",
+        link: "🔗 cura-milagrosa-revelada.xyz/receita",
+        isSafe: false,
+        grandmaSuccess: "Eita, já ia fazer essa mistureba horrível! Você me salvou de uma baita dor de barriga, netinho!",
+        grandmaFail: "Eca! Bebi esse vinagre com alho e fiquei com uma azia danada! Remédio milagroso na internet é tudo mentira!",
+        explanation: "Receitas milagrosas e teorias de conspiração ('os hospitais tentaram esconder') são fake news perigosas de saúde."
+      },
+      {
+        app: "insta",
+        appIcon: "🎁",
+        sender: "sorteio_panelas_inox_br",
+        status: "Direct Instagram",
+        forwarded: false,
+        text: "🎉 PARABÉNS DONA JUREMA! A senhora ganhou um *Jogo Completo de Panelas de Inox Tramontina*! Para enviarmos para sua casa, basta pagar apenas o frete de R$ 35,00 no Pix hoje!",
+        link: "🔗 pagar-frete-panelas-gratis.site/pix",
+        isSafe: false,
+        grandmaSuccess: "Já desconfiava! Ninguém dá jogo de panela de graça na internet assim. Muito bem, meu detetive!",
+        grandmaFail: "Ai que tristeza! Paguei o frete achando que ia ganhar as panelas e não chegou nada... Caí no golpe!",
+        explanation: "Falsos prêmios que exigem 'pagamento de frete no Pix' são armadilhas clássicas para roubar dinheiro."
+      },
+      {
+        app: "whatsapp",
+        appIcon: "💬",
+        sender: "Padre Antônio (Paróquia)",
+        status: "Aviso da Comunidade",
+        forwarded: false,
+        text: "Aviso a todos os paroquianos: a tradicional quermesse com pastel e bingo beneficente acontecerá neste sábado às 19h no pátio da igreja.",
+        link: "",
+        isSafe: true,
+        grandmaSuccess: "Que delícia! Já vou separar o trocado pro bingo e pro pastel no sábado!",
+        grandmaFail: "Ué meu bem, essa era a mensagem de verdade do Padre da nossa igreja! Quase perdi o pastel da quermesse!",
+        explanation: "Mensagens de pessoas conhecidas da comunidade sobre eventos locais sem links suspeitos ou pedidos de dinheiro são seguras."
+      },
+      {
+        app: "whatsapp",
+        appIcon: "💬",
+        sender: "Número Estranho",
+        status: "online",
+        forwarded: false,
+        text: "Código de Segurança do seu WhatsApp: *482-910*. Não compartilhe com ninguém. Se você não solicitou, ignore.",
         link: "",
         isSafe: false,
-        reason: "Perigo Máximo! Esse código de 6 dígitos por SMS é a confirmação para clonar e roubar o SEU WhatsApp. Nunca passe códigos de segurança para ninguém!"
+        grandmaSuccess: "Nunca vou passar esse código pra ninguém! Você me ensinou direitinho que código de SMS é segredo!",
+        grandmaFail: "Ai não! Uma pessoa me ligou pedindo esse número e eu passei... Clonaram o meu WhatsApp todinho!",
+        explanation: "Nunca passe códigos de 6 dígitos recebidos por SMS para ninguém! É assim que criminosos clonam contas de WhatsApp."
       },
       {
         app: "news",
-        sender: "Saúde & Milagres Total",
-        status: "Blog de Dicas",
-        avatar: "🧪",
+        appIcon: "🦖",
+        sender: "Notícias Bombásticas da Web",
+        status: "Vídeo Viral",
         forwarded: true,
-        text: "🚨 ATENÇÃO: Médicos da Europa descobrem que comer chocolate antes de dormir queima 5kg de gordura e cura qualquer gripe! As indústrias farmacêuticas tentaram esconder esse segredo!",
-        link: "🔗 cura-milagrosa-segredo-revelado.xyz",
+        text: "INCRÍVEL: Pescadores encontram sereia viva cantando na praia de Copacabana no Rio de Janeiro ontem à tarde! [Vídeo com montagem de computador e voz estranha]",
+        link: "🔗 sereia-real-filmada-veja.top",
         isSafe: false,
-        reason: "Fake News de Saúde! Promessas mágicas de curas fáceis e teorias conspiratórias ('tentaram esconder isso') são marcas registradas de boatos falsos."
+        grandmaSuccess: "Hahaha! Sereia em Copacabana só em novela mesmo! Você é muito esperto, netinho!",
+        grandmaFail: "E eu jurando que era verdade! Até mostrei pro seu avô a tal da sereia... Que vergonha!",
+        explanation: "Vídeos e fotos com criaturas fantásticas ou montagens de computação gráfica são boatos criados para viralizar."
       },
       {
         app: "news",
-        sender: "Ministério da Saúde (gov.br)",
-        status: "Comunicado Oficial",
-        avatar: "🏛️",
+        appIcon: "🏛️",
+        sender: "Prefeitura Municipal (gov.br)",
+        status: "Canal Oficial",
         forwarded: false,
-        text: "Campanha Nacional de Vacinação contra a Gripe e Sarampo começa na próxima segunda-feira em todas as escolas e postos de saúde de todo o Brasil.",
-        link: "🔗 gov.br/saude/pt-br/campanhas/vacinacao-2026",
+        text: "Prefeitura informa: Mutirão gratuito de castração e vacinação de cães e gatos acontecerá no parque central neste fim de semana.",
+        link: "🔗 prefeitura.sp.gov.br/saude-animal/mutirao",
         isSafe: true,
-        reason: "Fato Seguro! Informação oficial de utilidade pública vinda diretamente do portal do governo (gov.br)."
-      },
-      {
-        app: "instagram",
-        sender: "Mundo_Curioso_Viral",
-        status: "Publicação Patrocinada",
-        avatar: "🦖",
-        forwarded: false,
-        text: "CHOCANTE: Soldados capturam dinossauro vivo que estava escondido na Floresta Amazônica! Veja a foto que chocou o mundo!",
-        link: "🔗 [Foto com borrões e dedos esquisitos gerada por Inteligência Artificial]",
-        isSafe: false,
-        reason: "Imagem Criada por IA / Boato! Imagens absurdas sem nenhuma cobertura nos grandes jornais são forjadas por IA apenas para ganhar curtidas."
-      },
-      {
-        app: "whatsapp",
-        sender: "Grupo dos Games",
-        status: "várias pessoas digitando...",
-        avatar: "🎮",
-        forwarded: true,
-        text: "🔥 O Governo liberou *50 GIGAS DE INTERNET 5G GRÁTIS* para todos os estudantes do Brasil! Clique no link, preencha seus dados e compartilhe com 5 grupos para ativar!",
-        link: "🔗 internet-gratis-para-estudantes-liberada.top/ativar",
-        isSafe: false,
-        reason: "Cilada! 'Internet grátis' em troca de compartilhar em grupos é um golpe para roubar seus dados cadastrais e espalhar vírus."
-      },
-      {
-        app: "news",
-        sender: "Minecraft & Mojang Studios",
-        status: "Canal Oficial de Atualizações",
-        avatar: "⛏️",
-        forwarded: false,
-        text: "Nova atualização oficial de Minecraft adicionará novos animais, blocos decorativos e melhorias de segurança nas contas dos jogadores no próximo mês.",
-        link: "🔗 minecraft.net/pt-br/article/new-update-announcement",
-        isSafe: true,
-        reason: "Fato Legítimo! Notícia oficial postada no site oficial dos criadores do jogo (minecraft.net)."
+        grandmaSuccess: "Ótima notícia! Vou levar o Rex para vacinar no sábado de manhãzinha!",
+        grandmaFail: "Mas netinho, essa é a página oficial da prefeitura do nosso município! É notícia de verdade!",
+        explanation: "Informações de serviços públicos em sites oficiais (com terminação .gov.br ou .org) são seguras e de utilidade pública."
       }
     ];
 
     let currentRound = 0;
     let score = 0;
-    let lives = 3;
+    let errorsCount = 0;
+    const MAX_ERRORS = 3;
     let audioCtx = null;
 
     // =========================================
     // RETRO AUDIO SYNTHESIS
     // =========================================
-    function playAudioTone(type) {
+    function playAudio(type) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
@@ -698,14 +890,14 @@
           osc.stop(audioCtx.currentTime + 0.3);
         } else {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(180, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.3);
-          gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(55, audioCtx.currentTime + 0.35);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start();
-          osc.stop(audioCtx.currentTime + 0.3);
+          osc.stop(audioCtx.currentTime + 0.35);
         }
       } catch(e) {}
     }
@@ -713,126 +905,169 @@
     function initGame() {
       currentRound = 0;
       score = 0;
-      lives = 3;
-      updateHUD();
+      errorsCount = 0;
+      updateGrandmaExpression();
       loadScenario(currentRound);
-      document.getElementById('stage-gameplay').style.display = 'grid';
-      document.getElementById('stage-gameover').style.display = 'none';
+      document.getElementById('modal-expulsion').classList.remove('show');
     }
 
-    function updateHUD() {
-      document.getElementById('hud-lives').innerText = lives;
-      document.getElementById('hud-score').innerText = score;
-      document.getElementById('hud-round').innerText = currentRound + 1;
+    function updateGrandmaExpression() {
+      const charImg = document.getElementById('grandma-char-img');
+      const patienceTag = document.getElementById('grandma-patience-tag');
+
+      if (!charImg) return;
+
+      charImg.classList.remove('mood-suspicious', 'mood-angry');
+
+      if (errorsCount === 0) {
+        patienceTag.innerText = '👵😊 Paciência: Calma';
+        patienceTag.style.background = '#dcfce7';
+        patienceTag.style.color = '#065f46';
+      } else if (errorsCount === 1) {
+        charImg.classList.add('mood-suspicious');
+        patienceTag.innerText = '👵🤨 Paciência: Desconfiada';
+        patienceTag.style.background = '#fef08a';
+        patienceTag.style.color = '#713f12';
+      } else if (errorsCount >= 2) {
+        charImg.classList.add('mood-angry');
+        patienceTag.innerText = '👵😠 Paciência: No Limite!';
+        patienceTag.style.background = '#fee2e2';
+        patienceTag.style.color = '#991b1b';
+      }
     }
 
     function loadScenario(index) {
       const data = SCENARIOS[index];
-      const headerEl = document.getElementById('app-header');
-      const avatarEl = document.getElementById('app-avatar');
-      const senderNameEl = document.getElementById('app-sender-name');
-      const senderStatusEl = document.getElementById('app-sender-status');
-      const forwardTagEl = document.getElementById('msg-forward-tag');
-      const msgBodyEl = document.getElementById('msg-body-text');
-      const linkBoxEl = document.getElementById('msg-link-box');
-      const screenContent = document.getElementById('screen-content');
 
-      // Set App Styles
-      headerEl.className = `phone-app-header ${data.app}`;
-      avatarEl.innerText = data.avatar;
-      senderNameEl.innerText = data.sender;
-      senderStatusEl.innerText = data.status;
+      // Update Notifications Counter on Phone
+      const remainingCount = SCENARIOS.length - index;
+      document.getElementById('notif-counter-badge').innerText = `${remainingCount} Pendentes`;
 
-      if (data.app === 'whatsapp') {
-        screenContent.className = 'phone-screen-content';
-      } else {
-        screenContent.className = 'phone-screen-content dark-theme';
+      // Update Phone App Screen
+      const appTop = document.getElementById('phone-app-top');
+      const appIco = document.getElementById('phone-app-ico');
+      const senderName = document.getElementById('phone-sender-name');
+      const senderStatus = document.getElementById('phone-sender-status');
+      const forwardIndicator = document.getElementById('msg-forward-indicator');
+      const textBody = document.getElementById('msg-text-body');
+      const linkHolder = document.getElementById('msg-link-holder');
+      const screenArea = document.getElementById('phone-screen-area');
+
+      appTop.className = `phone-app-header-bar ${data.app}`;
+      appIco.innerText = data.appIcon;
+      senderName.innerText = data.sender;
+      senderStatus.innerText = data.status;
+
+      if (screenArea) {
+        if (data.app === 'whatsapp') {
+          screenArea.className = 'phone-chat-screen';
+        } else {
+          screenArea.className = 'phone-chat-screen dark-view';
+        }
       }
 
-      forwardTagEl.style.display = data.forwarded ? 'flex' : 'none';
-      msgBodyEl.innerText = data.text;
+      forwardIndicator.style.display = data.forwarded ? 'flex' : 'none';
+      textBody.innerText = data.text;
 
       if (data.link) {
-        linkBoxEl.style.display = 'block';
-        linkBoxEl.innerText = data.link;
+        linkHolder.style.display = 'block';
+        linkHolder.innerText = data.link;
       } else {
-        linkBoxEl.style.display = 'none';
+        linkHolder.style.display = 'none';
       }
 
-      // Reset controls
-      document.getElementById('feedback-box').className = 'feedback-card';
-      const btns = document.getElementById('decision-actions').querySelectorAll('button');
+      // Reset Dialogue Speech Bubble
+      document.getElementById('grandma-speaker-name').innerText = 'Vovó Jurema pergunta:';
+      document.getElementById('grandma-dialogue-text').innerText = '"Meu netinho, dá uma olhada no meu celular... Posso confiar nisso ou é golpe?"';
+      document.getElementById('grandma-tip-line').style.display = 'none';
+      document.getElementById('btn-next-message').style.display = 'none';
+
+      // Re-enable player response buttons
+      const btns = document.querySelectorAll('.btn-player-bubble');
       btns.forEach(b => b.disabled = false);
+
+      updateGrandmaExpression();
     }
 
-    function judgeCurrentScenario(userChoseSafe) {
+    function playerDecide(userChoseSafe) {
       const data = SCENARIOS[currentRound];
-      const btns = document.getElementById('decision-actions').querySelectorAll('button');
+      const isCorrect = (userChoseSafe === data.isSafe);
+
+      const btns = document.querySelectorAll('.btn-player-bubble');
       btns.forEach(b => b.disabled = true);
 
-      const isCorrect = (userChoseSafe === data.isSafe);
-      const feedbackBox = document.getElementById('feedback-box');
-      const feedbackTitle = document.getElementById('feedback-title');
-      const feedbackDesc = document.getElementById('feedback-desc');
+      const speakerName = document.getElementById('grandma-speaker-name');
+      const dialogueText = document.getElementById('grandma-dialogue-text');
+      const tipLine = document.getElementById('grandma-tip-line');
+      const nextBtn = document.getElementById('btn-next-message');
 
       if (isCorrect) {
         score += 10;
-        playAudioTone('correct');
-        feedbackBox.className = 'feedback-card show correct';
-        feedbackTitle.innerHTML = '✅ Muito Bem! Análise Perfeita (+10 pts)';
+        playAudio('correct');
+        speakerName.innerText = '✅ Vovó aliviada responde:';
+        dialogueText.innerText = `"${data.grandmaSuccess}"`;
+        tipLine.innerHTML = `💡 <strong>Por que?</strong> ${data.explanation}`;
       } else {
-        lives -= 1;
-        playAudioTone('wrong');
-        feedbackBox.className = 'feedback-card show wrong';
-        feedbackTitle.innerHTML = '❌ Atenção! Você caiu no boato (-1 Vida)';
+        errorsCount++;
+        playAudio('wrong');
+        speakerName.innerText = '❌ Vovó confusa responde:';
+        dialogueText.innerText = `"${data.grandmaFail}"`;
+        tipLine.innerHTML = `💡 <strong>Cuidado:</strong> ${data.explanation}`;
       }
 
-      feedbackDesc.innerText = data.reason;
-      updateHUD();
+      tipLine.style.display = 'block';
+      updateGrandmaExpression();
+
+      // Check if Grandma reached MAX_ERRORS (Expulsion)
+      if (errorsCount >= MAX_ERRORS) {
+        setTimeout(triggerExpulsion, 1500);
+      } else {
+        nextBtn.style.display = 'inline-flex';
+      }
     }
 
-    function nextRound() {
-      if (lives <= 0) {
-        showGameOver();
-        return;
-      }
-
+    function nextMessageRound() {
       if (currentRound < SCENARIOS.length - 1) {
         currentRound++;
-        updateHUD();
         loadScenario(currentRound);
       } else {
-        showGameOver();
+        triggerVictory();
       }
     }
 
-    function showGameOver() {
-      document.getElementById('stage-gameplay').style.display = 'none';
-      document.getElementById('stage-gameover').style.display = 'block';
+    function triggerExpulsion() {
+      const modal = document.getElementById('modal-expulsion');
+      const icon = document.getElementById('expulsion-icon-badge');
+      const title = document.getElementById('expulsion-title-text');
+      const desc = document.getElementById('expulsion-desc-text');
+      const scorePill = document.getElementById('expulsion-score-pill');
 
-      const goIcon = document.getElementById('go-icon');
-      const goTitle = document.getElementById('go-title');
-      const goSubtitle = document.getElementById('go-subtitle');
-      const goScore = document.getElementById('go-score');
+      icon.innerText = '👵🚪💨';
+      title.innerText = 'A Vovó perdeu a paciência!';
+      desc.innerText = '"CHEGA MENINO! Você não tá me ajudando nada, só me fez passar vergonha no grupo da hidroginástica! Sai da sala e vai pro seu quarto!"';
 
       const maxScore = SCENARIOS.length * 10;
-      goScore.innerText = `Pontuação Final: ${score} / ${maxScore} Pontos`;
+      scorePill.innerText = `Pontuação Conquistada: ${score} / ${maxScore} Pontos`;
 
-      if (lives > 0 && score >= 80) {
-        goIcon.innerText = '🏆';
-        goTitle.innerText = 'Mestre Caçador de Fakes!';
-        goSubtitle.innerText = 'Excelente! Você tem olhos clínicos e não se deixa enganar por mentiras na internet!';
-      } else if (lives > 0) {
-        goIcon.innerText = '🛡️';
-        goTitle.innerText = 'Detetive Aprovado!';
-        goSubtitle.innerText = 'Muito bom! Você já consegue identificar a maioria das tentativas de golpes!';
-      } else {
-        goIcon.innerText = '⚠️';
-        goTitle.innerText = 'Treinamento Finalizado!';
-        goSubtitle.innerText = 'Você perdeu suas vidas, mas aprendeu as dicas essenciais para se proteger na vida real!';
-      }
+      modal.classList.add('show');
+      saveProgressToHub('fake_detector', score, maxScore);
+    }
 
-      // Save to localStorage Hub Profile
+    function triggerVictory() {
+      const modal = document.getElementById('modal-expulsion');
+      const icon = document.getElementById('expulsion-icon-badge');
+      const title = document.getElementById('expulsion-title-text');
+      const desc = document.getElementById('expulsion-desc-text');
+      const scorePill = document.getElementById('expulsion-score-pill');
+
+      icon.innerText = '👵💖🏆';
+      title.innerText = 'Você Salvou a Vovó de Todos os Golpes!';
+      desc.innerText = '"Ai meu anjo querido! Você limpou todas as notificações perigosas do meu celular! Agora sei me defender de todas as mentiras!"';
+
+      const maxScore = SCENARIOS.length * 10;
+      scorePill.innerText = `Pontuação Perfeita: ${score} / ${maxScore} Pontos`;
+
+      modal.classList.add('show');
       saveProgressToHub('fake_detector', score, maxScore);
     }
 
