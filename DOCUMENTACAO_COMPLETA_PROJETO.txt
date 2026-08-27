@@ -1,0 +1,211 @@
+================================================================================
+           CYBERKIDS ARCADE — DETETIVE WEB: DOCUMENTO COMPLETO DO PROJETO
+================================================================================
+
+Data de Atualização: 26 de Agosto de 2026
+Repositório Local: E:\Website Inspector
+Deploy Online (GitHub Pages): https://sallef.github.io/Website-Inspector/
+Público-Alvo: Crianças e Jovens de 10 a 12 anos (Ensino Fundamental II)
+Stack Tecnológica: HTML5, CSS3 Moderno, JavaScript ES6+ Puro (Zero Dependências)
+
+================================================================================
+0. DIAGNÓSTICO DO ERRO DE TOKENS (128.000 Output Tokens Maximum)
+================================================================================
+
+POR QUE O ERRO ACONTECEU?
+O erro "Claude's response exceeded the 128000 output token maximum" ocorre quando o
+modelo tenta gerar um arquivo de código gigantesco e hiperdetalhado (como uma aplicação
+completa com centenas de linhas de CSS, WebGL, Web Audio, cenários e lógica de uma só vez)
+em uma única resposta sem fragmentação.
+
+COMO EVITAR E OTIMIZAR:
+1. Fatiar a implementação em blocos modulares bem definidos (ex: primeiro a interface
+   e estilos, depois o banco de dados dos 5 dias, depois os módulos de áudio e lógica).
+2. Manter respostas focadas e objetivas sem gerar texto desnecessário ou dumps de arquivos
+   que não sofreram alteração.
+3. Testar cada parte no navegador antes de avançar para a próxima.
+
+================================================================================
+1. VISÃO GERAL E PROPOSTA PEDAGÓGICA
+================================================================================
+
+O "CyberKids Arcade" (ou Central Detetive Web) é uma plataforma interativa de jogos
+educacionais desenvolvida para conscientizar crianças sobre cibersegurança, navegação
+segura e identificação de ameaças digitais.
+
+A abordagem utiliza a gamificação para ensinar de forma prática:
+- Reconhecimento de links falsos (phishing, typosquatting e golpes de download).
+- Identificação de fake news, correntes e golpes em aplicativos de mensagens.
+- Detecção de aliciadores, contas falsas e engenharia social em chats e redes sociais.
+
+PRINCIPAIS PILARES PEDAGÓGICOS:
+1. Prática Ativa: Em vez de ler regras chatas, a criança assume o papel de um agente/detetive.
+2. Identidade Visual Diferenciada por Jogo: Cada minigame possui estética e atmosfera próprias
+   (Google 2006 Retro, Sala da Vovó em Primeira Pessoa, Discord Dark Mode Realista).
+3. Acessibilidade e Alto Contraste: Layouts limpos, fontes legíveis e paletas que estimulam
+   o foco sem prejudicar alunos com daltonismo ou dificuldades visuais.
+
+================================================================================
+2. ARQUITETURA GLOBAL E CENTRAL DE JOGOS (index.html)
+================================================================================
+
+A Central de Jogos (`index.html`) atua como o portal principal unificado:
+
+LAYOUT GERAL:
+- Layout em 2 colunas com bordas coladas às laterais da tela (edge-to-edge).
+- Paleta de Cores: Amarelo Ouro / Âmbar (#f59e0b), Laranja Intenso (#ea580c) e Dark Slate (#0f172a).
+- Coluna da Esquerda (Sidebar):
+  * Foto de perfil personalizável (6 avatares: Detetive, Cyber Bot, Raposa, Gato, Mago, Heroína).
+  * Nome do aluno editável em tempo real.
+  * Tag de Nível e Patente (Recruta -> Detetive -> Mestre).
+  * Placar de Pontos Total somado de todos os jogos.
+  * Estante de Medalhas (4 insígnias colecionáveis).
+  * Botões de Utilidade: Guia do Professor e Reset de Turma.
+- Coluna da Direita (Arena de Jogos):
+  * Banner motivacional superior ("Escolha um Jogo e Comece!").
+  * Cards diretos de lançamento para cada minigame com recorde individual e status.
+
+PERSISTÊNCIA DE DADOS (localStorage - 'cyberkids_profile'):
+Estrutura JSON padrão compartilhada entre todos os minigames:
+{
+  "name": "Agente Secreto",
+  "avatar": "🕵️‍♂️",
+  "avatarLabel": "Detetive",
+  "scores": {
+    "website_inspector": 100,
+    "fake_detector": 100,
+    "chat_patrol": 100
+  },
+  "badges": [
+    "link_inspector",     // Conquistada no Jogo 1
+    "fake_hunter",        // Conquistada no Jogo 2
+    "chat_patrol",        // Conquistada no Jogo 3
+    "supreme_detective"   // Conquistada ao ter todas as medalhas
+  ]
+}
+
+================================================================================
+3. MINIGAME 1: "DESCUBRA SE É UMA CILADA!" (website-inspector.html)
+================================================================================
+
+TEMÁTICA E ATMOSFERA:
+- Interface retrô de motor de busca do Google de 2006.
+- Shader WebGL GLSL que simula a curvatura de tubo e scanlines de um monitor CRT antigo.
+- Sons chiptune retrô sintetizados via Web Audio API.
+
+DINÂMICA DE JOGO:
+- O aluno precisa inspecionar resultados de buscas reais e identificar se os links são
+  seguros ou golpes de phishing/vírus.
+- 10 Rodadas procedurais com amostragem Fisher-Yates (7 a 11 links por rodada).
+- 3 Graus de Dificuldade:
+  * Fácil (Rodadas 1 a 3): Golpes óbvios com extensões suspeitas (.exe, .scr).
+  * Médio (Rodadas 4 a 7): Domínios com typosquatting (ex: g00gle.com, faceb00k-login.net).
+  * Difícil (Rodadas 8 a 10): URLs enganosas com camuflagem de subdomínio e HTTPS falso.
+- Efeitos de Falha: Invasão de vírus em tela cheia com alertas no estilo Windows XP.
+- Conquista: Ao vencer o jogo, ganha a medalha "Mestre dos Links" (link_inspector).
+
+================================================================================
+4. MINIGAME 2: "AJUDE A VOVÓ: FATO OU FAKE!" (fake-detector.html)
+================================================================================
+
+TEMÁTICA E ATMOSFERA:
+- Visão realista em primeira pessoa (POV): O jogador está na sala aconchegante da Vovó Jurema.
+- Imagens reais e recortadas: Fundo da sala, foto da Vovó e mão estendida segurando um smartphone.
+- Smartphone vertical realista (290x480px) exibindo notificações do dia a dia.
+
+DINÂMICA DE JOGO:
+- A vovó mostra notificações recebidas no WhatsApp, SMS, Instagram e sites de notícias.
+- O aluno lê a mensagem e escolhe entre dois balões de diálogo:
+  * 🟢 "Vovó, isso é VERDADE!"
+  * 🔴 "Vovó, é CILADA / GOLPE!"
+- Sistema de Paciência e Humor da Vovó:
+  * A cada acerto: A vovó agradece e fica feliz.
+  * A cada erro: A vovó vai mudando de expressão (Calma -> Desconfiada -> Irritada).
+  * Limite de Erros: Se o jogador errar 3 vezes, a vovó se irrita e expulsa o neto da sala.
+- Animação de Notificações: Cada rodada reduz a pilha de notificações pendentes.
+- Conquista: Ao analisar todas as mensagens corretamente, ganha a medalha "Caçador de Fakes" (fake_hunter).
+
+================================================================================
+5. MINIGAME 3: "CHAT PATROL / VIGILANTE DA REDE" (chat-patrol.html)
+================================================================================
+
+TEMÁTICA E ATMOSFERA:
+- Inspirado na tensão de gerenciamento multitarefa estilo FNAF (Five Nights at Freddy's).
+- Interface ultra-realista de aplicativo de chat (Discord Dark Mode).
+- Cores autênticas: #313338 (Chat Feed), #2b2d31 (Sidebar DMs), #1e1f22 (Trilho Servidores),
+  #5865f2 (Blurple Discord), #f23f43 (Vermelho Perigo).
+- Efeitos Sonoros Realistas (Web Audio API): Notificação autêntica com dois tons (C5/G5),
+  som de digitação, cliques de envio, martelo de banimento e som de susto/estática no estouro de tempo.
+
+INTERFACE EM 3 COLUNAS:
+1. Coluna da Esquerda (Servidores & DMs):
+   - Ícones de servidores e lista de conversas ativas.
+   - Cada conversa tem uma BARRA DE PACIÊNCIA que drena em tempo real (Verde -> Amarelo -> Vermelho).
+2. Coluna Central (Feed de Conversa & Respostas):
+   - Histórico de mensagens com horário e balões realistas.
+   - Caixa de interação com 3 BOTÕES DE DIÁLOGO:
+     * 🎯 Opção de Contra-ataque: Confronte a contradição do perfil (+1 Ponto de Evidência).
+     * ⚠️ Opção Ingênua: Acredita na mentira ou entrega dados (Perde tempo/Gera perigo).
+     * ⚪ Opção Neutra: Resposta genérica sem ganho de evidência.
+3. Coluna da Direita (Dossiê do Usuário & Ação de Ban):
+   - Card com foto, bio, idade declarada, data de criação da conta, conexões e tags.
+   - Medidor de Evidências acumuladas (ex: 2 / 4).
+   - Botão [🚫 BLOQUEAR E DENUNCIAR]: Acende em vermelho pulsante ao atingir as evidências necessárias.
+
+PROGRESSÃO EM 5 TURNOS / DIAS:
+- Dia 1: Tutorial — O Falso Colega de Escola (Lucas_Gamer2010 pede endereço; conta criada em 2013).
+- Dia 2: O Falso Moderador de Robux vs O Amigo Real (Teste de discernimento: não bloquear amigos reais!).
+- Dia 3: O Estranho Insistente (quer migrar para WhatsApp) & O Falso Suporte (pede download de .exe).
+- Dia 4: Pressão Multitask (3 contatos simultâneos: Vendedor de contas, falso torneio e amiga da escola).
+- Dia 5: Turno Final / Modo Pesadelo (Aliciador de dados, QR code malicioso e foto roubada).
+
+MECÂNICA DE TENSÃO E SUSTO:
+- Se a paciência de qualquer suspeito esgotar, ocorre um JUMPSCARE:
+  * Tremor de tela violento (screen shake).
+  * Flash vermelho e estática visual.
+  * Som estridente de estática de rádio/erro grave.
+  * O jogador perde 1 vida (total de 3 vidas). Com 3 falhas: GAME OVER (Conta Invadida).
+- Conquista: Ao sobreviver aos 5 dias, desbloqueia a medalha "Vigilante do Chat" (chat_patrol) e
+  a medalha "Detetive Supremo" (supreme_detective).
+
+================================================================================
+6. MINIGAMES FUTUROS PLANEJADOS
+================================================================================
+
+1. "Crie sua Senha Secreta!" (theme-senha):
+   - Minigame estilo laboratório de alquimia / hacker ético onde o aluno constrói
+     passphrases fortes usando combinações de palavras, números e símbolos sem usar dados pessoais.
+2. "Escudo de Privacidade!" (theme-privacidade):
+   - Jogo de defesa de torre / arrastar e soltar ajustando configurações de privacidade
+     de redes sociais (localização desativada, conta privada, fotos ocultas de estranhos).
+
+================================================================================
+7. GUIA DO PROFESSOR E DINÂMICA EM SALA DE AULA
+================================================================================
+
+PÚBLICO: Alunos de 10 a 12 anos (5º ao 7º ano).
+TEMPO SUGERIDO: 45 a 50 minutos de aula de informática ou cidadania digital.
+
+ROTEIRO DE ATIVIDADE:
+1. Ambientação (5 min):
+   - Alunos entram na URL, configuram seu nome e escolhem seu avatar na Central.
+2. Ronda 1 — Inspecionando Links (15 min):
+   - Jogam o "Descubra se é uma Cilada!". Aprendem a olhar a barra de endereço e extensões de arquivo.
+3. Ronda 2 — Mensagens no Celular (10 min):
+   - Jogam o "Ajude a Vovó". Identificam golpes comuns de Pix, promoções falsas e correntes.
+4. Ronda 3 — Conversas no Chat (15 min):
+   - Jogam o "Chat Patrol". Praticam não compartilhar fotos, senhas e endereços com desconhecidos.
+5. Fechamento e Debate (5 min):
+   - Verificação das medalhas conquistadas no perfil e discussão coletiva sobre situações reais vividas.
+
+================================================================================
+8. POLÍTICA DE CONTROLE DE VERSÃO (GIT COMMIT POLICY)
+================================================================================
+
+- REGRA ABSOLUTA: NUNCA realizar `git commit` ou `git push` de forma automática.
+- Todos os commits devem ser executados apenas com a autorização e solicitação explícita
+  do usuário após testes locais no navegador.
+
+================================================================================
+FIM DO DOCUMENTO
+================================================================================

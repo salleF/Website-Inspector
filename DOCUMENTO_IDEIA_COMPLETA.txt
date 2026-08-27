@@ -1,0 +1,181 @@
+================================================================================
+           CYBERKIDS ARCADE (DETETIVE WEB) — DOCUMENTO COMPLETO E REFINADO
+================================================================================
+
+Este documento consolida todas as decisões de design, regras de negócio, mecânicas
+investigativas, arquitetura de software e roteiro pedagógico da plataforma CyberKids
+Arcade, integrando todas as evoluções refinadas até a versão final.
+
+--------------------------------------------------------------------------------
+1. VISÃO GERAL E PILARES DO PROJETO
+--------------------------------------------------------------------------------
+- Público-Alvo: Crianças e Jovens de 10 a 12 anos (Ensino Fundamental II).
+- Tema Principal: Cibersegurança, identificação de golpes digitais, privacidade,
+  engenharia social e combate ao aliciamento online (grooming).
+- Stack Tecnológica: HTML5, CSS3 Moderno, JavaScript ES6+ Puro (Zero Dependências).
+- Plataforma de Hospedagem: GitHub Pages (Compatível com qualquer navegador moderno).
+- Diretriz de Código: Arquitetura Modular e Limpa (Clean Code), separando HTML, CSS,
+  Áudio, Dados/Roteiro e Motor de Jogo em arquivos independentes para evitar
+  estouro de contexto e arquivos monolíticos.
+
+--------------------------------------------------------------------------------
+2. ESTRUTURA GERAL DA PLATAFORMA (index.html)
+--------------------------------------------------------------------------------
+A Central de Jogos atua como o hub principal de navegação e progresso do aluno.
+
+- Layout: 2 colunas Full Width (bordas retas, ocupando a tela de ponta a ponta).
+- Identidade Visual: Amarelo Âmbar (#f59e0b), Laranja (#ea580c) e Dark Slate (#0f172a).
+- Coluna da Esquerda (Painel do Agente):
+  * Avatar personalizável (6 opções: Detetive, Cyber Bot, Raposa, Gato, Mago, Heroína).
+  * Nome do aluno editável em tempo real.
+  * Patente do Agente (Recruta ➔ Detetive ➔ Mestre).
+  * Placar de Pontos Total acumulado entre todos os minigames.
+  * Estante de Medalhas Conquistadas.
+  * Botões de Utilidade: Guia do Professor e Reset de Dados da Turma.
+- Coluna da Direita (Arena de Minigames):
+  * Cards interativos de acesso direto para cada um dos 3 minigames.
+- Persistência: Estrutura JSON unificada salva no localStorage ('cyberkids_profile').
+
+--------------------------------------------------------------------------------
+3. MINIGAME 1: "DESCUBRA SE É UMA CILADA!" (website-inspector.html)
+--------------------------------------------------------------------------------
+- Atmosfera: Retrô Google 2006 com Shader WebGL CRT (monitor de tubo, scanlines e curvatura).
+- Mecânica: Inspecionar resultados de busca e URLs suspeitas antes de clicar.
+- Desafios: 10 rodadas procedurais (Fácil, Médio e Difícil) cobrindo:
+  * Extensões perigosas (.exe, .scr, .bat).
+  * Typosquatting (ex: g00gle.com, faceb00k-login.net).
+  * Subdomínios falsos e certificados enganosos.
+- Efeitos: Invasão de vírus visual estilo Windows XP ao cometer erros.
+- Recompensa: Medalha "Mestre dos Links" (link_inspector).
+
+--------------------------------------------------------------------------------
+4. MINIGAME 2: "AJUDE A VOVÓ: FATO OU FAKE!" (fake-detector.html)
+--------------------------------------------------------------------------------
+- Atmosfera: Visão em primeira pessoa (POV) na sala aconchegante da Vovó Jurema.
+- Mecânica: Analisar notificações de um smartphone vertical em primeiro plano.
+- Conteúdo: Mensagens de WhatsApp, SMS bancário, golpes de Pix, notícias falsas e correntes.
+- Sistema de Paciência da Vovó:
+  * Expressões dinâmicas: Calma ➔ Desconfiada ➔ Brava.
+  * 3 Erros = Expulsão da sala de estar.
+- Recompensa: Medalha "Caçador de Fakes" (fake_hunter).
+
+--------------------------------------------------------------------------------
+5. MINIGAME 3: "CHAT PATROL / VIGILANTE DA REDE" (chat-patrol.html)
+--------------------------------------------------------------------------------
+O minigame mais complexo e imersivo, combinando tensão no estilo Five Nights at Freddy's
+(FNAF) com investigação e cruzamento de evidências estilo Papers, Please.
+
+5.1. AMBIENTAÇÃO E INTERFACE:
+- Interface imersiva simulando um sistema operacional retro estilo Windows com uma
+  janela maximizada de aplicativo de chat gamer (Discord Dark Mode).
+- Cores Discord: #313338 (Chat), #2b2d31 (Sidebar DMs), #1e1f22 (Trilho Servidores),
+  #5865f2 (Blurple), #f23f43 (Perigo/Ban).
+- Topo Limpo: Barra de cabeçalho superior removida para imersão total.
+
+5.2. BARRA DE TAREFAS INFERIOR (WINDOWS OS):
+- Canto Esquerdo (Menu Iniciar 🪟):
+  * Ao clicar, abre modal de confirmação retrô ("Deseja encerrar o turno e voltar à
+    Central de Jogos?").
+- Centro da Barra (Janelas Ativas):
+  * Janelas de Vidas: "❤️ Vida 1.exe", "❤️ Vida 2.exe", "❤️ Vida 3.exe".
+    Cada erro/estouro de paciência fecha visualmente uma janela com som de processo finalizado.
+  * Janela "🔍 Modo Detetive.exe": Botão alternador (toggle) para ligar/desligar o modo
+    de inspeção e cruzamento de dados.
+- Canto Direito (SysTray / Relógio):
+  * Indicador de Dia e Horário do Turno (ex: Dia 1 • 14:30).
+  * Botão de controle de áudio (🔊/🔇).
+
+5.3. PERFIL DO JOGADOR NO FOOTER DO DISCORD (.current-user-footer):
+- Card do jogador posicionado no rodapé da coluna de canais/DMs ("Agente Secreto #2026").
+- Ao clicar, abre o modal "Meu Perfil / Meus Dados Reais":
+  * Nick: Agente Secreto
+  * Escola: Colégio Aurora
+  * Série/Turma: 6º Ano B
+  * Cidade/Bairro: Curitiba - PR (Zona Leste)
+  * Jogos Favoritos: CyberBlock & SpaceCraft
+  * Hobbies: Skate aos finais de semana
+- Função: Serve como a verdade absoluta para o jogador confrontar mentiras de suspeitos.
+
+5.4. MECÂNICA DO MODO DETETIVE (CRUZAMENTO DE 2 ELEMENTOS - PAPERS, PLEASE):
+O jogador ativa o Modo Detetive e deve selecionar exatamente 2 ELEMENTOS contraditórios
+na tela para gerar uma prova concreta.
+
+As 4 Modalidades de Contradição:
+1. 📑 Perfil × Perfil: Dois dados incoerentes dentro do próprio dossiê do suspeito
+   (Ex: Conta criada em 2009 vs Idade na Bio: 12 anos / Nascido em 2012).
+2. 💬 Perfil × Conversa: Uma fala no chat que contradiz os metadados do dossiê
+   (Ex: Suspeito diz "moro na sua rua aqui em Curitiba", mas a localização do dossiê é "Hamburgo, Alemanha").
+3. 🗣️ Conversa × Conversa: Incoerência entre duas mensagens do próprio suspeito
+   (Ex: Mensagem 1 diz "sou novo e nunca joguei", Mensagem 3 diz "sou nível 100 desde 2018").
+4. 👤 Seu Perfil × Conversa: Uma afirmação do suspeito que colide com os seus dados reais
+   (Ex: Suspeito diz "sou da sua sala do 6º C", mas seu perfil real é do "6º B").
+
+5.5. DINÂMICA DAS 3 ESCOLHAS DE DIÁLOGO POR RODADA:
+- Opção 1 (Trancada por Padrão 🔒):
+  * Começa bloqueada: "[🔒 BLOQUEADO: Encontre uma contradição no Modo Detetive]".
+  * Não entrega spoilers nem dicas artificiais entre parênteses.
+  * Ao apontar a contradição com sucesso no Modo Detetive: Toca o som de "Objection!",
+    a opção é destravada e preenchida com a frase exata de confronto.
+  * Usar a opção destravada concede +1 Ponto de Evidência.
+- Opções 2 e 3 (Isca / Risco Médio e Alto - Posições Embaralhadas):
+  * Ficam alternando de posição no grid para não criar padrões previsíveis.
+  * Ambas são perguntas inteligentes e estratégicas:
+    - Pergunta de Isca/Sondagem: Faz uma pergunta que induz o golpista a mentir e
+      gerar uma nova contradição no chat.
+    - Pergunta Arriscada/Provocação: Pressiona o suspeito a revelar informações,
+      porém com risco de sofrer pressão psicológica.
+
+5.6. AÇÃO DE BLOQUEIO E DENÚNCIA:
+- Cada confronto bem-sucedido soma +1 Evidência no medidor [ X / 3 ].
+- Ao atingir 3 Evidências, o botão vermelho pulsante [🚫 BLOQUEAR E DENUNCIAR]
+  é desbloqueado no Dossiê da direita.
+
+5.7. O DILEMA DOS AMIGOS REAIS VS FALSOS COLEGAS:
+- Amigo Real (Teste de Discernimento):
+  * Conversas legítimas de amigos de verdade aparecem nos turnos.
+  * Não possuem contradições maliciosas. Ao usar o Modo Detetive comparando as falas
+    com seu perfil real, o sistema confirma a coerência e transforma a Opção 1 em
+    "[🤝 Ajudar Colega]".
+  * O jogador não deve bloquear amigos reais!
+- Falso Colega (Armadilha Crítica):
+  * Se o jogador forçar "[🤝 Ajudar Colega]" com um suspeito malicioso sem checar
+    os fatos, entrega seus dados e causa GAME OVER IMEDIATO!
+
+5.8. ROTEIRO DOS 5 DIAS / TURNOS:
+- Dia 1: O Falso Colega de Sala (Tutorial, 1 suspeito).
+- Dia 2: O Falso Moderador de Robux vs O Amigo Real (2 contatos simultâneos).
+- Dia 3: O Estranho Insistente (migração de rede) & Falso Suporte Técnico (.exe) (2 contatos).
+- Dia 4: Pressão Multitask (3 contatos: Vendedor de contas, falso torneio e amiga real).
+- Dia 5: Modo Pesadelo / Turno Final (Aliciador de dados, QR code malicioso e foto roubada).
+
+5.9. TENSÃO E JUMPSCARE (ESTILO FNAF):
+- Cada chat tem uma Barra de Paciência que esvazia em tempo real.
+- Se a paciência esgotar: Tremor violento de tela (shake), flash vermelho, estática
+  visual e som estridente. O jogador perde 1 vida (fecha 1 janela Vida.exe).
+- 3 Vidas perdidas = Game Over (Conta Invadida).
+
+--------------------------------------------------------------------------------
+6. ARQUITETURA MODULAR RECOMENDADA (BLINDAGEM CONTRA "PROMPT TOO LONG")
+--------------------------------------------------------------------------------
+Para garantir que o código seja limpo, modular e fácil de manter (evitando que
+sessões futuras sofram com arquivos gigantes e estouro de tokens):
+
+Estrutura de Arquivos do Minigame 3:
+├── chat-patrol.html          -> Apenas marcação HTML sem CSS/JS inline
+├── css/
+│   └── chat-patrol.css       -> Estilização completa do Discord Dark Mode e Windows OS
+└── js/
+    ├── chat-patrol-audio.js  -> Sintetizador Web Audio API isolado (notificações, susto, objection)
+    ├── chat-patrol-data.js   -> Banco de dados dos 5 dias (perfis, mensagens, pistas, contradições)
+    └── chat-patrol-game.js   -> Motor de jogo (timers, modo detetive, validações e eventos)
+
+--------------------------------------------------------------------------------
+7. POLÍTICA DE CONTROLE DE VERSÃO (GIT COMMIT POLICY)
+--------------------------------------------------------------------------------
+- NUNCA realizar `git commit` ou `git push` de forma automática.
+- Commits devem ser efetuados exclusivamente sob solicitação expressa do usuário
+  após a realização e aprovação de testes locais no navegador.
+
+================================================================================
+FIM DO DOCUMENTO DE ESPECIFICAÇÃO
+================================================================================

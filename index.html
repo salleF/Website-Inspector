@@ -315,6 +315,9 @@
     .game-poster-box.theme-fake {
       background: linear-gradient(135deg, #ea580c, #f97316);
     }
+    .game-poster-box.theme-patrol {
+      background: linear-gradient(135deg, #4338ca, #5865f2);
+    }
     .game-poster-box.theme-senha {
       background: linear-gradient(135deg, #059669, #10b981);
     }
@@ -532,8 +535,8 @@
           <div class="medal-box locked" id="badge-fake-hunter" title="Medalha: Caçador de Fakes">
             🎭
           </div>
-          <div class="medal-box locked" id="badge-passwords" title="Medalha: Guardião de Senhas">
-            🔑
+          <div class="medal-box locked" id="badge-chat-patrol" title="Medalha: Vigilante do Chat">
+            💬
           </div>
           <div class="medal-box locked" id="badge-supreme" title="Medalha: Detetive Supremo">
             🏆
@@ -609,7 +612,29 @@
           </div>
         </article>
 
-        <!-- JOGO 3: SENHAS FORTES -->
+        <!-- JOGO 3: CHAT PATROL / VIGILANTE DA REDE -->
+        <article class="game-play-card">
+          <div class="game-poster-box theme-patrol">
+            <span>💬</span>
+            <div class="status-badge-chip ready">🟢 Jogar</div>
+          </div>
+          <div class="game-card-main">
+            <div class="game-title-text">
+              Vigilante do Chat!
+            </div>
+            <div class="game-bottom-action">
+              <div class="record-pill-row">
+                <span>Recorde:</span>
+                <strong id="record-chat-patrol">0 pts</strong>
+              </div>
+              <a href="chat-patrol.html" class="btn-game-launch">
+                ▶ JOGAR AGORA
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- JOGO 4: SENHAS FORTES -->
         <article class="game-play-card">
           <div class="game-poster-box theme-senha">
             <span>🔑</span>
@@ -631,7 +656,7 @@
           </div>
         </article>
 
-        <!-- JOGO 4: ESCUDO DE PRIVACIDADE -->
+        <!-- JOGO 5: ESCUDO DE PRIVACIDADE -->
         <article class="game-play-card">
           <div class="game-poster-box theme-privacidade">
             <span>🛡️</span>
@@ -667,14 +692,15 @@
         <button class="modal-btn-x" onclick="closeTeacherModal()">X</button>
       </div>
       <div style="font-size:14px; line-height:1.6; color:#1e293b;">
-        <p><strong>🎯 Objetivo:</strong> Ensinar crianças de 10 a 12 anos a navegar na web com atenção contra vírus, phishing e mentiras.</p>
+        <p><strong>🎯 Objetivo:</strong> Ensinar crianças de 10 a 12 anos a navegar na web com atenção contra vírus, phishing, desinformação e aliciadores em chats.</p>
         <br>
         <p><strong>⏱️ Dinâmica Rápida:</strong></p>
         <ol style="margin-left:20px; margin-top:8px;">
-          <li>Cada aluno coloca seu nome e avatar.</li>
-          <li>Jogam o <strong>Descubra se é uma Cilada</strong> (analisar links).</li>
-          <li>Jogam o <strong>Fato ou Fake no Celular</strong> (analisar mensagens).</li>
-          <li>Debate final sobre quem conquistou mais medalhas!</li>
+          <li>Cada aluno coloca seu nome e escolhe seu avatar.</li>
+          <li>Jogam o <strong>Descubra se é uma Cilada</strong> (analisar links e phishing).</li>
+          <li>Jogam o <strong>Fato ou Fake no Celular</strong> (analisar notícias e golpes).</li>
+          <li>Jogam o <strong>Vigilante do Chat</strong> (desmascarar perfis falsos e golpistas).</li>
+          <li>Debate final sobre quem conquistou a medalha de <strong>Detetive Supremo</strong>!</li>
         </ol>
       </div>
     </div>
@@ -726,7 +752,8 @@
       avatarLabel: "Detetive",
       scores: {
         website_inspector: 0,
-        fake_detector: 0
+        fake_detector: 0,
+        chat_patrol: 0
       },
       badges: []
     };
@@ -755,38 +782,45 @@
 
       const scoreInspector = profile.scores.website_inspector || 0;
       const scoreFakes = profile.scores.fake_detector || 0;
-      const totalScore = scoreInspector + scoreFakes;
+      const scoreChatPatrol = profile.scores.chat_patrol || 0;
+      const totalScore = scoreInspector + scoreFakes + scoreChatPatrol;
 
       document.getElementById('stat-total-score').innerText = totalScore;
       document.getElementById('record-inspector').innerText = `${scoreInspector} pts`;
       document.getElementById('record-fakes').innerText = `${scoreFakes} pts`;
+      const recordPatrolEl = document.getElementById('record-chat-patrol');
+      if (recordPatrolEl) {
+        recordPatrolEl.innerText = `${scoreChatPatrol} pts`;
+      }
 
       const badges = profile.badges || [];
       const badgeInspector = document.getElementById('badge-link-inspector');
       const badgeFakes = document.getElementById('badge-fake-hunter');
+      const badgeChat = document.getElementById('badge-chat-patrol');
       const badgeSupreme = document.getElementById('badge-supreme');
 
-      if (badges.includes('link_inspector')) {
-        badgeInspector.className = 'medal-box unlocked';
-      } else {
-        badgeInspector.className = 'medal-box locked';
+      if (badgeInspector) {
+        badgeInspector.className = badges.includes('link_inspector') ? 'medal-box unlocked' : 'medal-box locked';
       }
 
-      if (badges.includes('fake_hunter')) {
-        badgeFakes.className = 'medal-box unlocked';
-      } else {
-        badgeFakes.className = 'medal-box locked';
+      if (badgeFakes) {
+        badgeFakes.className = badges.includes('fake_hunter') ? 'medal-box unlocked' : 'medal-box locked';
       }
 
-      if (badges.includes('link_inspector') && badges.includes('fake_hunter')) {
-        badgeSupreme.className = 'medal-box unlocked';
+      if (badgeChat) {
+        badgeChat.className = badges.includes('chat_patrol') ? 'medal-box unlocked' : 'medal-box locked';
+      }
+
+      // Desbloqueia Detetive Supremo ao conquistar as 3 medalhas dos 3 jogos disponíveis
+      if (badges.includes('link_inspector') && badges.includes('fake_hunter') && badges.includes('chat_patrol')) {
+        if (badgeSupreme) badgeSupreme.className = 'medal-box unlocked';
         if (!badges.includes('supreme_detective')) {
           badges.push('supreme_detective');
           profile.badges = badges;
           saveProfile(profile);
         }
       } else {
-        badgeSupreme.className = 'medal-box locked';
+        if (badgeSupreme) badgeSupreme.className = 'medal-box locked';
       }
 
       document.getElementById('stat-badges-count').innerText = `${badges.length} / 4`;

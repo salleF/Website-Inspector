@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Patrol — Vigilante da Rede</title>
+  <style>
+    :root {
+      --dc-bg-chat: #313338;
+      --dc-bg-sidebar: #2b2d31;
+      --dc-bg-rail: #1e1f22;
+      --dc-bg-profile: #232428;
+      --dc-bg-input: #383a40;
+      --dc-blurple: #5865f2;
+      --dc-blurple-hover: #4752c4;
+      --dc-green: #23a55a;
+      --dc-yellow: #f0b232;
+      --dc-red: #f23f43;
+      --dc-red-glow: rgba(242, 63, 67, 0.4);
+      --dc-text-normal: #dbdee1;
+      --dc-text-muted: #949ba4;
+      --dc-text-header: #f2f3f5;
+      --dc-border: #3f4147;
+      --dc-card-bg: #111214;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'gg sans', 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100vh;
+      background-color: var(--dc-bg-rail);
+      color: var(--dc-text-normal);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* MAIN DISCORD APP LAYOUT (FLEX + GRID) */
+    .discord-app-layout {
+      display: grid;
+      grid-template-columns: 72px 260px 1fr 310px;
+      height: calc(100vh - 44px);
+      width: 100%;
+    }
+
+    /* WINDOWS OS TASKBAR (BOTTOM) */
+    .windows-taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background: #18191c;
+      border-top: 2px solid #2e3035;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      z-index: 999;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    }
+
+    .taskbar-left-cluster {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+    }
+
+    .btn-win-start {
+      background: linear-gradient(180deg, #35373c 0%, #202225 100%);
+      border: 1px solid #4f545c;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      height: 32px;
+      transition: all 0.15s;
+    }
+    .btn-win-start:hover {
+      background: linear-gradient(180deg, #4752c4 0%, #35373c 100%);
+      border-color: #5865f2;
+      box-shadow: 0 0 8px rgba(88, 101, 242, 0.5);
+    }
+
+    .taskbar-window-tab {
+      background: #2b2d31;
+      border: 1px solid #3f4147;
+      border-radius: 4px;
+      color: var(--dc-text-normal);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .taskbar-window-tab.heart-alive {
+      border-bottom: 2px solid var(--dc-green);
+    }
+    .taskbar-window-tab.heart-lost {
+      opacity: 0.25;
+      filter: grayscale(1);
+      text-decoration: line-through;
+      border-color: #202225;
+      transform: scale(0.92);
+    }
+
+    .btn-taskbar-detective {
+      background: #2b2d31;
+      border: 1px solid #5865f2;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      height: 32px;
+      transition: all 0.2s;
+    }
+    .btn-taskbar-detective:hover {
+      background: #35373c;
+    }
+    .btn-taskbar-detective.active {
+      background: #5865f2;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(88, 101, 242, 0.8);
+      animation: pulseDetectiveBtn 1.2s infinite alternate;
+    }
+    @keyframes pulseDetectiveBtn {
+      from { box-shadow: 0 0 4px #5865f2; }
+      to { box-shadow: 0 0 16px #5865f2; }
+    }
+
+    .taskbar-sys-tray {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--dc-text-muted);
+      padding-right: 6px;
+    }
+
+    .tray-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: default;
+    }
+    .tray-item.clickable {
+      cursor: pointer;
+    }
+    .tray-item.clickable:hover {
+      background: #2b2d31;
+      color: #ffffff;
+    }
+    .tray-clock-tag {
+      color: var(--dc-yellow);
+      font-weight: 700;
+    }
+
+    /* WINDOWS START MENU POPUP */
+    .windows-start-menu {
+      position: fixed;
+      bottom: 46px;
+      left: 8px;
+      width: 280px;
+      background: #1e1f22;
+      border: 2px solid #3f4147;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.7);
+      z-index: 1001;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: popStartMenu 0.15s ease-out;
+    }
+    .windows-start-menu.open {
+      display: flex;
+    }
+    @keyframes popStartMenu {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .start-menu-header {
+      background: linear-gradient(135deg, #5865f2, #35373c);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .start-menu-items {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 0;
+    }
+
+    .start-menu-item {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dc-text-normal);
+      cursor: pointer;
+      transition: background 0.15s;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .start-menu-item:hover {
+      background: #2b2d31;
+      color: #ffffff;
+    }
+    .start-menu-item.danger:hover {
+      background: var(--dc-red);
+      color: #ffffff;
+    }
+    .start-menu-divider {
+      height: 1px;
+      background: #2e3035;
+      margin: 4px 0;
+    }
+
+    /* DETECTIVE MODE HUD & CROSS-EXAMINATION */
+    body.detective-active .chat-main-area,
+    body.detective-active .suspect-dossier-panel,
+    body.detective-active .dm-sidebar {
+      outline: 2px dashed rgba(88, 101, 242, 0.4);
+    }
+
+    .detective-hud-bar {
+      position: absolute;
+      top: 48px;
+      left: 0;
+      width: 100%;
+      background: rgba(30, 31, 34, 0.95);
+      border-bottom: 2px solid #5865f2;
+      padding: 8px 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 50;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+    }
+    .detective-hud-bar.visible {
+      display: flex;
+    }
+
+    .detective-slot-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .detective-slot-box {
+      flex: 1;
+      background: #111214;
+      border: 1px dashed #4f545c;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--dc-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+    }
+    .detective-slot-box.filled-1 {
+      border: 1px solid var(--dc-yellow);
+      color: var(--dc-yellow);
+      background: rgba(240, 178, 50, 0.1);
+      font-weight: 700;
+    }
+    .detective-slot-box.filled-2 {
+      border: 1px solid #00c7ff;
+      color: #00c7ff;
+      background: rgba(0, 199, 255, 0.1);
+      font-weight: 700;
+    }
+
+    .btn-cross-examine {
+      background: #3f4147;
+      color: #949ba4;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: not-allowed;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-cross-examine.ready {
+      background: #5865f2;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(88, 101, 242, 0.6);
+    }
+    .btn-cross-examine.ready:hover {
+      background: #4752c4;
+      transform: scale(1.03);
+    }
+
+    .detective-feedback-toast {
+      position: absolute;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111214;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 60;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+      display: none;
+      animation: popModal 0.2s ease-out;
+    }
+    .detective-feedback-toast.success {
+      border: 1px solid var(--dc-green);
+      color: var(--dc-green);
+      display: block;
+    }
+    .detective-feedback-toast.mismatch {
+      border: 1px solid var(--dc-red);
+      color: var(--dc-red);
+      display: block;
+    }
+
+    /* EVIDENCE SELECTABLE HIGHLIGHTS */
+    .evidence-selectable {
+      cursor: default;
+      transition: all 0.15s;
+    }
+    body.detective-active .evidence-selectable {
+      cursor: pointer;
+      position: relative;
+      background: rgba(88, 101, 242, 0.08);
+      border-radius: 3px;
+      outline: 1px dashed rgba(88, 101, 242, 0.5);
+    }
+    body.detective-active .evidence-selectable:hover {
+      background: rgba(88, 101, 242, 0.2);
+      outline: 1px solid #5865f2;
+    }
+    .evidence-selected-1 {
+      background: rgba(240, 178, 50, 0.25) !important;
+      outline: 2px solid var(--dc-yellow) !important;
+      color: var(--dc-yellow) !important;
+    }
+    .evidence-selected-2 {
+      background: rgba(0, 199, 255, 0.25) !important;
+      outline: 2px solid #00c7ff !important;
+      color: #00c7ff !important;
+    }
+
+    /* CURRENT PLAYER FOOTER (CLICKABLE FOR MY PROFILE) */
+    .current-user-footer {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .current-user-footer:hover {
+      background: #35373c;
+    }
+
+    /* COLUMN 1: SERVER RAIL */
+    .server-rail {
+      background: var(--dc-bg-rail);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 8px;
+      border-right: 1px solid #111214;
+    }
+
+    .rail-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+      background: #313338;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .rail-icon:hover, .rail-icon.active {
+      border-radius: 16px;
+      background: var(--dc-blurple);
+      color: #ffffff;
+    }
+    .rail-icon.alert {
+      background: var(--dc-red);
+      color: #ffffff;
+      animation: pulseAlert 1s infinite alternate;
+    }
+
+    .rail-divider {
+      width: 32px;
+      height: 2px;
+      background: #35363c;
+      border-radius: 1px;
+      margin: 4px 0;
+    }
+
+    @keyframes pulseAlert {
+      from { transform: scale(1); box-shadow: 0 0 0px var(--dc-red); }
+      to { transform: scale(1.06); box-shadow: 0 0 12px var(--dc-red); }
+    }
+
+    /* COLUMN 2: DM LIST SIDEBAR */
+    .dm-sidebar {
+      background: var(--dc-bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #1e1f22;
+      overflow: hidden;
+    }
+
+    .dm-search-header {
+      padding: 10px;
+      border-bottom: 1px solid #1f2023;
+    }
+    .dm-search-box {
+      width: 100%;
+      background: var(--dc-bg-rail);
+      border: 1px solid #1e1f22;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 13px;
+      color: var(--dc-text-normal);
+      outline: none;
+    }
+
+    .dm-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--dc-text-muted);
+      text-transform: uppercase;
+      padding: 14px 16px 6px 16px;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dm-list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dm-card-item {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+      background: transparent;
+      gap: 6px;
+      position: relative;
+    }
+    .dm-card-item:hover {
+      background: #35373c;
+    }
+    .dm-card-item.active {
+      background: #404249;
+    }
+
+    .dm-card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dm-avatar-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 19px;
+      background: #4752c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 6px;
+      background: var(--dc-green);
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      border: 2px solid var(--dc-bg-sidebar);
+    }
+    .status-dot.idle { background: var(--dc-yellow); }
+    .status-dot.dnd { background: var(--dc-red); }
+
+    .dm-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .dm-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dc-text-header);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dm-preview {
+      font-size: 12px;
+      color: var(--dc-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* PATIENCE TIMER BAR */
+    .patience-timer-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .patience-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--dc-text-muted);
+    }
+    .patience-track {
+      width: 100%;
+      height: 6px;
+      background: #1e1f22;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .patience-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--dc-green);
+      transition: width 0.3s linear, background-color 0.3s;
+    }
+    .patience-fill.warning {
+      background: var(--dc-yellow);
+    }
+    .patience-fill.critical {
+      background: var(--dc-red);
+      animation: pulseCritical 0.5s infinite alternate;
+    }
+
+    @keyframes pulseCritical {
+      from { opacity: 1; }
+      to { opacity: 0.4; }
+    }
+
+    /* CURRENT USER FOOTER */
+    .current-user-footer {
+      height: 52px;
+      background: var(--dc-bg-profile);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 10px;
+      border-top: 1px solid #1b1c1e;
+    }
+    .user-footer-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .user-footer-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .user-footer-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-footer-tag {
+      font-size: 11px;
+      color: var(--dc-text-muted);
+    }
+
+    /* COLUMN 3: MAIN CHAT FEED */
+    .chat-main-area {
+      background: var(--dc-bg-chat);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-header-bar {
+      height: 48px;
+      border-bottom: 1px solid #202225;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    .chat-header-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 14px;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .chat-header-user {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dc-text-header);
+    }
+    .chat-header-tag {
+      font-size: 13px;
+      color: var(--dc-text-muted);
+      font-weight: 500;
+    }
+
+    .threat-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(242, 63, 67, 0.15);
+      color: var(--dc-red);
+      border: 1px solid rgba(242, 63, 67, 0.3);
+      margin-left: auto;
+      text-transform: uppercase;
+    }
+
+    /* CHAT MESSAGES SCROLL */
+    .chat-messages-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chat-welcome-banner {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 20px 0;
+      border-bottom: 1px solid #3f4147;
+      margin-bottom: 8px;
+    }
+    .welcome-avatar-large {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dc-text-header);
+    }
+    .welcome-desc {
+      font-size: 14px;
+      color: var(--dc-text-muted);
+    }
+
+    .chat-msg-row {
+      display: flex;
+      gap: 14px;
+      animation: fadeInMsg 0.25s ease-out;
+    }
+    @keyframes fadeInMsg {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background: #4752c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .msg-content-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .msg-header-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .msg-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dc-text-header);
+    }
+    .msg-timestamp {
+      font-size: 11px;
+      color: var(--dc-text-muted);
+    }
+    .msg-text-body {
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--dc-text-normal);
+      word-break: break-word;
+    }
+    .msg-text-body.player-reply {
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .typing-indicator-row {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dc-text-muted);
+      padding: 4px 0;
+    }
+    .typing-dots span {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--dc-text-muted);
+      margin: 0 1px;
+      animation: waveDots 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes waveDots {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); background: #ffffff; }
+    }
+
+    /* CHAT DIALOGUE CHOICES (INTERACTION BOX) */
+    .chat-dialogue-footer {
+      background: #2b2d31;
+      border-top: 1px solid #202225;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .dialogue-prompt-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--dc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dialogue-options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .dialogue-btn-choice {
+      background: var(--dc-bg-input);
+      border: 1px solid var(--dc-border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--dc-text-normal);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.35;
+    }
+    .dialogue-btn-choice:hover:not(:disabled) {
+      background: #474a52;
+      border-color: var(--dc-blurple);
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+    .dialogue-btn-choice:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .choice-badge-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* COLUMN 4: RIGHT SUSPECT DOSSIER */
+    .suspect-dossier-panel {
+      background: var(--dc-bg-sidebar);
+      border-left: 1px solid #1e1f22;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .dossier-header-banner {
+      height: 75px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      position: relative;
+    }
+    .dossier-avatar-large {
+      width: 68px;
+      height: 68px;
+      border-radius: 34px;
+      background: #5865f2;
+      border: 5px solid var(--dc-bg-sidebar);
+      position: absolute;
+      bottom: -28px;
+      left: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+
+    .dossier-card-body {
+      padding: 34px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .dossier-username-box {
+      background: var(--dc-bg-profile);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .dossier-user-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--dc-text-header);
+    }
+    .dossier-user-sub {
+      font-size: 12px;
+      color: var(--dc-text-muted);
+    }
+
+    .dossier-section {
+      background: var(--dc-bg-profile);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dossier-sec-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--dc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .dossier-sec-text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--dc-text-normal);
+    }
+
+    .dossier-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .dossier-info-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--dc-text-muted);
+      padding: 4px 0;
+      border-bottom: 1px solid #2b2d31;
+    }
+    .dossier-info-item strong {
+      color: var(--dc-text-normal);
+      font-weight: 600;
+    }
+
+    /* EVIDENCE METER */
+    .evidence-meter-box {
+      background: #111214;
+      border: 1px solid var(--dc-border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .evidence-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .evidence-title {
+      color: var(--dc-yellow);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .evidence-counter-val {
+      color: #ffffff;
+      background: #2b2d31;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .evidence-blocks-track {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      height: 12px;
+    }
+    .evidence-block-unit {
+      background: #2b2d31;
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+    .evidence-block-unit.filled {
+      background: var(--dc-green);
+      box-shadow: 0 0 6px rgba(35, 165, 90, 0.6);
+    }
+
+    .evidence-hint-msg {
+      font-size: 11px;
+      color: var(--dc-text-muted);
+      line-height: 1.35;
+    }
+
+    /* BAN BUTTON */
+    .btn-ban-suspect {
+      background: #3f4147;
+      color: #949ba4;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: not-allowed;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .btn-ban-suspect.unlocked {
+      background: var(--dc-red);
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 14px var(--dc-red-glow);
+      animation: pulseBanBtn 0.9s infinite alternate;
+    }
+    .btn-ban-suspect.unlocked:hover {
+      background: #da373c;
+      transform: translateY(-2px);
+    }
+
+    @keyframes pulseBanBtn {
+      from { transform: scale(1); box-shadow: 0 0 8px var(--dc-red); }
+      to { transform: scale(1.02); box-shadow: 0 0 18px var(--dc-red); }
+    }
+
+    /* FULLSCREEN JUMPSCARE / GLITCH OVERLAY */
+    .glitch-flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(242, 63, 67, 0.4);
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.08s;
+      mix-blend-mode: hard-light;
+    }
+    .glitch-flash-overlay.active {
+      opacity: 1;
+    }
+
+    body.screen-shake {
+      animation: shakeAnim 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-4px, 2px, 0); }
+      20%, 80% { transform: translate3d(5px, -3px, 0); }
+      30%, 50%, 70% { transform: translate3d(-7px, 5px, 0); }
+      40%, 60% { transform: translate3d(7px, -4px, 0); }
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--dc-bg-sidebar);
+      border: 2px solid var(--dc-border);
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      text-align: center;
+      animation: popModal 0.2s ease-out;
+    }
+    @keyframes popModal {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-icon-big {
+      font-size: 54px;
+    }
+    .modal-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .modal-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--dc-text-normal);
+      text-align: left;
+      background: #1e1f22;
+      padding: 14px;
+      border-radius: 8px;
+    }
+    .btn-modal-action {
+      background: var(--dc-blurple);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 0.15s;
+    }
+    .btn-modal-action:hover {
+      background: var(--dc-blurple-hover);
+    }
+    .btn-modal-action.danger {
+      background: var(--dc-red);
+    }
+    .btn-modal-action.danger:hover {
+      background: #da373c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GLITCH / JUMPSCARE OVERLAY -->
+  <div class="glitch-flash-overlay" id="glitch-overlay"></div>
+
+  <!-- 3-COLUMN DISCORD WORKSPACE -->
+  <main class="discord-app-layout">
+
+    <!-- COL 1: SERVER RAIL -->
+    <aside class="server-rail">
+      <div class="rail-icon active" title="Mensagens Diretas">
+        💬
+      </div>
+      <div class="rail-divider"></div>
+      <div class="rail-icon" title="Servidor dos Amigos da Escola">
+        🏫
+      </div>
+      <div class="rail-icon" title="Servidor de Games">
+        🎮
+      </div>
+      <div class="rail-icon" id="server-alert-icon" title="Alerta de Segurança!">
+        🛡️
+      </div>
+    </aside>
+
+    <!-- COL 2: DM LIST SIDEBAR -->
+    <aside class="dm-sidebar">
+      <div class="dm-search-header">
+        <input type="text" class="dm-search-box" value="Conversas Ativas" readonly>
+      </div>
+
+      <div class="dm-section-title">
+        <span>MENSAGENS DIRETAS</span>
+        <span id="dm-pending-count">1 Alerta</span>
+      </div>
+
+      <div class="dm-list-container" id="dm-contacts-list">
+        <!-- RENDERED PROCEDURALLY BY JAVASCRIPT -->
+      </div>
+
+      <!-- CURRENT PLAYER FOOTER (CLICK TO OPEN MY PROFILE) -->
+      <div class="current-user-footer" onclick="openMyProfileModal()" title="Clique para ver seu Perfil e Dados Escolares">
+        <div class="user-footer-avatar" id="footer-player-avatar">🕵️‍♂️</div>
+        <div class="user-footer-info">
+          <div class="user-footer-name" id="footer-player-name">Agente Secreto</div>
+          <div class="user-footer-tag">#2026 • 📁 Ver Meu Perfil</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COL 3: CENTRAL CHAT FEED -->
+    <section class="chat-main-area">
+      <!-- HEADER OF ACTIVE CONVERSATION -->
+      <div class="chat-header-bar">
+        <div class="chat-header-avatar" id="chat-active-avatar">👤</div>
+        <div>
+          <span class="chat-header-user" id="chat-active-name">Carregando...</span>
+          <span class="chat-header-tag" id="chat-active-tag">#0000</span>
+        </div>
+        <div class="threat-badge" id="chat-active-threat">Nível: Suspeito</div>
+      </div>
+
+      <!-- DETECTIVE MODE HUD & CROSS-EXAMINATION -->
+      <div class="detective-hud-bar" id="detective-hud-bar">
+        <div class="detective-slot-display">
+          <div class="detective-slot-box" id="detective-slot-1" onclick="clearDetectiveSelection(1)">
+            🟡 Elemento 1: (Selecione no Chat ou Perfil)
+          </div>
+          <span style="color:#5865f2; font-weight:800; font-size:12px;">VS</span>
+          <div class="detective-slot-box" id="detective-slot-2" onclick="clearDetectiveSelection(2)">
+            🔵 Elemento 2: (Selecione no Chat ou Perfil)
+          </div>
+        </div>
+        <button class="btn-cross-examine" id="btn-cross-examine" onclick="executeCrossExamine()">
+          ⚡ CRUZAR DADOS
+        </button>
+      </div>
+
+      <!-- DETECTIVE TOAST FEEDBACK -->
+      <div class="detective-feedback-toast" id="detective-toast"></div>
+
+      <!-- MESSAGES FEED -->
+      <div class="chat-messages-scroll" id="chat-messages-feed">
+        <!-- WELCOME BANNER -->
+        <div class="chat-welcome-banner">
+          <div class="welcome-avatar-large" id="welcome-avatar">👤</div>
+          <div class="welcome-title" id="welcome-title">Início da Conversa</div>
+          <div class="welcome-desc" id="welcome-desc">Esta é a mensagem direta de abertura.</div>
+        </div>
+        <!-- MESSAGE ROWS -->
+      </div>
+
+      <!-- TYPING INDICATOR -->
+      <div class="typing-indicator-row" id="typing-indicator">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span id="typing-username">Usuário está digitando...</span>
+      </div>
+
+      <!-- DIALOGUE CHOICES INTERACTION BAR -->
+      <div class="chat-dialogue-footer">
+        <div class="dialogue-prompt-label">
+          💬 Escolha sua ação ou investigue com o Modo Detetive:
+        </div>
+        <div class="dialogue-options-grid" id="dialogue-choices-grid">
+          <!-- 3 BUTTON CHOICES INJECTED BY JAVASCRIPT -->
+        </div>
+      </div>
+    </section>
+
+    <!-- COL 4: SUSPECT DOSSIER & BAN -->
+    <aside class="suspect-dossier-panel">
+      <div class="dossier-header-banner" id="dossier-banner">
+        <div class="dossier-avatar-large" id="dossier-avatar">👤</div>
+      </div>
+
+      <div class="dossier-card-body">
+        <div class="dossier-username-box">
+          <div class="dossier-user-title" id="dossier-name">Nome do Suspeito</div>
+          <div class="dossier-user-sub" id="dossier-tag">#0000</div>
+        </div>
+
+        <!-- ABOUT ME BIO -->
+        <div class="dossier-section">
+          <div class="dossier-sec-label">📝 Sobre Mim</div>
+          <div class="dossier-sec-text evidence-selectable" id="dossier-bio" data-evidence-source="dossier_bio" onclick="selectEvidenceFromElement(this)">
+            Carregando informações do perfil...
+          </div>
+        </div>
+
+        <!-- METADATA INFORMATION LIST -->
+        <div class="dossier-section">
+          <div class="dossier-sec-label">🔍 Dados de Registro</div>
+          <div class="dossier-info-list">
+            <div class="dossier-info-item evidence-selectable" data-evidence-source="dossier_created" onclick="selectEvidenceFromElement(this)">
+              <span>📅 Criação:</span>
+              <strong id="dossier-created">Hoje</strong>
+            </div>
+            <div class="dossier-info-item evidence-selectable" data-evidence-source="dossier_location" onclick="selectEvidenceFromElement(this)">
+              <span>📍 Localização:</span>
+              <strong id="dossier-location">Desconhecida</strong>
+            </div>
+            <div class="dossier-info-item evidence-selectable" data-evidence-source="dossier_mutual" onclick="selectEvidenceFromElement(this)">
+              <span>👥 Em Comum:</span>
+              <strong id="dossier-mutual">0 servidores</strong>
+            </div>
+            <div class="dossier-info-item evidence-selectable" data-evidence-source="dossier_verified" onclick="selectEvidenceFromElement(this)">
+              <span>🛡️ Verificação:</span>
+              <strong id="dossier-verified">Não Verificado</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVIDENCE GATHERING METER -->
+        <div class="evidence-meter-box">
+          <div class="evidence-header-row">
+            <span class="evidence-title">🎯 Evidências Coletadas</span>
+            <span class="evidence-counter-val" id="evidence-counter-label">0 / 3</span>
+          </div>
+          <div class="evidence-blocks-track" id="evidence-blocks-track">
+            <div class="evidence-block-unit"></div>
+            <div class="evidence-block-unit"></div>
+            <div class="evidence-block-unit"></div>
+          </div>
+          <div class="evidence-hint-msg" id="evidence-hint">
+            Use o Modo Detetive para cruzar mentiras e desbloquear o confronto!
+          </div>
+        </div>
+
+        <!-- BAN BUTTON -->
+        <button class="btn-ban-suspect" id="btn-ban-suspect" onclick="attemptBanSuspect()">
+          🔒 BLOQUEAR E DENUNCIAR
+        </button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- WINDOWS TASKBAR (BOTTOM) -->
+  <footer class="windows-taskbar">
+    <div class="taskbar-left-cluster">
+      <button class="btn-win-start" id="btn-win-start" onclick="toggleStartMenu()">
+        🪟 Iniciar
+      </button>
+
+      <!-- 3 HEARTS AS WINDOW TABS -->
+      <div class="taskbar-window-tab heart-alive" id="task-heart-1" title="Janela de Integridade 1">
+        ❤️ Vidas 1.exe
+      </div>
+      <div class="taskbar-window-tab heart-alive" id="task-heart-2" title="Janela de Integridade 2">
+        ❤️ Vidas 2.exe
+      </div>
+      <div class="taskbar-window-tab heart-alive" id="task-heart-3" title="Janela de Integridade 3">
+        ❤️ Vidas 3.exe
+      </div>
+
+      <!-- DETECTIVE MODE TOGGLE -->
+      <button class="btn-taskbar-detective" id="btn-taskbar-detective" onclick="toggleDetectiveMode()">
+        🔍 Modo Detetive: OFF
+      </button>
+    </div>
+
+    <div class="taskbar-sys-tray">
+      <div class="tray-item clickable" id="tray-audio-toggle" onclick="toggleAudio()">
+        <span id="tray-audio-label">🔊 Som: ON</span>
+      </div>
+      <div class="tray-item">
+        <span>🇧🇷 PTB</span>
+      </div>
+      <div class="tray-item tray-clock-tag" id="win-clock-shift">
+        📅 Dia 1 • 15:00
+      </div>
+    </div>
+  </footer>
+
+  <!-- WINDOWS START MENU POPUP -->
+  <div class="windows-start-menu" id="win-start-menu">
+    <div class="start-menu-header">
+      <span>🛡️ CyberKids OS v2.6 • Vigilante</span>
+    </div>
+    <div class="start-menu-items">
+      <button class="start-menu-item" onclick="openMyProfileModal(); toggleStartMenu();">
+        <span>👤</span>
+        <span>Meu Perfil & Dados Escolares</span>
+      </button>
+      <button class="start-menu-item" onclick="restartCurrentShift(); toggleStartMenu();">
+        <span>🔄</span>
+        <span>Reiniciar Turno Atual</span>
+      </button>
+      <button class="start-menu-item" onclick="openBriefingModal(); toggleStartMenu();">
+        <span>ℹ️</span>
+        <span>Ajuda & Instruções do Dia</span>
+      </button>
+      <div class="start-menu-divider"></div>
+      <button class="start-menu-item danger" onclick="requestExitToHub(); toggleStartMenu();">
+        <span>🚪</span>
+        <span>Sair para a Central de Jogos</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: MEU PERFIL (DADOS ESCOLARES DO JOGADOR) -->
+  <div class="modal-overlay" id="modal-my-profile">
+    <div class="modal-box" style="max-width: 520px; text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="modal-icon-big" style="font-size: 36px;">📁</div>
+          <div>
+            <div class="modal-title" style="font-size: 18px;">Minha Identidade Escolar</div>
+            <div style="font-size: 12px; color: var(--dc-text-muted);">Dados reais do seu agente (use no Modo Detetive)</div>
+          </div>
+        </div>
+        <button onclick="closeMyProfileModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="dossier-info-list" style="background: #1e1f22; padding: 14px; border-radius: 8px; font-size: 13px; gap: 10px;">
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_school" onclick="selectEvidenceFromElement(this)">
+          <span>🏫 Minha Escola:</span>
+          <strong>Colégio Estadual Santos Dumont</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_grade" onclick="selectEvidenceFromElement(this)">
+          <span>📚 Minha Turma:</span>
+          <strong>6º Ano A (Ensino Fundamental)</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_teacher" onclick="selectEvidenceFromElement(this)">
+          <span>👩‍🏫 Profe. de Ciências:</span>
+          <strong>Profe. Mariana</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_location" onclick="selectEvidenceFromElement(this)">
+          <span>📍 Cidade / Estado:</span>
+          <strong>Curitiba - PR</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_neighborhood" onclick="selectEvidenceFromElement(this)">
+          <span>🏡 Meu Bairro:</span>
+          <strong>Jardim Botânico</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_age" onclick="selectEvidenceFromElement(this)">
+          <span>🎂 Minha Idade / Ano:</span>
+          <strong>11 anos (Nascido em 2015)</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_game" onclick="selectEvidenceFromElement(this)">
+          <span>🎮 Jogo Favorito:</span>
+          <strong>BlockCraft Online</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_account_age" onclick="selectEvidenceFromElement(this)">
+          <span>📅 Idade da Minha Conta:</span>
+          <strong>1 ano de registro</strong>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--dc-text-muted); background: #111214; padding: 10px; border-radius: 6px;">
+        💡 <strong>Dica do Detetive:</strong> No Modo Detetive, você pode clicar em qualquer item acima para compará-lo com as afirmações do suspeito no chat!
+      </div>
+
+      <button class="btn-modal-action" onclick="closeMyProfileModal()">
+        FECHAR PERFIL
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMAÇÃO DE SAÍDA -->
+  <div class="modal-overlay" id="modal-confirm-exit">
+    <div class="modal-box">
+      <div class="modal-icon-big">🚪</div>
+      <div class="modal-title">Sair para a Central de Jogos?</div>
+      <div class="modal-desc" style="text-align: center;">
+        Você está prestes a sair do jogo. O progresso do turno atual será perdido.<br><br>
+        Deseja realmente voltar para a Central de Jogos?
+      </div>
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button class="btn-modal-action danger" style="flex: 1;" onclick="window.location.href='index.html'">
+          Sim, Sair
+        </button>
+        <button class="btn-modal-action" style="flex: 1;" onclick="closeExitConfirmation()">
+          Continuar Jogando
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BRIEFING INÍCIO DE TURNO -->
+  <div class="modal-overlay show" id="modal-briefing">
+    <div class="modal-box">
+      <div class="modal-icon-big" id="modal-briefing-icon">🛡️</div>
+      <div class="modal-title" id="modal-briefing-title">Turno 1: Falso Colega</div>
+      <div class="modal-desc" id="modal-briefing-desc">
+        Bem-vindo ao Chat Patrol! Alguém está enviando mensagens suspeitas fingindo ser seu colega da escola.
+        <br><br>
+        1. Compare as mensagens com o <strong>Dossiê</strong> à direita ou com seu <strong>Meu Perfil</strong>.
+        <br>
+        2. Ative o <strong>Modo Detetive</strong> na barra de tarefas para cruzar contradições.
+        <br>
+        3. Desbloqueie o <strong>Confronto</strong> ou ajude o colega legítimo!
+      </div>
+      <button class="btn-modal-action" onclick="startCurrentShift()">
+        ▶ INICIAR TURNO
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: TURNO CONCLUÍDO -->
+  <div class="modal-overlay" id="modal-shift-complete">
+    <div class="modal-box">
+      <div class="modal-icon-big">🎉</div>
+      <div class="modal-title">Turno Concluído com Sucesso!</div>
+      <div class="modal-desc" id="modal-shift-summary">
+        Você identificou as mentiras e protegeu sua conta com maestria.
+      </div>
+      <button class="btn-modal-action" onclick="advanceToNextShift()">
+        ▶ PRÓXIMO TURNO
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: VITÓRIA SUPREMA (FIM DO DIA 5) -->
+  <div class="modal-overlay" id="modal-victory">
+    <div class="modal-box">
+      <div class="modal-icon-big">🏆</div>
+      <div class="modal-title">VITÓRIA! VIGILANTE SUPREMO</div>
+      <div class="modal-desc">
+        Parabéns, Detetive! Você sobreviveu aos 5 turnos de alta tensão e desmascarou todos os golpistas!
+        <br><br>
+        🏅 <strong>Nova Medalha Desbloqueada:</strong> Vigilante do Chat (chat_patrol)
+        <br>
+        ⭐ <strong>Pontos Obtidos:</strong> +100 Pontos adicionados ao seu perfil!
+      </div>
+      <button class="btn-modal-action" onclick="window.location.href='index.html'">
+        🏠 VOLTAR À CENTRAL DE JOGOS
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: GAME OVER (CONTA COMPROMETIDA) -->
+  <div class="modal-overlay" id="modal-game-over">
+    <div class="modal-box">
+      <div class="modal-icon-big">💀</div>
+      <div class="modal-title" style="color:var(--dc-red);">CONTA COMPROMETIDA!</div>
+      <div class="modal-desc" id="modal-game-over-desc">
+        A paciência do suspeito esgotou ou você caiu em um golpe grave. Suas vidas acabaram!
+        <br><br>
+        Lembre-se: golpistas usam pressão de tempo e perfis falsos para enganar. Fique sempre atento às contradições!
+      </div>
+      <button class="btn-modal-action danger" onclick="restartCurrentShift()">
+        🔄 TENTAR NOVAMENTE ESTE TURNO
+      </button>
+    </div>
+  </div>
+
+  <script src="chat-patrol-audio.js"></script>
+  <script src="chat-patrol-data.js"></script>
+  <script src="chat-patrol-game.js"></script>
+</body>
+</html>
