@@ -1,0 +1,62 @@
+{
+  "task": "Preparar CyberKids Arcade para aula de segurança digital",
+  "updatedAt": "2026-09-22T21:29:37.2071363-03:00",
+  "phase": "publishing",
+  "repository": "https://github.com/salleF/Website-Inspector",
+  "directory": "C:\\Users\\Matheus\\Documents\\Pessoal\\Website-Inspector",
+  "baseCommit": "3c80252",
+  "branch": "fix/classroom-readiness",
+  "completed": [
+    "Clone criado e git pull --ff-only conferido",
+    "Auditoria inicial e revisão cruzada com três executores em arquivos exclusivos",
+    "Três jogos corrigidos e dois jogos concluídos, todos integrados ao perfil",
+    "Dados, lógica, conteúdo educativo, teclado, acessibilidade e telas revisados",
+    "9 testes Node e25 testes Playwright passaram na árvore integrada",
+    "Fallback com som e CRT ativados sem APIs opcionais passou em verificação complementar",
+    "36 capturas geradas e telas representativas inspecionadas; rolagem do Inspector corrigida",
+    "Documentação e workflow de validação adicionados",
+    "Configuração Pages, permissão WRITE, caminhos e 14 hashes de runtime conferidos antes de publicar"
+  ],
+  "decisions": [
+    "Manter site estático sem backend e sem dependências para jogar",
+    "Usar apelidos e dados fictícios; não solicitar senhas reais",
+    "Tempo livre no Chat e bloqueio seguro sem confronto obrigatório",
+    "Medalhas concedidas na conclusão; suprema exige os cinco jogos",
+    "Publicação no GitHub Pages autorizada pelo usuário",
+    "Preservar Pages existente: main, raiz; validar CI na branch antes de promover main"
+  ],
+  "pending": [
+    "Commit e push da branch de correções",
+    "Aguardar CI Linux aprovada",
+    "Promover main sem force e acompanhar Pages",
+    "Validar páginas e recursos públicos"
+  ],
+  "verification": {
+    "summary": "docs/validation-summary.json",
+    "audit": "docs/audit.json",
+    "browserResults": "test-results/results.json",
+    "commands": [
+      "npm test",
+      "npx playwright test tests/browser/smoke.spec.cjs --grep \"Sem armazenamento\" --output=test-results-api --reporter=list"
+    ],
+    "report": "docs/VALIDATION.md",
+    "screenshots": "test-results/screenshots"
+  },
+  "server": {
+    "url": "http://127.0.0.1:8765",
+    "sessionId": 47034,
+    "command": "npm start"
+  },
+  "limitations": [
+    "Validação de navegador em Chromium com viewports emulados; sem Safari, leitores de tela ou aparelhos físicos",
+    "GitHub Pages remoto não atualizado",
+    "Aplicação da aula com crianças depende do professor; cinco jogos completos podem precisar de mais de uma aula"
+  ],
+  "resume": [
+    "Ler STATUS.json e docs/VALIDATION.md",
+    "Conferir git status --short antes de editar",
+    "npm start para iniciar local; npm ci e npx playwright install chromium se precisar instalar testes",
+    "npm test para revalidar após novas alterações"
+  ],
+  "claudeMemory": "Nenhuma memória localizada para este repositório; pasta Claude não foi alterada. Estado atual e decisões estão neste arquivo."
+}

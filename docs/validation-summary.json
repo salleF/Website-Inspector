@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-09-22T21:21:06.3414725-03:00",
+  "baseCommit": "3c80252",
+  "branch": "fix/classroom-readiness",
+  "nodeTests": {
+    "failed": 0,
+    "passed": 9
+  },
+  "browserTests": {
+    "passed": 25,
+    "failed": 0,
+    "flaky": 0,
+    "durationMs": 86701.45700000001,
+    "skipped": 0
+  },
+  "supplementalCheck": {
+    "name": "Fallback com controles de som e CRT ativados sem AudioContext/WebGL/localStorage",
+    "failed": 0,
+    "passed": 1
+  },
+  "viewports": [
+    320,
+    390,
+    768,
+    1366
+  ],
+  "chat": {
+    "steps": 42,
+    "clues": 37,
+    "contacts": 11,
+    "maxScore": 1015,
+    "shifts": 5
+  },
+  "inspector": {
+    "rounds": 10,
+    "bank": 110,
+    "cardsPerGame": 90,
+    "maxScore": 900
+  },
+  "fakeDetector": {
+    "messages": 10,
+    "maxScore": 100
+  },
+  "password": {
+    "maxScore": 120,
+    "missions": 6
+  },
+  "privacy": {
+    "maxScore": 120,
+    "missions": 6
+  },
+  "screenshots": "test-results/screenshots",
+  "publication": "Somente cópia local; sem commit/push/deploy",
+  "sha256": {
+    "chat-patrol-data.js": "110D0CC17E2AA849F2BAD5DCF7E634BE2C8495B0EFFC83CF6858F1111E15900F",
+    "learning-games.css": "FF606CB8185809BD279365CFF3281EABCAEFA75B161BECF519952E206F25D0D0",
+    "detetive_web_game.html": "E18CB38B75CC9445253A6688BE140F1295863014A7DD8E69EC2F5FE4872C3CE8",
+    "chat-patrol-game.js": "6568911E2BC1858EDA0752A2F5B0517C77C1A1A6218608451CFCDD69AE8C0E75",
+    "chat-patrol-audio.js": "1880968D63D49EAF928A89C3DAB2D0015761C69A235ABE0E51CBFC2E8072D883",
+    "fake-detector.html": "E92D94CFD9555A62690686184F5F14E4A8900D4D6387A3A2F6166CB1439B78A6",
+    "website-inspector.html": "B4AACBB35CF760B1E87198506BEA50D8CF2543F2E4F9ACB6B4870EEC303B13F4",
+    "learning-games.js": "8B8B5C554B06AE106BAD19CAD2D50D8AF20C4BC25EDCDCF185D0D25D93F4EF59",
+    "profile.js": "A579086A7564D5FF4E660812EF5E2DF585F9165F2E6ADE6922C226E18657E509",
+    "secret-password.html": "333C8D3F5AB5A90CDBF5D06F3ADDDCEFAA7B229606D3357C781FEC07CC0A55C2",
+    "chat-patrol.html": "BB53F717653BC6711C9CC0036CF2148626F4CD5EFCF66C7EC0A7E0A7D67F3B88",
+    "privacy-shield.html": "A880C57711CF7115804AFD6704F5836E2DF7376F3035B2AC815D35C97894ECE1",
+    "favicon.svg": "E7903B505F748A8441BC969E2D159803ED8014538CCB5F54EB160EEEA198F09B",
+    "index.html": "E299B0BE51E3E2148972DF6D9B370C8683DCF21462C840C20D291C505145649E"
+  }
+}

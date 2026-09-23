@@ -1,88 +1,78 @@
-# 🕹️ CyberKids Arcade — Central de Jogos de Segurança Digital
-> **Plataforma interativa de jogos educativos de cibersegurança e educação midiática para crianças de 10 a 12 anos.**
+# CyberKids Arcade
 
-![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-blue.svg)
-![Tecnologias](https://img.shields.io/badge/Tecnologias-HTML5%20%7C%20CSS3%20%7C%20JS%20%7C%20WebGL%20%7C%20Web%20Audio-orange.svg)
-![Público](https://img.shields.io/badge/P%C3%BAblico-10%20a%2012%20anos-green.svg)
-![Status](https://img.shields.io/badge/Status-Online%20no%20GitHub%20Pages-brightgreen.svg)
+Cinco jogos de segurança digital para uma aula acompanhada por professor, voltada a crianças de 10 a 12 anos. O site usa HTML, CSS e JavaScript, sem servidor de dados e sem dependências externas para jogar.
 
----
+## Abrir para a aula
 
-## 🎯 Sobre a Plataforma
+Com Node.js instalado, execute na pasta do projeto:
 
-A **CyberKids Arcade** é uma central interativa de jogos acadêmicos inspirada na era de ouro dos portais web clássicos (como ClickJogos, Miniclip e Jogos360). Criada com propósitos pedagógicos, a plataforma prepara estudantes do Ensino Fundamental para navegar pela internet de maneira crítica, segura e consciente contra golpes, phishing, desinformação e aliciadores.
+```powershell
+npm start
+```
 
----
+Abra [a central local](http://127.0.0.1:8765). Não é necessário instalar pacotes para iniciar o servidor local. Alternativa: `python -m http.server 8765 --bind 127.0.0.1`.
 
-## 🎮 Catálogo de Jogos da Central
+Os arquivos também podem ser servidos pelo GitHub Pages. O endereço público do repositório é [Website Inspector](https://sallef.github.io/Website-Inspector/); mudanças locais só aparecem lá depois de publicação. Use o mesmo navegador e a mesma origem durante a aula para manter o progresso.
 
-### 1. 🔍 Website Inspector (Google 2006)
-- **Tema:** Leitura crítica de links, detecção de *phishing*, malwares e *typosquatting* (erros intencionais de digitação).
-- **Mecânica:** Os alunos viajam no tempo até a interface do **Google de 2006** (com efeitos de TV de Tubo CRT via WebGL e áudio retro) e analisam entre **7 e 11 links** em 10 rodadas de pesquisas escolares reais.
-- **Dificuldade:** Progressiva em 3 níveis (Fácil, Médio e Difícil).
+## Jogos
 
-### 2. 🎭 Detector de Fakes & Golpes (Ajude a Vovó!)
-- **Tema:** Combate a *fake news*, boatos, mensagens fraudulentas e engenharia social.
-- **Mecânica:** Em um simulador de smartphone em primeira pessoa na sala da Vovó Jurema, os alunos julgam notificações reais entre **🟢 É Fato / Confiável** vs **🔴 É Fake / Golpe** antes que a paciência da vovó se esgote.
+| Jogo | Atividade | Progresso |
+| --- | --- | --- |
+| Website Inspector | Analisar endereço, contexto e pedidos de sites simulados | 10 rodadas; recorde e medalha ao concluir |
+| Detector de Fakes | Ajudar a Vovó Jurema a verificar mensagens simuladas | 10 notificações; explicação após cada escolha |
+| Chat Patrol | Investigar conversas, cruzar pistas e escolher formas de proteção | 5 turnos e 11 contatos; bloqueio disponível sem confronto obrigatório |
+| Senha Secreta | Montar uma frase de treino e aprender a proteger contas | 6 missões; nunca solicita uma senha real |
+| Escudo de Privacidade | Proteger um perfil fictício em situações do cotidiano | 6 cenários; permite aprender e corrigir escolhas |
 
-### 3. 💬 Chat Patrol / Vigilante da Rede
-- **Tema:** Identificação de perfis falsos, aliciamento digital, proteção de dados íntimos/pessoais e confrontação de contradições em aplicativos de mensagem.
-- **Mecânica:** Inspirado na tensão e multitarefa de *Five Nights at Freddy's (FNAF)*, o jogador monitora um aplicativo realista no estilo **Discord Dark Mode** durante **5 Turnos / Dias**.
-- **Destaques:**
-  - **Barra de Paciência em Tempo Real:** Se o tempo esgotar, ocorre um susto visual (*screen-shake* + flash vermelho + som estridente de estática) e o jogador perde 1 vida.
-  - **Dossiê do Usuário:** Cruzamento de dados da bio, data de criação da conta e conexões mútuas para encontrar furos e contradições.
-  - **Confronto & Banimento:** 3 opções de diálogo por rodada (Contra-ataque, Neutro, Ingênuo). Ao acumular evidências suficientes, o botão **`[🚫 BLOQUEAR E DENUNCIAR]`** é liberado para banir o golpista.
-  - **Discernimento Real:** O jogador deve aprender a não bloquear amigos e colegas legítimos que pedem ajuda real.
+Cada jogo tem instruções, retorno à central e reinício. As simulações não abrem os endereços suspeitos, não enviam mensagens, não instalam arquivos e não fazem denúncias reais. Não é preciso criar conta em nenhuma rede social para participar.
 
-### 4. 🔑 Crie sua Senha Secreta! *(Em Breve)*
-- Treinamento prático para criação de passphrases robustas e seguras.
+## Perfil e conquistas
 
-### 5. 🛡️ Escudo de Privacidade! *(Em Breve)*
-- Conscientização sobre configurações de privacidade em redes sociais e controle de exposição de dados.
+Use um apelido fictício. O perfil fica somente no `localStorage` deste navegador, na chave `cyberkids_profile`. Nenhum dado é enviado a um servidor. Os recordes guardam a maior pontuação de cada jogo, e a medalha é concedida pela conclusão da atividade. As cinco medalhas de jogos liberam a sexta, Detetive Supremo.
 
----
+`profile.js` valida o formato dos dados e recupera perfis antigos, incompletos ou corrompidos. Se o navegador bloquear o armazenamento, um aviso explica que o progresso será mantido apenas na página atual. Reiniciar perfil limpa somente os dados desta plataforma neste navegador.
 
-## 🏆 Sistema de Perfil do Aluno e Conquistas
+Não use os pontos como avaliação formal do aluno. São registros locais de uma atividade didática, sem autenticação ou proteção contra edição pelas ferramentas do navegador.
 
-- **Escolha de Avatar:** 6 personagens temáticos (Detetive 🕵️‍♂️, Cyber Bot 🤖, Raposa 🦊, Gato 🐱, Mago 🧙‍♂️, Heroína 🦸‍♀️).
-- **Painel de Agente:** Nome personalizado e ranking progressivo (*Nível 1 • Recruta 🔍 ➔ Nível 2 • Detetive 🛡️ ➔ Nível 3 • Mestre 🏆*).
-- **Galeria de 4 Medalhas:**
-  - 🔍 *Mestre dos Links* (desbloqueada no Website Inspector).
-  - 🎭 *Caçador de Fakes* (desbloqueada no Detector de Fakes).
-  - 💬 *Vigilante do Chat* (desbloqueada ao sobreviver aos 5 turnos do Chat Patrol).
-  - 🏆 *Detetive Supremo* (desbloqueada automaticamente ao conquistar todas as medalhas).
-- **Salvamento Automático:** Todo o progresso, pontuação e conquistas são salvos no navegador via `localStorage` (`cyberkids_profile`).
-- **Botão Resetar Turma:** Permite ao professor zerar os dados instantaneamente para uma nova turma.
+## Roteiro de 50 minutos
 
----
+1. **5 min:** explicar que os casos e dados são fictícios e escolher um apelido.
+2. **10 min:** Inspector, analisando algumas rodadas em conjunto.
+3. **10 min:** Detector de Fakes e conversa sobre como verificar antes de compartilhar.
+4. **10 min:** Chat Patrol. A criança pode encerrar um contato e chamar um adulto de confiança sem discutir.
+5. **10 min:** dividir a turma entre Senha Secreta e Escudo de Privacidade.
+6. **5 min:** debate final e troca de aprendizados.
 
-## 👨‍🏫 Guia do Professor & Roteiro Pedagógico em Sala de Aula
+Completar todas as rodadas e turnos dos cinco jogos pode exigir outra aula. Não force velocidade de leitura. Sons e efeitos intensos não são necessários para jogar, e o Chat não pune o tempo usado para ler.
 
-A plataforma conta com um modal integrado com sugestão de roteiro para **45 a 50 minutos** de aula de informática ou cidadania digital:
-1. **Ambientação (5 min):** Apresentação do papel de agente e personalização do avatar na Central.
-2. **Missão 1 - Website Inspector (15 min):** Inspeção de URLs, identificação de domínios falsos e golpes de download.
-3. **Missão 2 - Detector de Fakes (10 min):** Julgamento de notícias falsas e promoções enganosas de WhatsApp/SMS.
-4. **Missão 3 - Vigilante do Chat (15 min):** Investigação de perfis suspeitos, proteção de endereço e fotos privadas no chat.
-5. **Debate e Conclusão (5 min):** Comparação de medalhas conquistadas e debate sobre situações reais vivenciadas pelos alunos.
+## Validação técnica
 
----
+Node.js 24 e navegadores Chromium são usados na suíte automatizada:
 
-## 🌐 Como Acessar Online
+```powershell
+npm ci
+npx playwright install chromium
+npm test
+```
 
-O projeto está publicado e disponível gratuitamente no GitHub Pages:
-👉 **[https://sallef.github.io/Website-Inspector/](https://sallef.github.io/Website-Inspector/)**
+Os testes cobrem perfil, navegação, partidas, reinícios, cliques repetidos, persistência, falta de APIs opcionais, responsividade e acessibilidade automatizada. Capturas e resultados ficam em `test-results/`. A configuração de CI fica em `.github/workflows/validate.yml`.
 
----
+Consulte [o relatório de validação](docs/VALIDATION.md), [os achados da revisão](docs/audit.json) e [o estado para retomada](STATUS.json). Não há etapa de build: a pasta do projeto contém o site pronto para servir.
 
-## 🛠️ Tecnologias Utilizadas (Zero Dependências)
+## Arquitetura
 
-- **HTML5 & CSS3 Moderno:** Layout responsivo *edge-to-edge*, tema Discord Dark Mode autêntico e animações CSS puras.
-- **JavaScript (Vanilla ES6+):** Máquinas de estado para os 3 jogos, timers em tempo real e persistência no `localStorage`.
-- **WebGL (GLSL Shaders):** Efeitos de monitor CRT retrô no Website Inspector.
-- **Web Audio API:** Sintetizador sonoro integrado (chimes do Discord, estática FNAF, pops de mensagem, arpeggios e martelo de ban) sem arquivos de áudio externos pesados.
+- `index.html`: central, apelido, avatares e guia do professor.
+- `profile.js`: schema e persistência compartilhada.
+- `website-inspector.html` e `fake-detector.html`: jogos clássicos.
+- `chat-patrol.html`, `chat-patrol-data.js`, `chat-patrol-game.js`, `chat-patrol-audio.js`: apresentação, roteiro, motor e áudio do Chat.
+- `secret-password.html`, `privacy-shield.html`, `learning-games.js`, `learning-games.css`: jogos de senha e privacidade.
+- `detetive_web_game.html`: compatibilidade do endereço antigo, encaminhando ao Inspector atual.
+- `Imagens/`: recursos locais do Detector de Fakes.
+- `scripts/serve.cjs`: servidor de desenvolvimento restrito à máquina local.
+- `tests/`: regressões e verificações no navegador.
 
----
+## Referências educativas
 
-## 📜 Licença
+O conteúdo foi revisado com apoio da [Cartilha do CERT.br](https://cartilha.cert.br/dicas-rapidas/) e do [Canal de Ajuda da SaferNet](https://new.safernet.org.br/helpline). O cadeado/HTTPS indica conexão criptografada, não a honestidade de um site, como explica o [Chromium](https://blog.chromium.org/2023/05/an-update-on-lock-icon.html).
 
-Este projeto é de uso **livre e educacional** (Licença MIT). Fique à vontade para utilizar em escolas, oficinas de cibersegurança e feiras de ciências!
+Na vida real, não envie senhas, códigos ou dados pessoais em conversas suspeitas. Procure um adulto de confiança. Errar ou receber uma mensagem indesejada não torna a criança culpada.

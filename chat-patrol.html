@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Patrol — Vigilante da Rede</title>
+  <title>Chat Patrol: Vigilante da Rede</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <style>
     :root {
       --dc-bg-chat: #313338;
@@ -1138,6 +1139,109 @@
     .btn-modal-action.danger:hover {
       background: #da373c;
     }
+    :root {
+      --dc-text-muted: #b3bac4;
+      --dc-green: #7be0aa;
+      --dc-red: #ff9a9e;
+      --dc-blurple: #4854cb;
+    }
+    button { font: inherit; }
+    button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+      outline: 3px solid #ffe180;
+      outline-offset: 3px;
+    }
+    button:disabled { cursor: default; opacity: .65; }
+    .discord-app-layout { grid-template-columns: 56px 210px minmax(0, 1fr) 280px; height: calc(100dvh - 56px); }
+    .discord-app-layout > * { min-width: 0; min-height: 0; }
+    .windows-taskbar { height: 56px; gap: 8px; }
+    .taskbar-left-cluster, .taskbar-sys-tray { gap: 6px; }
+    .taskbar-window-tab { min-width: 0; padding: 5px; }
+    .taskbar-window-tab.heart-lost { text-decoration: none; }
+    .tray-item { color: var(--dc-text-normal); }
+    button.tray-item { background: transparent; border: 1px solid var(--dc-border); border-radius: 6px; min-height: 40px; padding: 6px; cursor: pointer; }
+    .btn-win-start, .btn-taskbar-detective { min-height: 40px; }
+    .btn-taskbar-detective.active, .btn-ban-suspect.ready, #server-alert-icon { animation: none; }
+    .current-user-footer { border: 0; color: var(--dc-text-normal); text-align: left; width: 100%; flex-shrink: 0; }
+    .current-user-footer:focus-visible { outline-offset: -4px; }
+    .dm-contact-item { border: 0; background: transparent; text-align: left; width: 100%; color: var(--dc-text-normal); }
+    .dm-name-text, .dm-threat-tag { display: block; }
+    .dm-contact-item .dm-threat-tag { white-space: normal; line-height: 1.4; }
+    .dm-section-title { padding: 14px 10px; }
+    .chat-header-bar { min-height: 54px; height: auto; padding: 10px; flex-wrap: wrap; flex-shrink: 0; }
+    .chat-header-bar > div { min-width: 0; overflow-wrap: anywhere; }
+    .chat-header-tag { margin-left: 5px; }
+    .threat-badge { color: #ffe180; background: #403721; border-color: #917737; }
+    .detective-hud-bar { position: static; flex-shrink: 0; padding: 8px; flex-wrap: wrap; }
+    .detective-slot-display { width: 100%; flex-basis: 100%; }
+    .detective-slot-box { white-space: normal; text-align: left; min-height: 44px; overflow-wrap: anywhere; font-size: 12px; cursor: pointer; }
+    .btn-cross-examine { min-height: 44px; width: 100%; color: var(--dc-text-normal); }
+    .detective-feedback-toast { position: static; transform: none; flex-shrink: 0; margin: 8px; max-height: 110px; overflow-y: auto; padding: 10px; font-size: 13px; line-height: 1.45; }
+    .detective-feedback-toast.success { color: #a4efc4; }
+    .detective-feedback-toast.mismatch { color: #ffb2b5; }
+    .chat-messages-scroll { min-height: 100px; padding: 14px; }
+    .chat-msg-row { border: 0; background: transparent; text-align: left; padding: 8px; width: 100%; color: inherit; flex-shrink: 0; }
+    .msg-content-wrap { min-width: 0; }
+    .msg-header-row { flex-wrap: wrap; }
+    .msg-avatar { width: 32px; height: 32px; font-size: 20px; }
+    .msg-text-body { font-size: 15px; }
+    .chat-dialogue-footer { flex-shrink: 0; max-height: 37vh; overflow-y: auto; }
+    .dialogue-btn-choice { min-height: 44px; }
+    .dialogue-btn-choice.locked { opacity: 1; color: #c7ced8; }
+    .suspect-dossier-panel { overflow-y: auto; }
+    .dossier-user-title { overflow-wrap: anywhere; }
+    .dossier-info-item { min-height: 44px; gap: 12px; }
+    .dossier-info-item strong { text-align: right; overflow-wrap: anywhere; }
+    .dossier-sec-text { min-height: 44px; }
+    .btn-ban-suspect { min-height: 48px; background: #892e37; color: #fff; }
+    .btn-ban-suspect.ready { background: #892e37; color: #fff; }
+    .btn-modal-action.danger { background: #892e37; color: #fff; }
+    .modal-overlay { overflow-y: auto; }
+    .modal-box { max-height: calc(100dvh - 32px); overflow-y: auto; padding: 20px; gap: 14px; }
+    .modal-desc { white-space: pre-line; }
+    .profile-rules { display: flex; flex-direction: column; gap: 12px; background: #1e1f22; padding: 14px; border-radius: 8px; }
+    .profile-rules .dossier-info-item { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px; }
+    .profile-rules strong { text-align: left; font-size: 14px; font-weight: 500; line-height: 1.5; }
+    .profile-caption { color: var(--dc-text-muted); font-size: 13px; line-height: 1.5; }
+    .windows-start-menu { bottom: 64px; max-height: calc(100dvh - 80px); overflow-y: auto; max-width: calc(100vw - 24px); }
+    .glitch-flash-overlay { display: none !important; }
+    @media (max-width: 1120px) {
+      .server-rail { display: none; }
+      .discord-app-layout { grid-template-columns: 190px minmax(0, 1fr) 250px; }
+      .tray-clock-tag { display: none; }
+    }
+    @media (max-width: 900px), (max-height: 650px) {
+      html, body { height: auto; min-height: 100dvh; overflow: auto; }
+      .discord-app-layout { display: flex; flex-direction: column; height: auto; padding-bottom: 150px; }
+      .server-rail, .dm-search-header { display: none; }
+      .dm-list-container { display: flex; flex-wrap: wrap; overflow: visible; padding: 8px; gap: 4px; }
+      .dm-contact-item { flex: 1 1 190px; margin: 0; }
+      .dm-sidebar { overflow: visible; }
+      .dm-section-title { padding: 10px; }
+      .current-user-footer { min-height: 48px; }
+      .chat-main-area { overflow: visible; min-height: 500px; }
+      .chat-messages-scroll { flex: auto; min-height: 180px; max-height: 48vh; overflow-y: auto; }
+      .chat-dialogue-footer { max-height: none; overflow: visible; }
+      .suspect-dossier-panel { overflow: visible; }
+      .dossier-header-banner { height: 62px; }
+      .dossier-card-body { padding-bottom: 20px; }
+      .windows-taskbar { height: auto; min-height: 56px; flex-wrap: wrap; padding: 8px; }
+      .taskbar-left-cluster { flex: 1 1 auto; flex-wrap: wrap; }
+      .taskbar-sys-tray { flex-wrap: wrap; }
+      .windows-start-menu { bottom: 116px; }
+      .modal-overlay { padding: 12px; }
+      .modal-box { padding: 16px; }
+    }
+    @media (max-width: 420px) {
+      .taskbar-window-tab { display: none; }
+      .btn-taskbar-detective, .btn-win-start { padding: 8px; font-size: 13px; }
+      .taskbar-left-cluster { flex-wrap: nowrap; }
+      .detective-slot-display { flex-direction: column; }
+      .detective-slot-box { width: 100%; flex: auto; }
+      .threat-badge { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -1168,7 +1272,7 @@
     <!-- COL 2: DM LIST SIDEBAR -->
     <aside class="dm-sidebar">
       <div class="dm-search-header">
-        <input type="text" class="dm-search-box" value="Conversas Ativas" readonly>
+        <input type="text" class="dm-search-box" value="Conversas Ativas" aria-label="Conversas ativas" readonly>
       </div>
 
       <div class="dm-section-title">
@@ -1181,13 +1285,13 @@
       </div>
 
       <!-- CURRENT PLAYER FOOTER (CLICK TO OPEN MY PROFILE) -->
-      <div class="current-user-footer" onclick="openMyProfileModal()" title="Clique para ver seu Perfil e Dados Escolares">
+      <button type="button" class="current-user-footer" onclick="openMyProfileModal()" title="Ver perfil fictício e regras da aula">
         <div class="user-footer-avatar" id="footer-player-avatar">🕵️‍♂️</div>
         <div class="user-footer-info">
           <div class="user-footer-name" id="footer-player-name">Agente Secreto</div>
-          <div class="user-footer-tag">#2026 • 📁 Ver Meu Perfil</div>
+          <div class="user-footer-tag">📁 Meu Perfil e regras da aula</div>
         </div>
-      </div>
+      </button>
     </aside>
 
     <!-- COL 3: CENTRAL CHAT FEED -->
@@ -1205,21 +1309,22 @@
       <!-- DETECTIVE MODE HUD & CROSS-EXAMINATION -->
       <div class="detective-hud-bar" id="detective-hud-bar">
         <div class="detective-slot-display">
-          <div class="detective-slot-box" id="detective-slot-1" onclick="clearDetectiveSelection(1)">
+          <button type="button" class="detective-slot-box" id="detective-slot-1" onclick="clearDetectiveSelection(1)">
             🟡 Elemento 1: (Selecione no Chat ou Perfil)
-          </div>
+          </button>
           <span style="color:#5865f2; font-weight:800; font-size:12px;">VS</span>
-          <div class="detective-slot-box" id="detective-slot-2" onclick="clearDetectiveSelection(2)">
+          <button type="button" class="detective-slot-box" id="detective-slot-2" onclick="clearDetectiveSelection(2)">
             🔵 Elemento 2: (Selecione no Chat ou Perfil)
-          </div>
+          </button>
         </div>
-        <button class="btn-cross-examine" id="btn-cross-examine" onclick="executeCrossExamine()">
+        <button class="btn-cross-examine" id="btn-cross-examine" onclick="executeCrossExamine()" disabled>
           ⚡ CRUZAR DADOS
         </button>
+        <button class="btn-cross-examine ready" onclick="openMyProfileModal()">📁 MEU PERFIL E REGRAS</button>
       </div>
 
       <!-- DETECTIVE TOAST FEEDBACK -->
-      <div class="detective-feedback-toast" id="detective-toast"></div>
+      <div class="detective-feedback-toast" id="detective-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
       <!-- MESSAGES FEED -->
       <div class="chat-messages-scroll" id="chat-messages-feed">
@@ -1243,7 +1348,7 @@
       <!-- DIALOGUE CHOICES INTERACTION BAR -->
       <div class="chat-dialogue-footer">
         <div class="dialogue-prompt-label">
-          💬 Escolha sua ação ou investigue com o Modo Detetive:
+          💬 Escolhas simuladas: nenhum dado real é enviado
         </div>
         <div class="dialogue-options-grid" id="dialogue-choices-grid">
           <!-- 3 BUTTON CHOICES INJECTED BY JAVASCRIPT -->
@@ -1259,7 +1364,7 @@
 
       <div class="dossier-card-body">
         <div class="dossier-username-box">
-          <div class="dossier-user-title" id="dossier-name">Nome do Suspeito</div>
+          <div class="dossier-user-title evidence-selectable" id="dossier-name" data-evidence-source="dossier_name" onclick="selectEvidenceFromElement(this)">Nome do contato</div>
           <div class="dossier-user-sub" id="dossier-tag">#0000</div>
         </div>
 
@@ -1297,7 +1402,7 @@
         <!-- EVIDENCE GATHERING METER -->
         <div class="evidence-meter-box">
           <div class="evidence-header-row">
-            <span class="evidence-title">🎯 Evidências Coletadas</span>
+            <span class="evidence-title">🔍 Investigação opcional</span>
             <span class="evidence-counter-val" id="evidence-counter-label">0 / 3</span>
           </div>
           <div class="evidence-blocks-track" id="evidence-blocks-track">
@@ -1322,7 +1427,7 @@
   <!-- WINDOWS TASKBAR (BOTTOM) -->
   <footer class="windows-taskbar">
     <div class="taskbar-left-cluster">
-      <button class="btn-win-start" id="btn-win-start" onclick="toggleStartMenu()">
+      <button class="btn-win-start" id="btn-win-start" onclick="toggleStartMenu()" aria-expanded="false" aria-controls="win-start-menu">
         🪟 Iniciar
       </button>
 
@@ -1338,15 +1443,16 @@
       </div>
 
       <!-- DETECTIVE MODE TOGGLE -->
-      <button class="btn-taskbar-detective" id="btn-taskbar-detective" onclick="toggleDetectiveMode()">
-        🔍 Modo Detetive: OFF
+      <span id="chat-score" class="tray-item" aria-live="polite">0 pts</span>
+      <button class="btn-taskbar-detective" id="btn-taskbar-detective" onclick="toggleDetectiveMode()" aria-pressed="false">
+        🔍 Investigar: OFF
       </button>
     </div>
 
     <div class="taskbar-sys-tray">
-      <div class="tray-item clickable" id="tray-audio-toggle" onclick="toggleAudio()">
-        <span id="tray-audio-label">🔊 Som: ON</span>
-      </div>
+      <button type="button" class="tray-item clickable" id="tray-audio-toggle" onclick="toggleAudio()" aria-pressed="false">
+        <span id="tray-audio-label">🔇 Som: OFF</span>
+      </button>
       <div class="tray-item">
         <span>🇧🇷 PTB</span>
       </div>
@@ -1362,20 +1468,20 @@
       <span>🛡️ CyberKids OS v2.6 • Vigilante</span>
     </div>
     <div class="start-menu-items">
-      <button class="start-menu-item" onclick="openMyProfileModal(); toggleStartMenu();">
+      <button class="start-menu-item" onclick="openMyProfileModal()">
         <span>👤</span>
         <span>Meu Perfil & Dados Escolares</span>
       </button>
-      <button class="start-menu-item" onclick="restartCurrentShift(); toggleStartMenu();">
+      <button class="start-menu-item" onclick="restartCurrentShift()">
         <span>🔄</span>
         <span>Reiniciar Turno Atual</span>
       </button>
-      <button class="start-menu-item" onclick="openBriefingModal(); toggleStartMenu();">
+      <button class="start-menu-item" onclick="openBriefingModal()">
         <span>ℹ️</span>
         <span>Ajuda & Instruções do Dia</span>
       </button>
       <div class="start-menu-divider"></div>
-      <button class="start-menu-item danger" onclick="requestExitToHub(); toggleStartMenu();">
+      <button class="start-menu-item danger" onclick="requestExitToHub()">
         <span>🚪</span>
         <span>Sair para a Central de Jogos</span>
       </button>
@@ -1383,56 +1489,60 @@
   </div>
 
   <!-- MODAL: MEU PERFIL (DADOS ESCOLARES DO JOGADOR) -->
-  <div class="modal-overlay" id="modal-my-profile">
+  <div class="modal-overlay" id="modal-my-profile" role="dialog" aria-modal="true" aria-labelledby="profile-title">
     <div class="modal-box" style="max-width: 520px; text-align: left;">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <div class="modal-icon-big" style="font-size: 36px;">📁</div>
           <div>
-            <div class="modal-title" style="font-size: 18px;">Minha Identidade Escolar</div>
-            <div style="font-size: 12px; color: var(--dc-text-muted);">Dados reais do seu agente (use no Modo Detetive)</div>
+            <div class="modal-title" id="profile-title" style="font-size: 18px;">Meu Perfil e regras da aula</div>
+            <div class="profile-caption">Dados fictícios da personagem. Nunca informe seus dados reais.</div>
           </div>
         </div>
-        <button onclick="closeMyProfileModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+        <button onclick="closeMyProfileModal()" aria-label="Fechar perfil" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; min-width:44px; min-height:44px;">✕</button>
       </div>
 
-      <div class="dossier-info-list" style="background: #1e1f22; padding: 14px; border-radius: 8px; font-size: 13px; gap: 10px;">
+      <div class="profile-rules">
         <div class="dossier-info-item evidence-selectable" data-evidence-source="my_school" onclick="selectEvidenceFromElement(this)">
-          <span>🏫 Minha Escola:</span>
-          <strong>Colégio Estadual Santos Dumont</strong>
+          <span>🏫 Escola da personagem:</span>
+          <strong>Colégio Santos Dumont, cenário fictício.</strong>
         </div>
         <div class="dossier-info-item evidence-selectable" data-evidence-source="my_grade" onclick="selectEvidenceFromElement(this)">
-          <span>📚 Minha Turma:</span>
+          <span>📚 Minha turma:</span>
           <strong>6º Ano A (Ensino Fundamental)</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_teacher" onclick="selectEvidenceFromElement(this)">
-          <span>👩‍🏫 Profe. de Ciências:</span>
-          <strong>Profe. Mariana</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_contacts" onclick="selectEvidenceFromElement(this)">
+          <span>🤝 Contatos confirmados:</span>
+          <strong>Na história, você confirmou pessoalmente com seus colegas: Pedro usa Pedro_Vitor_77#7712 e Mari usa Mari_Artes#1428. Conferir apenas nome, foto ou escola não comprova identidade.</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_location" onclick="selectEvidenceFromElement(this)">
-          <span>📍 Cidade / Estado:</span>
-          <strong>Curitiba - PR</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_security_status" onclick="selectEvidenceFromElement(this)">
+          <span>🔐 Senhas e códigos:</span>
+          <strong>Senhas, tokens e códigos de autenticação ou recuperação são segredos de acesso. Não envie por chat, mesmo a alguém que se apresente como amigo ou funcionário.</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_neighborhood" onclick="selectEvidenceFromElement(this)">
-          <span>🏡 Meu Bairro:</span>
-          <strong>Jardim Botânico</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_privacy" onclick="selectEvidenceFromElement(this)">
+          <span>🏡 Dados e fotos pessoais:</span>
+          <strong>Endereço, telefone, documentos, imagens da casa, uniforme e horários podem revelar sua rotina. Não envie a desconhecidos. Avalie pedidos com um adulto de confiança.</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_age" onclick="selectEvidenceFromElement(this)">
-          <span>🎂 Minha Idade / Ano:</span>
-          <strong>11 anos (Nascido em 2015)</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_help" onclick="selectEvidenceFromElement(this)">
+          <span>🛟 Pressão e ajuda:</span>
+          <strong>Ameaças, pressa e pedidos de segredo não obrigam você a obedecer. Não responder não invade sua conta. Você pode bloquear, denunciar e procurar um adulto de confiança. Mesmo se compartilhou algo, merece ajuda e acolhimento.</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_game" onclick="selectEvidenceFromElement(this)">
-          <span>🎮 Jogo Favorito:</span>
-          <strong>BlockCraft Online</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_downloads" onclick="selectEvidenceFromElement(this)">
+          <span>💻 Arquivos e proteção:</span>
+          <strong>Não execute arquivos, conceda permissões ou desligue proteções a pedido de desconhecidos. Peça ajuda para conferir programas e avisos por canais oficiais.</strong>
         </div>
-        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_account_age" onclick="selectEvidenceFromElement(this)">
-          <span>📅 Idade da Minha Conta:</span>
-          <strong>1 ano de registro</strong>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_shopping" onclick="selectEvidenceFromElement(this)">
+          <span>🛍️ Compras e promoções:</span>
+          <strong>Confira ofertas e o endereço completo com um responsável por um canal conhecido. Aparência, preço e terminação do endereço não garantem segurança. Nunca use cartão ou dinheiro de outra pessoa escondido.</strong>
+        </div>
+        <div class="dossier-info-item evidence-selectable" data-evidence-source="my_login" onclick="selectEvidenceFromElement(this)">
+          <span>📲 Acesso à conta:</span>
+          <strong>Só confirme um login iniciado por você em um aparelho conhecido. QR Code de login pode autorizar outro acesso após confirmação. Negue pedidos que não reconhece e peça ajuda.</strong>
         </div>
       </div>
 
       <div style="font-size: 12px; color: var(--dc-text-muted); background: #111214; padding: 10px; border-radius: 6px;">
-        💡 <strong>Dica do Detetive:</strong> No Modo Detetive, você pode clicar em qualquer item acima para compará-lo com as afirmações do suspeito no chat!
+        💡 <strong>Dica:</strong> Ative Investigar, selecione a regra indicada na dica, feche este perfil e selecione a mensagem correspondente no chat. Use CRUZAR DADOS para conferir o par.
       </div>
 
       <button class="btn-modal-action" onclick="closeMyProfileModal()">
@@ -1442,12 +1552,12 @@
   </div>
 
   <!-- MODAL: CONFIRMAÇÃO DE SAÍDA -->
-  <div class="modal-overlay" id="modal-confirm-exit">
+  <div class="modal-overlay" id="modal-confirm-exit" role="dialog" aria-modal="true" aria-labelledby="exit-title">
     <div class="modal-box">
       <div class="modal-icon-big">🚪</div>
-      <div class="modal-title">Sair para a Central de Jogos?</div>
+      <div class="modal-title" id="exit-title">Sair para a Central de Jogos?</div>
       <div class="modal-desc" style="text-align: center;">
-        Você está prestes a sair do jogo. O progresso do turno atual será perdido.<br><br>
+        O progresso desta partida ainda não foi salvo. Seu recorde anterior será mantido.<br><br>
         Deseja realmente voltar para a Central de Jogos?
       </div>
       <div style="display: flex; gap: 10px; width: 100%;">
@@ -1462,30 +1572,24 @@
   </div>
 
   <!-- MODAL: BRIEFING INÍCIO DE TURNO -->
-  <div class="modal-overlay show" id="modal-briefing">
+  <div class="modal-overlay show" id="modal-briefing" role="dialog" aria-modal="true" aria-labelledby="modal-briefing-title">
     <div class="modal-box">
       <div class="modal-icon-big" id="modal-briefing-icon">🛡️</div>
       <div class="modal-title" id="modal-briefing-title">Turno 1: Falso Colega</div>
       <div class="modal-desc" id="modal-briefing-desc">
-        Bem-vindo ao Chat Patrol! Alguém está enviando mensagens suspeitas fingindo ser seu colega da escola.
-        <br><br>
-        1. Compare as mensagens com o <strong>Dossiê</strong> à direita ou com seu <strong>Meu Perfil</strong>.
-        <br>
-        2. Ative o <strong>Modo Detetive</strong> na barra de tarefas para cruzar contradições.
-        <br>
-        3. Desbloqueie o <strong>Confronto</strong> ou ajude o colega legítimo!
+        Uma aula para reconhecer pedidos perigosos, proteger informações e buscar ajuda. Leia sem pressa. Todas as conversas são fictícias.
       </div>
-      <button class="btn-modal-action" onclick="startCurrentShift()">
+      <button class="btn-modal-action" id="briefing-start-button" onclick="startCurrentShift()">
         ▶ INICIAR TURNO
       </button>
     </div>
   </div>
 
   <!-- MODAL: TURNO CONCLUÍDO -->
-  <div class="modal-overlay" id="modal-shift-complete">
+  <div class="modal-overlay" id="modal-shift-complete" role="dialog" aria-modal="true" aria-labelledby="shift-complete-title">
     <div class="modal-box">
       <div class="modal-icon-big">🎉</div>
-      <div class="modal-title">Turno Concluído com Sucesso!</div>
+      <div class="modal-title" id="shift-complete-title">Turno concluído!</div>
       <div class="modal-desc" id="modal-shift-summary">
         Você identificou as mentiras e protegeu sua conta com maestria.
       </div>
@@ -1496,16 +1600,16 @@
   </div>
 
   <!-- MODAL: VITÓRIA SUPREMA (FIM DO DIA 5) -->
-  <div class="modal-overlay" id="modal-victory">
+  <div class="modal-overlay" id="modal-victory" role="dialog" aria-modal="true" aria-labelledby="victory-title">
     <div class="modal-box">
       <div class="modal-icon-big">🏆</div>
-      <div class="modal-title">VITÓRIA! VIGILANTE SUPREMO</div>
+      <div class="modal-title" id="victory-title">MISSÃO CONCLUÍDA!</div>
       <div class="modal-desc">
-        Parabéns, Detetive! Você sobreviveu aos 5 turnos de alta tensão e desmascarou todos os golpistas!
+        Você concluiu os cinco turnos. Continue usando o que aprendeu: leia com calma, proteja seus dados e peça ajuda.
         <br><br>
-        🏅 <strong>Nova Medalha Desbloqueada:</strong> Vigilante do Chat (chat_patrol)
+        🏅 <strong>Medalha:</strong> Vigilante do Chat
         <br>
-        ⭐ <strong>Pontos Obtidos:</strong> +100 Pontos adicionados ao seu perfil!
+        ⭐ <strong id="victory-score"></strong>
       </div>
       <button class="btn-modal-action" onclick="window.location.href='index.html'">
         🏠 VOLTAR À CENTRAL DE JOGOS
@@ -1514,14 +1618,12 @@
   </div>
 
   <!-- MODAL: GAME OVER (CONTA COMPROMETIDA) -->
-  <div class="modal-overlay" id="modal-game-over">
+  <div class="modal-overlay" id="modal-game-over" role="dialog" aria-modal="true" aria-labelledby="retry-title">
     <div class="modal-box">
-      <div class="modal-icon-big">💀</div>
-      <div class="modal-title" style="color:var(--dc-red);">CONTA COMPROMETIDA!</div>
+      <div class="modal-icon-big">📚</div>
+      <div class="modal-title" id="retry-title">VAMOS PRATICAR MAIS UMA VEZ?</div>
       <div class="modal-desc" id="modal-game-over-desc">
-        A paciência do suspeito esgotou ou você caiu em um golpe grave. Suas vidas acabaram!
-        <br><br>
-        Lembre-se: golpistas usam pressão de tempo e perfis falsos para enganar. Fique sempre atento às contradições!
+        Nenhum dado real foi enviado. Você pode tentar novamente com calma e pedir ajuda quando precisar.
       </div>
       <button class="btn-modal-action danger" onclick="restartCurrentShift()">
         🔄 TENTAR NOVAMENTE ESTE TURNO
@@ -1529,6 +1631,7 @@
     </div>
   </div>
 
+  <script src="profile.js"></script>
   <script src="chat-patrol-audio.js"></script>
   <script src="chat-patrol-data.js"></script>
   <script src="chat-patrol-game.js"></script>

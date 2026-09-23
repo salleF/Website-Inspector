@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Website Inspector</title>
   <style>
@@ -13,11 +14,13 @@
 
     html, body {
       width: 100%;
-      height: 100%;
+      height: auto;
+      min-height: 100%;
       background-color: #0d0d11;
       font-family: Arial, Helvetica, sans-serif;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
+    body { min-height: 100vh; }
 
     /* =========================================
        WEBGL CRT SHADER OVERLAY
@@ -52,7 +55,6 @@
         radial-gradient(circle at center, rgba(255, 255, 255, 0) 55%, rgba(0, 0, 0, 0.55) 100%);
       background-size: 100% 4px, 100% 100%;
       box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6);
-      animation: vhs-flicker 0.15s infinite alternate;
       transition: opacity 0.3s ease;
     }
 
@@ -86,7 +88,7 @@
        FULLSCREEN RETRO BROWSER CONTAINER (CRT BARREL)
        ========================================= */
     .browser-app-container {
-      width: 100vw;
+      width: 100%;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -784,6 +786,40 @@
       border-radius: 2px;
     }
     .vhs-toggle-btn:hover { background: #ffffff; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #0058e6; outline-offset: 3px; }
+    .game-hud-bar { flex-wrap: wrap; gap: 8px; }
+    .lesson-note { padding: 12px 20px; background: #eef6ff; color: #193653; font-size: 15px; line-height: 1.5; }
+    .serp-url-2006, .serp-title-2006 { overflow-wrap: anywhere; }
+    .source-reference { margin: 8px 0; padding: 8px; background: #eef6ff; color: #193653; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+    .google-pag-o-item { background: none; border: 0; padding: 6px; }
+    .google-pag-o-item:disabled { cursor: default; opacity: .55; }
+    .virus-modal-win2006 { max-height: calc(100dvh - 32px); overflow-y: auto; }
+    .browser-app-container.effects-disabled { animation: none; filter: none; transform: none; }
+    .browser-app-container.effects-disabled .virus-bugs-overlay { display: none; }
+    .damage-flash-overlay { display: none; }
+    .btn-next-2006 { background: #1d4ed8; }
+    .btn-next-2006:hover { background: #1e40af; }
+    .virus-modal-header { background: #991b1b; }
+    .g-yellow { color: #956200; }
+    .lesson-title { font-size: 22px; padding: 16px 20px; background: #eef6ff; color: #193653; }
+    @media (max-width: 760px) {
+      .nav-address-row, .google-header-2006, .browser-footer-bar { flex-wrap: wrap; }
+      .address-input-container { flex-basis: 100%; overflow-wrap: anywhere; min-width: 0; }
+      .tabs-bar { flex-wrap: wrap; }
+      .google-search-form { min-width: 0; width: 100%; flex-basis: 100%; }
+      .google-search-input { min-width: 0; }
+      .google-viewport { padding: 20px 12px; }
+      .decision-box, .game-over-panel > div:last-child { flex-wrap: wrap; }
+      .decision-tag { flex-basis: 100%; }
+      .google-pag-logo { flex-wrap: wrap; }
+      .btn-decision, .btn-next-2006, .nav-btn, .vhs-toggle-btn { min-height: 44px; }
+      .game-hud-bar { padding: 10px 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .webgl-overlay, .vhs-overlay, .virus-bugs-overlay { display: none !important; }
+      .browser-app-container { transform: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -792,33 +828,33 @@
   <div class="damage-flash-overlay" id="damage-flash"></div>
 
   <!-- VIRUS POPUP ALERT MODAL (2006 WINDOWS XP RETRO STYLE) -->
-  <div class="virus-popup-backdrop" id="virus-modal">
+  <div class="virus-popup-backdrop" id="virus-modal" role="dialog" aria-modal="true" aria-labelledby="virus-modal-title">
     <div class="virus-modal-win2006">
       <div class="virus-modal-header">
-        <span>⚠️ ALERTA DE SEGURANÇA: VÍRUS DETECTADO!</span>
-        <span style="cursor:pointer;" onclick="closeVirusModal()">[X]</span>
+        <span>🔎 VAMOS CONFERIR AS PISTAS</span>
+        <button type="button" aria-label="Fechar explicação" onclick="closeVirusModal()">[X]</button>
       </div>
       <div class="virus-modal-body">
-        <div class="virus-skull-icon">☠️</div>
-        <div class="virus-modal-title">SISTEMA INFECTADO!</div>
+        <div class="virus-skull-icon">💡</div>
+        <div class="virus-modal-title" id="virus-modal-title">É uma simulação para aprender</div>
         <div class="virus-modal-text" id="virus-modal-msg">
-          Cilada detectada! Um arquivo malicioso tentou invadir o seu computador por causa desse link falso.
+          Nenhum site foi aberto ou arquivo foi baixado. Vamos entender esta escolha.
         </div>
       </div>
       <div class="virus-modal-footer">
-        <button class="btn-next-2006" style="background:#cc0000; border-color:#990000;" onclick="closeVirusModal()">🛡️ Tentar Limpar Sistema</button>
+        <button class="btn-next-2006" onclick="closeVirusModal()">Entendi, continuar</button>
       </div>
     </div>
   </div>
 
   <!-- WEBGL CRT SHADER CANVAS OVERLAY -->
-  <canvas id="webgl-crt-canvas" class="webgl-overlay"></canvas>
+  <canvas id="webgl-crt-canvas" class="webgl-overlay disabled" aria-hidden="true"></canvas>
 
   <!-- RETRO VHS OVERLAY -->
-  <div class="vhs-overlay" id="vhs-shader"></div>
+  <div class="vhs-overlay disabled" id="vhs-shader" aria-hidden="true"></div>
 
   <!-- FULLSCREEN BROWSER CONTAINER -->
-  <div class="browser-app-container crt-barrel-active">
+  <div class="browser-app-container effects-disabled" role="main">
 
     <!-- BROWSER TOP HEADER -->
     <div class="browser-top-header">
@@ -842,18 +878,24 @@
       <!-- ADDRESS & NAV ROW -->
       <div class="nav-address-row">
         <a href="index.html" class="nav-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:bold; background:#fff2a8; color:#333; border:1px solid #c9a400;">⬅️ Central de Jogos</a>
-        <button class="nav-btn">⏮️ Voltar</button>
-        <button class="nav-btn">Avançar ⏭️</button>
-        <button class="nav-btn">🔄 Atualizar</button>
+        <button class="nav-btn" id="nav-previous" onclick="navigateRound(currentRoundIndex - 1)">⏮️ Rodada anterior</button>
+        <button class="nav-btn" id="nav-next" onclick="nextRound()">Próxima rodada ⏭️</button>
         <span>Endereço:</span>
         <div class="address-input-container">
-          <span>🔒 http://www.google.com.br/search?q=<span id="url-query-param">minecraft</span></span>
+          <span>Simulação de busca: <span id="url-query-param">minecraft</span></span>
         </div>
-        <button class="nav-btn">Ir ➔</button>
       </div>
 
     </div>
 
+    <h1 class="lesson-title">Detetive da Web: examine as pistas</h1>
+    <div class="game-hud-bar" aria-live="polite" aria-atomic="true">
+      <span class="hud-chip">Tentativas: <span id="hud-lives">3</span></span>
+      <span class="hud-chip">Pontos: <span id="hud-score">0</span></span>
+      <span class="hud-chip">Rodada: <span id="hud-round">1</span> / 10</span>
+      <span class="hud-chip">Analisados: <span id="hud-answered">0</span></span>
+    </div>
+    <p class="lesson-note">Jogo de simulação: leia o endereço e a descrição de cada cartão. Escolha se há boas pistas para consultar ou se é melhor parar e verificar com um adulto. Cada acerto vale 10 pontos. Três erros encerram a tentativa. Todos os endereços são fictícios, terminam em .example e não abrem sites. Esse final aparece em cartões dos dois tipos e não indica a resposta. Compare a referência fornecida pelo professor com o endereço e também com o que a página pede. HTTPS protege a conexão, mas não garante que um site seja honesto.</p>
     <!-- INFECTION VIRUS BUGS OVERLAY -->
     <div class="virus-bugs-overlay" id="virus-bugs-container"></div>
 
@@ -862,28 +904,23 @@
 
       <!-- Google Header -->
       <div class="google-header-2006">
-        <div class="google-logo-2006">
+        <div class="google-logo-2006" aria-hidden="true">
           <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
         </div>
         <div class="google-search-form">
-          <input type="text" class="google-search-input" id="search-input-field" value="como baixar minecraft de graça" readonly>
-          <button class="google-btn-2006">Pesquisa Google</button>
+          <input type="text" aria-label="Tema da pesquisa simulada" class="google-search-input" id="search-input-field" value="como baixar minecraft de graça" readonly>
         </div>
       </div>
 
       <!-- 2006 Subnav Links -->
       <div class="google-subnav-2006">
         <strong>Web</strong> |
-        <a>Imagens</a> |
-        <a>Grupos</a> |
-        <a>Notícias</a> |
-        <a>Shopping</a> |
-        <a>mais »</a>
+        <span>Resultados ilustrativos para a aula</span>
       </div>
 
       <!-- 2006 Stats -->
       <div class="google-stats-2006">
-        Resultados <strong>1</strong> - <strong>2</strong> de aproximadamente <strong>2.450.000</strong> para <strong id="stats-query-text">como baixar minecraft de graça</strong> (0,12 segundos)
+        <strong id="stats-result-count">7</strong> cartões para analisar: <strong id="stats-query-text">como baixar minecraft de graça</strong>
       </div>
 
       <!-- Results List -->
@@ -904,7 +941,7 @@
     </div>
 
     <!-- GAME OVER VIEWPORT -->
-    <div class="google-viewport" id="stage-gameover" style="display: none;">
+    <div class="google-viewport" id="stage-gameover" tabindex="-1" style="display: none;">
       <div class="game-over-panel">
         <div style="font-size: 54px; margin-bottom: 12px;" id="go-icon">🏆</div>
         <div class="game-over-header" id="go-title">Treinamento de Detetive Web Concluído!</div>
@@ -917,9 +954,9 @@
         <div class="checklist-2006">
           <h4>📌 Regras de Ouro do Navegador Seguro:</h4>
           <ul>
-            <li><strong>1. Endereço do Site (URL):</strong> Desconfie de nomes estranhos com erros de digitação ou finais esquisitos (.xyz, .top, .exe).</li>
+            <li><strong>1. Endereço do site:</strong> Compare o domínio completo com o canal oficial. Terminações como .org, .xyz e .top não provam segurança nem fraude.</li>
             <li><strong>2. Promessas Mágicas:</strong> Robux, V-Bucks ou iPhones "grátis" são quase sempre armadilhas para roubar senhas.</li>
-            <li><strong>3. Cuidado com Downloads (.exe):</strong> Nunca baixe arquivos executáveis em sites que não são os oficiais do jogo ou programa.</li>
+            <li><strong>3. Downloads e HTTPS:</strong> Um .exe é um programa, não um PDF. Peça ajuda antes de instalar. HTTPS protege a conexão, mas um golpista também pode usá-lo.</li>
             <li><strong>4. Dados Pessoais:</strong> Jamais digite número de celular ou senhas em páginas de testes ou sorteios.</li>
           </ul>
         </div>
@@ -935,13 +972,15 @@
     <div class="browser-footer-bar">
       <div>Concluído / Done</div>
       <div>
-        <button class="vhs-toggle-btn" onclick="toggleVHS()">📺 Efeito TV de Tubo (CRT): <span id="vhs-status-text">LIGADO</span></button>
-        <span style="margin-left: 10px;">🔒 Zona da Internet: Detetive Web</span>
+        <button class="vhs-toggle-btn" onclick="toggleVHS()" aria-pressed="false" id="vhs-toggle">📺 Efeito TV de Tubo: <span id="vhs-status-text">DESLIGADO</span></button>
+        <button class="vhs-toggle-btn" onclick="toggleSound()" aria-pressed="false" id="sound-toggle">Som: desligado</button>
+        <span style="margin-left: 10px;">Simulação educativa</span>
       </div>
     </div>
 
   </div>
 
+  <script src="profile.js"></script>
   <script>
     // =========================================
     // DYNAMIC LINK DATABASE (FÁCIL / MÉDIO / DIFÍCIL)
@@ -955,225 +994,985 @@
       { query: "quiz da marvel qual vingador voce e", urlParam: "quiz+marvel+qual+vingador+voce+e" },
       { query: "skins gratis fortnite vbucks epic games", urlParam: "skins+gratis+fortnite+vbucks" },
       { query: "como fazer o computador lento ficar rapido", urlParam: "como+fazer+computador+lento+ficar+rapido" },
-      { query: "tiktok entrar na minha conta computador", urlParam: "tiktok+entrar+na+minha+conta" },
+      { query: "aprender programação com Scratch", urlParam: "aprender+programacao+scratch" },
       { query: "tabela periodica elementos quimica resumo", urlParam: "tabela+periodica+elementos+quimica" }
     ];
 
     const LEVEL_RECIPES = [
-      { level: 1, total: 7, easy: 7, medium: 0, hard: 0 },
-      { level: 2, total: 7, easy: 6, medium: 1, hard: 0 },
-      { level: 3, total: 8, easy: 5, medium: 3, hard: 0 },
-      { level: 4, total: 8, easy: 4, medium: 4, hard: 0 },
-      { level: 5, total: 9, easy: 3, medium: 5, hard: 1 },
-      { level: 6, total: 9, easy: 1, medium: 7, hard: 1 },
-      { level: 7, total: 10, easy: 2, medium: 5, hard: 3 },
-      { level: 8, total: 10, easy: 1, medium: 4, hard: 5 },
-      { level: 9, total: 11, easy: 1, medium: 3, hard: 7 },
-      { level: 10, total: 11, easy: 1, medium: 2, hard: 8 }
+      { level: 1, total: 7, easy: 3, medium: 4, hard: 0 },
+      { level: 2, total: 7, easy: 3, medium: 4, hard: 0 },
+      { level: 3, total: 8, easy: 3, medium: 4, hard: 1 },
+      { level: 4, total: 8, easy: 3, medium: 4, hard: 1 },
+      { level: 5, total: 9, easy: 3, medium: 4, hard: 2 },
+      { level: 6, total: 9, easy: 3, medium: 4, hard: 2 },
+      { level: 7, total: 10, easy: 3, medium: 4, hard: 3 },
+      { level: 8, total: 10, easy: 3, medium: 4, hard: 3 },
+      { level: 9, total: 11, easy: 3, medium: 4, hard: 4 },
+      { level: 10, total: 11, easy: 3, medium: 4, hard: 4 }
     ];
 
     const LINK_BANK = [
-      // SCENARIO 0: Minecraft
+  {
+    "easy": [
       {
-        easy: [
-          { url: "http://www.minecraft.net/pt-br/download", title: "Minecraft Oficial - Download do Jogo Completo", desc: "Site oficial da Mojang. Baixe a demonstração gratuita ou adquira o jogo.", isSafe: true, reason: "Este é o site oficial da Mojang (minecraft.net). Jogos pagos nunca ficam de graça em sites estranhos." },
-          { url: "http://minecraft-gratis-sem-virus-2026.xyz/setup.exe", title: "🔥 Baixar Minecraft Completo Grátis SEM VÍRUS", desc: "Baixe agora o jogo completo 100% grátis! Arquivo setup.exe pronto para instalar.", isSafe: false, reason: "Cilada! O site usa final estranho (.xyz), promete jogo pago grátis e força download de .exe." },
-          { url: "http://ganhe-minecraft-de-graca-clique.site/gerador", title: "🎁 Gerador de Contas Minecraft Premium Grátis", desc: "Clique aqui para gerar uma conta oficial do Minecraft sem pagar nada.", isSafe: false, reason: "Perigo! Geradores de contas são armadilhas para roubar dados ou instalar vírus." }
-        ],
-        medium: [
-          { url: "http://tlauncher.org/en/", title: "TLauncher - Download Launcher para Minecraft Demo", desc: "Launcher de terceiros popular para jogar versões de testes de Minecraft no PC.", isSafe: true, reason: "Seguro para pesquisas! É um launcher amplamente utilizado para testes." },
-          { url: "http://www.techtudo.com.br/dicas-e-tutoriais/como-jogar-minecraft-demo.html", title: "TechTudo: Como testar a versão Demo oficial de Minecraft", desc: "Guia passo a passo ensinando a baixar a demonstração oficial da Mojang.", isSafe: true, reason: "Ótimo! Portal de notícias de tecnologia confiável ensinando meios oficiais." },
-          { url: "http://minecraft-download-gratis.com.br/instalar.exe", title: "Minecraft Brasil - Download Grátis com Java Atualizado", desc: "Baixe a versão em português com Java incluso para rodar sem erros.", isSafe: false, reason: "Cilada! Domínio falso de terceiro oferecendo instalador executável modificado." },
-          { url: "http://baixar-minecraft-pirata-completo.net/download", title: "Download Minecraft 1.20 Completo + Ativador", desc: "Versão liberada sem custo com todos os biomas e ativador inclusos.", isSafe: false, reason: "Perigo! Programas com 'ativadores' contêm cavalos de troia que infectam o computador." }
-        ],
-        hard: [
-          { url: "http://classic.minecraft.net", title: "Minecraft Classic - Versão Oficial da Mojang no Navegador", desc: "Jogue a versão clássica oficial de 2009 de graça direto no seu navegador.", isSafe: true, reason: "Seguro! É a página oficial mantida pela Mojang para comemorar os 10 anos do jogo." },
-          { url: "http://help.minecraft.net/hc/pt-br", title: "Central de Ajuda Minecraft - Como Testar Antes de Comprar", desc: "Artigo da Mojang detalhando as opções de teste seguro para computadores.", isSafe: true, reason: "Perfeito! Subdomínio oficial help.minecraft.net com informações legítimas." },
-          { url: "http://www.miinecraft.net/download-pt", title: "Minecraft Mojang Studio - Baixar Instalador Rápido", desc: "Portal de instalador rápido do cliente de jogo para computadores Windows.", isSafe: false, reason: "Cilada Díficil! Repare no erro ortográfico proposital na URL (miinecraft com 2 'i's - Typosquatting)." },
-          { url: "http://minecraft.net.download-jogos-gratis.com/setup", title: "Mojang Download Center - Minecraft Java Edition", desc: "Servidor de distribuição oficial de pacotes para atualização de Minecraft.", isSafe: false, reason: "Cilada Díficil! O domínio verdadeiro é download-jogos-gratis.com usando minecraft.net como subdomínio falso." }
-        ]
+        "url": "https://minecraft.example/demo",
+        "title": "Conheça a demonstração do Minecraft",
+        "desc": "A página explica como conhecer uma demonstração com ajuda de um adulto. Não promete liberar a versão paga.",
+        "isSafe": true,
+        "reason": "O endereço minecraft.example corresponde à referência minecraft.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "minecraft.example"
       },
-      // SCENARIO 1: Sistema Solar
       {
-        easy: [
-          { url: "http://brasilescola.uol.com.br/geografia/sistema-solar.htm", title: "Sistema Solar: resumo, ordem dos planetas e características", desc: "Artigo completo para pesquisas escolares com conteúdo revisado.", isSafe: true, reason: "Excelente! É um portal educativo conhecido e confiável." },
-          { url: "http://ganhe-iphone-responda-quiz.com.br/planetas", title: "RESPONDA O QUIZ DOS PLANETAS E GANHE UM IPHONE!", desc: "Você é o visitante 1.000.000! Responda a 3 perguntas e receba um celular.", isSafe: false, reason: "Perigo! Anúncios que dizem que você 'ganhou um celular' querem roubar dados." },
-          { url: "http://trabalho-escolar-pronto-downloads.top/virus.exe", title: "BAIXAR TRABALHO PRONTO DO SISTEMA SOLAR EM .EXE", desc: "Baixe o trabalho completo editável em arquivo executável .exe.", isSafe: false, reason: "Cilada! Trabalhos escolares são textos/documentos, nunca programas .exe." }
-        ],
-        medium: [
-          { url: "http://espaco.mcti.gov.br/sistema-solar-educativo", title: "Ministério da Ciência - O Sistema Solar para Crianças", desc: "Material pedagógico oficial do governo sobre astronômia e ciências.", isSafe: true, reason: "Seguro! Domínio governamental oficial (gov.br) com conteúdo educativo." },
-          { url: "http://escola.britannica.com.br/artigo/Sistema-Solar", title: "Enciclopédia Britannica Escola - Sistema Solar", desc: "Resumo enciclopédico sobre o Sol, planetas rochosos e gasosos.", isSafe: true, reason: "Seguro! Enciclopédia educativa renomada para pesquisas de colégio." },
-          { url: "http://trabalhos-escolares-gratis.com/cadastro-celular", title: "Trabalho Pronto Sistema Solar - Digite seu Celular", desc: "Informe seu número de telefone com DDD para desbloquear o download em PDF.", isSafe: false, reason: "Cilada! Pedir número de celular é golpe para cobrar assinaturas pagas por SMS." },
-          { url: "http://wikipédia-escolar.org/sistema_solar", title: "Wikipédia Escolar - Guia Completo dos Planetas", desc: "Portal colaborativo de estudos escolares sobre astronomia.", isSafe: false, reason: "Perigo! URL com acento (wikipédia) é um caractere punycode falso imitando o site real." }
-        ],
-        hard: [
-          { url: "http://solarsystem.nasa.gov", title: "NASA Solar System Exploration - Site Oficial", desc: "Exploração espacial em tempo real, dados de planetas e missões da NASA.", isSafe: true, reason: "Seguro! Subdomínio oficial da agência espacial americana NASA." },
-          { url: "http://www.observatorio.ufmg.br/planetas", title: "Observatório Astronômico da UFMG - Os Planetas", desc: "Guia científico desenvolvido por professores da Universidade Federal de MG.", isSafe: true, reason: "Seguro! Domínio de universidade federal reconhecida (ufmg.br)." },
-          { url: "http://www.brasilescola.uol.com.br.trabalhos-prontos.xyz/downloads", title: "Brasil Escola - Resumo Completo em PDF para Imprimir", desc: "Baixe o PDF com ilustrações dos planetas para imprimir no colégio.", isSafe: false, reason: "Cilada Díficil! O site real é no final da URL (.xyz), usando o nome do Brasil Escola apenas no início." },
-          { url: "http://www.nasa-space-kids.net/download-pdf-viewer.exe", title: "NASA Kids Space - Baixar Leitor de Imagens 3D do Espaço", desc: "Programa oficial da NASA para visualizar o espaço em três dimensões.", isSafe: false, reason: "Cilada Díficil! Domínio falso imitando a NASA (.net em vez de .gov) para instalar malware." }
-        ]
+        "url": "https://ofertas-minecraft.example/instalar",
+        "title": "Minecraft completo sem pagar: instalador especial",
+        "desc": "Promete liberar a versão paga. Para isso, exige baixar Minecraft_Liberado.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "minecraft.example"
       },
-      // SCENARIO 2: Robux Roblox
       {
-        easy: [
-          { url: "http://en.help.roblox.com/hc/pt-br/articles/robux-info", title: "Central de Ajuda Roblox: Existe Robux Grátis?", desc: "O Roblox alerta: Não existem geradores de Robux grátis na internet.", isSafe: true, reason: "Ótimo! A página oficial de ajuda ensina que geradores de Robux são falsos." },
-          { url: "http://roblox-free-robux-generator-no-verification.site", title: "💎 GERADOR DE ROBUX GRÁTIS - 10.000 Robux na conta", desc: "Digite seu nome e SENHA do Roblox para receber Robux grátis.", isSafe: false, reason: "Cilada Gigante! Pedir sua SENHA é o golpe clássico para roubar sua conta." },
-          { url: "http://hack-robux-infinito-2026.xyz/login", title: "Hack de Robux Infinito - Desbloquear Todos os Itens", desc: "Ferramenta para adicionar créditos ilimitados na sua conta Roblox.", isSafe: false, reason: "Perigo! Hacks promovem roubo de dados e banimento definitivo no jogo." }
-        ],
-        medium: [
-          { url: "http://blog.roblox.com/pt-br/como-criar-itens-e-ganhar-robux", title: "Blog Oficial Roblox - Ganhe Robux Criando Itens", desc: "Aprenda como criadores ganham Robux desenvolvendo roupas e mapas.", isSafe: true, reason: "Seguro! Canal oficial do Roblox ensinando a forma legítima de ganhar Robux." },
-          { url: "http://www.tecmundo.com.br/gamelike/como-ganhar-robux-no-roblox.htm", title: "TecMundo: Formas seguras e oficiais de obter Robux", desc: "Matéria jornalística explicando como funciona a economia oficial do jogo.", isSafe: true, reason: "Seguro! Portal de tecnologia de renome tirando dúvidas de segurança." },
-          { url: "http://roblox-promocodes-gratis.com/resgatar", title: "Promocodes Secretos Roblox - Digite seu Usuário e Senha", desc: "Códigos de presente do mês para resgatar skins e Robux na hora.", isSafe: false, reason: "Cilada! Sites legítimos de promoção nunca pedem sua senha do jogo." },
-          { url: "http://roblox-br-premio.net/claim", title: "Resgatar Gift Card Roblox de R$ 100 Grátis", desc: "Sorteio de cartões de presente Roblox para todos os jogadores brasileiros.", isSafe: false, reason: "Perigo! Promoção falsa feita para capturar logins de jogadores." }
-        ],
-        hard: [
-          { url: "http://create.roblox.com", title: "Roblox Creator Hub - Desenvolva e Monetize", desc: "Plataforma oficial para desenvolvedores criarem experiências no Roblox.", isSafe: true, reason: "Seguro! Subdomínio oficial create.roblox.com para criadores." },
-          { url: "http://www.roblox.com/giftcards", title: "Cartões de Presente Oficiais Roblox", desc: "Onde comprar e como resgatar códigos de Gift Cards oficiais Roblox.", isSafe: true, reason: "Seguro! Página oficial roblox.com/giftcards." },
-          { url: "http://www.robllox.com/login-verification", title: "Roblox Security Check - Confirme sua Conta", desc: "Sua conta foi selecionada para receber bônus de 500 Robux.", isSafe: false, reason: "Cilada Díficil! URL com erro sutil (robllox com dois 'L's) para roubar contas." },
-          { url: "http://roblox.com.atendimento-suporte.com/login", title: "Roblox Support - Verificação de Segurança", desc: "Entre com seu login para proteger sua conta e evitar bloqueio.", isSafe: false, reason: "Cilada Díficil! O site real é atendimento-suporte.com disfarçado com roblox.com no início." }
-        ]
-      },
-      // SCENARIO 3: CapCut PC
-      {
-        easy: [
-          { url: "http://www.capcut.com/pt-br/", title: "CapCut | Editor de Vídeo Tudo-em-Um Gratuito", desc: "Baixe o aplicativo oficial do CapCut para Windows ou edite no navegador.", isSafe: true, reason: "Perfeito! É o site oficial (capcut.com) com o programa verdadeiro." },
-          { url: "http://soft-download-super-editors.info/capcut-crack.exe", title: "CapCut Pro Crackeado + Ativador Grátis", desc: "Versão Pro liberada grátis com todos os efeitos. Baixe o instalador.", isSafe: false, reason: "Cilada! Programas 'crackeados' vêm com malwares que espiam seu PC." },
-          { url: "http://baixar-editores-de-video.xyz/setup.exe", title: "CapCut Sem Marca d'Água + Pacote de Efeitos", desc: "Download direto do instalador completo sem propaganda.", isSafe: false, reason: "Perigo! Download de executável em domínio genérico .xyz." }
-        ],
-        medium: [
-          { url: "http://www.baixaki.com.br/download/capcut.htm", title: "Baixaki - Download Verificado do CapCut PC", desc: "Página de download do editor CapCut com verificação de antivírus.", isSafe: true, reason: "Seguro! Portal clássico de downloads verificados no Brasil." },
-          { url: "http://www.techtudo.com.br/tudo-sobre/capcut.html", title: "TechTudo - Como instalar e usar o CapCut no PC", desc: "Tutorial completo com links e instruções de uso do editor.", isSafe: true, reason: "Seguro! Artigo explicativo em site de tecnologia confiável." },
-          { url: "http://capcut-pro-gratis.com.br/download-instalador", title: "CapCut Pro Grátis para PC - Instalador Modificado", desc: "Baixe o instalador com todas as transições pagas liberadas sem custo.", isSafe: false, reason: "Cilada! Instaladores modificados por terceiros injetam vírus no sistema." },
-          { url: "http://editores-video-pc-2026.net/capcut-setup", title: "Editor de Vídeo CapCut PC - Digite Telefone", desc: "Insira seu número de celular para liberar a chave de ativação.", isSafe: false, reason: "Perigo! Cobrança indevida no celular ao inserir o número." }
-        ],
-        hard: [
-          { url: "http://www.capcut.com/tools/desktop-video-editor", title: "CapCut Desktop Video Editor - Download Oficial", desc: "Recursos avançados para computador na página oficial de ferramentas.", isSafe: true, reason: "Seguro! Link direto da seção oficial de ferramentas do CapCut." },
-          { url: "http://apps.microsoft.com/detail/capcut", title: "CapCut na Microsoft Store Oficial", desc: "Baixe o aplicativo verificado direto da loja oficial do Windows.", isSafe: true, reason: "Seguro! Aplicativo verificado na loja oficial da Microsoft." },
-          { url: "http://www.cappcut.com/download", title: "CapCut Editor Desktop - Baixar Versão Grátis", desc: "Instalador rápido do programa de edição CapCut para Windows.", isSafe: false, reason: "Cilada Díficil! URL com erro sutil (cappcut com 2 'P's)." },
-          { url: "http://www.capcut.com.download-programas.net/installer.exe", title: "CapCut Setup Direct Download - Windows 10/11", desc: "Download do arquivo de instalação do editor de vídeos.", isSafe: false, reason: "Cilada Díficil! Domínio real é download-programas.net usando capcut.com no início." }
-        ]
-      },
-      // SCENARIO 4: Poki Jogos
-      {
-        easy: [
-          { url: "http://poki.com.br", title: "Jogos Online Grátis no Poki - Jogue Agora", desc: "Milhares de jogos casuais para jogar no navegador sem baixar nada.", isSafe: true, reason: "Muito bem! O Poki é uma plataforma segura que roda jogos direto na web." },
-          { url: "http://p0ki-jogos-gratis-baixe-plugin.top", title: "Poki Jogos - Baixar Plugin Especial para Jogar", desc: "Instale o Plugin_Game_Player.exe para conseguir carregar os jogos.", isSafe: false, reason: "Perigo! URL falsa (p0ki com zero) pedindo download de .exe para jogar." },
-          { url: "http://site-de-jogos-virus-gratis.xyz/game", title: "JOGOS ONLINE - INSTALE A EXTENSÃO OBRIGATÓRIA", desc: "Clique para instalar a extensão do navegador e liberar os jogos.", isSafe: false, reason: "Cilada! Extensões obrigatórias de sites suspeitos roubam senhas." }
-        ],
-        medium: [
-          { url: "http://www.clickjogos.com.br", title: "Click Jogos - Maior Site de Jogos do Brasil", desc: "Milhares de jogos grátis divididos por categorias para todas as idades.", isSafe: true, reason: "Seguro! Portal brasileiro tradicional de jogos online de navegador." },
-          { url: "http://crazygames.com.br", title: "CrazyGames Brasil - Jogos HTML5 no Navegador", desc: "Jogos online grátis sem necessidade de cadastro ou downloads.", isSafe: true, reason: "Seguro! Plataforma de jogos em HTML5 amplamente conhecida." },
-          { url: "http://poki-jogos-online-completo.com/download-launcher", title: "Poki Launcher PC - Baixe o Programa para Jogar", desc: "Instale nosso launcher no PC para jogar com gráficos melhores.", isSafe: false, reason: "Cilada! O Poki real roda 100% no navegador e nunca exige programas." },
-          { url: "http://jogos-gratis-para-criancas.net/cadastro-sms", title: "Jogos Grátis - Digite seu Celular para Liberar", desc: "Cadastre seu número com DDD para receber a senha de acesso diário.", isSafe: false, reason: "Perigo! Golpe de assinatura paga por mensagem de texto." }
-        ],
-        hard: [
-          { url: "http://poki.com/pt/g/subway-surfers", title: "Subway Surfers no Poki - Jogue Grátis Online", desc: "Página oficial do jogo Subway Surfers rodando direto na web.", isSafe: true, reason: "Seguro! Link direto da categoria de jogos do Poki oficial." },
-          { url: "http://kizi.com", title: "Kizi - Official Online Games Platform", desc: "Jogos casuais infantis e educativos seguros no navegador.", isSafe: true, reason: "Seguro! Site internacional confiável de jogos em HTML5." },
-          { url: "http://www.pokki.com.br/jogos-online", title: "Poki Brasil - Os Melhores Jogos da Web", desc: "Portal de jogos grátis para se divertir com amigos online.", isSafe: false, reason: "Cilada Díficil! URL com dois 'K's (pokki) imitando a marca famosa." },
-          { url: "http://poki.com.br.servidor-de-jogos.com/play", title: "Poki Games Server - Conexão Rápida", desc: "Servidor de alta velocidade para jogos de ação e corrida.", isSafe: false, reason: "Cilada Díficil! O domínio verdadeiro é servidor-de-jogos.com." }
-        ]
-      },
-      // SCENARIO 5: Quiz Marvel
-      {
-        easy: [
-          { url: "http://www.quizur.com/quiz/qual-vingador-voce-seria", title: "Quizur: Qual dos Vingadores combina com você?", desc: "Responda a 5 perguntas divertidas sobre seus gostos e descubra!", isSafe: true, reason: "Seguro! Quiz simples para entretenimento sem pedir dados pessoais." },
-          { url: "http://marvel-quiz-insira-seu-celular.net", title: "Quiz Vingadores - Digite seu Número de Celular", desc: "Digite seu número de telefone para receber o resultado por SMS.", isSafe: false, reason: "Cilada! Digitar celular em quizzes assina serviços pagos sem autorização." },
-          { url: "http://descubra-seu-heroi-baixe-app.xyz/setup.exe", title: "Baixe o App QuizHero.exe para Ver seu Resultado", desc: "Programa para calcular qual super-herói você é com base no seu PC.", isSafe: false, reason: "Perigo! Quizzes são páginas de texto, nunca programas .exe para instalar." }
-        ],
-        medium: [
-          { url: "http://www.buzzfeed.com.br/quiz/qual-vingador-voce-e", title: "BuzzFeed Quiz: Qual Vingador é a sua cara?", desc: "Faça o teste clássico do BuzzFeed e compartilhe com os amigos.", isSafe: true, reason: "Seguro! Portal de entretenimento e quizzes muito conhecido." },
-          { url: "http://www.legiaodosherois.com.br/quiz/vingadores", title: "Legião dos Heróis - Teste seus Conhecimentos Marvel", desc: "Quizzes sobre quadrinhos, filmes do UCM e personagens.", isSafe: true, reason: "Seguro! Site de cultura pop e cinema confiável." },
-          { url: "http://quiz-marvel-oficial-gratis.com/cadastro", title: "Quiz Marvel - Faça Login com sua Conta do Facebook", desc: "Conecte sua rede social para ver qual herói você é e ganhar prêmios.", isSafe: false, reason: "Cilada! Quizzes suspeitos pedindo login em redes sociais roubam a conta." },
-          { url: "http://testes-e-quizzes-online.net/vingadores.exe", title: "Resultado do Quiz Vingadores em PDF/EXE", desc: "Baixe o relatório completo sobre a sua personalidade de herói.", isSafe: false, reason: "Perigo! Download de arquivo executável disfarçado de teste de personalidade." }
-        ],
-        hard: [
-          { url: "http://www.marvel.com/quizzes", title: "Marvel Official Quizzes & Trivia", desc: "Testes e trivias oficiais sobre o universo dos quadrinhos Marvel.", isSafe: true, reason: "Seguro! Seção oficial de quizzes no site da Marvel (marvel.com)." },
-          { url: "http://www.omelete.com.br/marvel/quiz-vingadores", title: "Omelete - Quiz: Você realmente conhece os Vingadores?", desc: "Desafio para fãs de cinema e quadrinhos no portal Omelete.", isSafe: true, reason: "Seguro! Portal brasileiro de notícias de cinema e entretenimento." },
-          { url: "http://www.marvell.com/quiz-vingadores", title: "Marvel Entertainment Quiz - Qual seu Herói?", desc: "Descubra qual membro dos Vingadores representa você.", isSafe: false, reason: "Cilada Díficil! Marvell com dois 'L's é uma fabricante de hardware, não a Marvel dos heróis." },
-          { url: "http://marvel.com.quizzes-premios.com/test", title: "Marvel Fan Club - Quiz de Aniversário", desc: "Responda às perguntas oficiais e ganhe colecionáveis.", isSafe: false, reason: "Cilada Díficil! O domínio verdadeiro é quizzes-premios.com." }
-        ]
-      },
-      // SCENARIO 6: Fortnite Skins
-      {
-        easy: [
-          { url: "http://www.fortnite.com/news", title: "Notícias e Eventos Oficiais do Fortnite", desc: "Novidades do Passe de Batalha e recompensas gratuitas oficiais.", isSafe: true, reason: "Seguro! Notícias vindo direto do site oficial da Epic Games." },
-          { url: "http://epicgames-vbucks-claim-free.online/login", title: "🎁 RESGATE 5.000 V-BUCKS GRÁTIS NA SUA CONTA EPIC", desc: "Faça login com seu e-mail e senha da Epic para ganhar V-Bucks.", isSafe: false, reason: "Alerta de Phishing! Site falso tentando roubar sua conta da Epic Games." },
-          { url: "http://gerador-de-skins-fortnite.xyz/hack", title: "Gerador de Skins Fortnite - Insira sua Senha", desc: "Ferramenta online para injetar skins raras direto no seu inventário.", isSafe: false, reason: "Perigo! Geradores de skins exigindo senha roubam seu acesso." }
-        ],
-        medium: [
-          { url: "http://www.techtudo.com.br/dicas-e-tutoriais/como-resgatar-codigos.html", title: "TechTudo - Como resgatar códigos oficiais no Fortnite", desc: "Guia mostrando o passo a passo correto na página oficial da Epic.", isSafe: true, reason: "Seguro! Artigo jornalístico ensinando o procedimento correto." },
-          { url: "http://fortnite.gg", title: "Fortnite.GG - Loja Diária e Rastreamento de Itens", desc: "Banco de dados seguro para ver os itens da loja sem precisar abrir o jogo.", isSafe: true, reason: "Seguro! Ferramenta comunitária famosa e confiável sobre Fortnite." },
-          { url: "http://fortnite-codigos-gratis.com.br/skin", title: "Códigos de Skins Grátis Fortnite - Cadastre o Celular", desc: "Informe seu DDD e número para receber o código promocional por SMS.", isSafe: false, reason: "Cilada! Golpe para cadastrar seu celular em serviços de mensagem pagos." },
-          { url: "http://epic-games-promocao-vbucks.net/download-hack", title: "Hack de Skins Fortnite - Baixe o Injetor.exe", desc: "Programa para liberar trajes de temporadas passadas sem pagar.", isSafe: false, reason: "Perigo! Programas injetores contêm vírus banidores de conta." }
-        ],
-        hard: [
-          { url: "http://www.epicgames.com/fortnite/en-US/vbuckscard", title: "Cartões V-Bucks Oficiais - Resgatar Código", desc: "Página oficial da Epic Games para resgatar cartões comprados em lojas.", isSafe: true, reason: "Seguro! Subdomínio oficial epicgames.com para resgate." },
-          { url: "http://status.epicgames.com", title: "Status dos Servidores Epic Games & Fortnite", desc: "Verifique a estabilidade dos serviços e servidores em tempo real.", isSafe: true, reason: "Seguro! Página oficial de diagnósticos da Epic Games." },
-          { url: "http://www.epiiicgames.com/fortnite/redeem", title: "Epic Games Redeem Center - Resgate de V-Bucks", desc: "Insira o código do seu cartão de presente para adicionar saldo.", isSafe: false, reason: "Cilada Díficil! URL falsa com 3 'I's (epiiicgames.com)." },
-          { url: "http://epicgames.com.resgatar-vbucks.com/login", title: "Epic Games Claim Center - V-Bucks de Graça", desc: "Logue em sua conta para sincronizar o prêmio com o jogo.", isSafe: false, reason: "Cilada Díficil! O domínio verdadeiro é resgatar-vbucks.com." }
-        ]
-      },
-      // SCENARIO 7: PC Lento
-      {
-        easy: [
-          { url: "http://www.techtudo.com.br/dicas-e-tutoriais/como-limpar-pc", title: "Como deixar o PC mais rápido: 7 dicas simples", desc: "Aprenda a fechar programas e limpar arquivos temporários no Windows.", isSafe: true, reason: "Seguro! Um guia educativo passo a passo em portal confiável." },
-          { url: "http://acelerador-de-pc-super-fast.download-total.com", title: "⚠️ ALERTA: Seu Computador Está Infectado! Clique para Limpar", desc: "Detectamos 14 vírus! Baixe o programa PC-Speed-Booster.exe agora.", isSafe: false, reason: "Golpe do Falso Antivírus! Mensagens alarmistas para instalar programas ruins." },
-          { url: "http://limpar-virus-do-pc-agora.xyz/limpador.exe", title: "Limpador de Vírus Grátis - Instalar Agora", desc: "Programa automático para acelerar seu PC em 500% instantaneamente.", isSafe: false, reason: "Perigo! Promessas milagrosas em executáveis .xyz infectam a máquina." }
-        ],
-        medium: [
-          { url: "http://www.canaltech.com.br/tecnologia/como-deixar-o-windows-mais-rapido/", title: "Canaltech: Dicas seguras de otimização de sistema", desc: "Saiba quais configurações ajustar no Windows para melhorar o desempenho.", isSafe: true, reason: "Seguro! Portal de tecnologia de grande credibilidade." },
-          { url: "http://www.ccleaner.com/pt-br/ccleaner", title: "CCleaner Oficial - Otimizador de Computador", desc: "Ferramenta tradicional de limpeza de arquivos desnecessários.", isSafe: true, reason: "Seguro! Site oficial de software conhecido de manutenção." },
-          { url: "http://otimizador-de-windows-gratis.com/download", title: "Acelerador de Memória RAM - Baixe o Crack", desc: "Utilitário modificado para dobrar a velocidade do processador.", isSafe: false, reason: "Cilada! Programas modificados costumam vir com mineradores de moedas." },
-          { url: "http://limpador-de-pc-online.net/scan-gratis", title: "Antivírus Online Grátis - Digite seu Celular", desc: "Insira seu número com DDD para receber o relatório de vírus do PC.", isSafe: false, reason: "Perigo! Golpe para cobrança na conta de telefone." }
-        ],
-        hard: [
-          { url: "http://support.microsoft.com/pt-br/windows/dicas-desempenho-pc", title: "Suporte Oficial Microsoft - Dicas de Desempenho", desc: "Instruções oficiais da Microsoft para otimizar o Windows 10/11.", isSafe: true, reason: "Seguro! Página oficial de suporte da Microsoft." },
-          { url: "http://www.dell.com/support/kbdoc/pt-br/000125609", title: "Suporte Técnico Dell - Como Resolver Lentidão", desc: "Artigo da base de conhecimento técnico da Dell para diagnósticos.", isSafe: true, reason: "Seguro! Base de conhecimento da fabricante Dell." },
-          { url: "http://www.microssoft.com/pt-br/support-cleaner", title: "Microsoft Speed Optimizer - Ferramenta Oficial", desc: "Otimize o registro do Windows com nossa ferramenta de manutenção.", isSafe: false, reason: "Cilada Díficil! URL falsa com dois 'S's (microssoft.com)." },
-          { url: "http://support.microsoft.com.otimizar-pc.net/fix", title: "Microsoft Windows FixIT - Limpeza de Sistema", desc: "Baixe a correção automática de desempenho para computadores.", isSafe: false, reason: "Cilada Díficil! O domínio real é otimizar-pc.net." }
-        ]
-      },
-      // SCENARIO 8: TikTok Entrar
-      {
-        easy: [
-          { url: "http://www.tiktok.com/login", title: "Entrar | TikTok Oficial", desc: "Entre no TikTok para assistir a vídeos e ver o que está em alta.", isSafe: true, reason: "Seguro! Este é o domínio oficial do TikTok (tiktok.com)." },
-          { url: "http://tik-tok-login-verificar-senha.ga/auth", title: "TikTok Brasil - Confirme sua Senha e Ganhe Seguidores", desc: "Digite seu e-mail e senha para ganhar 1.000 seguidores na hora.", isSafe: false, reason: "Perigo! Endereço falso prometendo seguidores para roubar sua senha." },
-          { url: "http://ganhar-seguidores-tiktok.xyz/login", title: "Ganhe 10.000 Seguidores no TikTok Grátis", desc: "Conecte sua conta informando sua senha para impulsionar seu perfil.", isSafe: false, reason: "Cilada! Promessas de seguidores em troca de senha são golpes de roubo." }
-        ],
-        medium: [
-          { url: "http://newsroom.tiktok.com/pt-br/", title: "Sala de Imprensa Oficial TikTok Brasil", desc: "Notícias, atualizações de segurança e comunicados da plataforma.", isSafe: true, reason: "Seguro! Subdomínio oficial de notícias do TikTok." },
-          { url: "http://www.techtudo.com.br/dicas-e-tutoriais/como-usar-o-tiktok-no-pc.html", title: "TechTudo - Como usar o TikTok no computador", desc: "Guia completo mostrando como acessar sua conta pelo navegador com segurança.", isSafe: true, reason: "Seguro! Matéria explicativa em portal de confiança." },
-          { url: "http://tiktok-para-pc-download.com/setup.exe", title: "TikTok para Windows - Baixar Aplicativo em .exe", desc: "Instalador não oficial do TikTok para usar no seu computador.", isSafe: false, reason: "Cilada! O TikTok no PC é usado direto no navegador ou loja oficial, não via .exe suspeito." },
-          { url: "http://tiktok-verificacao-de-conta.net/login", title: "TikTok Verificação de Conta - Confirme seus Dados", desc: "Evite a suspensão do seu perfil digitando seus dados de acesso.", isSafe: false, reason: "Perigo! Phishing alarmista para roubo de credenciais." }
-        ],
-        hard: [
-          { url: "http://www.tiktok.com/foryou", title: "TikTok - Página Inicial Para Você", desc: "Assista aos vídeos mais populares da internet no site oficial.", isSafe: true, reason: "Seguro! Página oficial tiktok.com/foryou." },
-          { url: "http://support.tiktok.com/pt", title: "Central de Ajuda do TikTok - Login e Segurança", desc: "Artigos da equipe de suporte ensinando a proteger sua conta.", isSafe: true, reason: "Seguro! Subdomínio oficial de suporte support.tiktok.com." },
-          { url: "http://www.tikktok.com/login", title: "TikTok Login Center - Acesse sua Conta", desc: "Página de acesso à rede social de vídeos curtos.", isSafe: false, reason: "Cilada Díficil! URL com dois 'K's (tikktok.com) para enganar desatentos." },
-          { url: "http://tiktok.com.autenticacao-seguranca.net/login", title: "TikTok Security Check - Autenticação", desc: "Confirme seus dados para continuar utilizando sua conta.", isSafe: false, reason: "Cilada Díficil! O domínio verdadeiro é autenticacao-seguranca.net." }
-        ]
-      },
-      // SCENARIO 9: Tabela Periódica
-      {
-        easy: [
-          { url: "http://www.tabelaperiodica.org", title: "Tabela Periódica Interativa e Completa", desc: "Consulte as propriedades dos elementos químicos e distribuição eletrônica.", isSafe: true, reason: "Excelente! Um site totalmente educativo e focado em estudos." },
-          { url: "http://tabela-periodica-pdf.xyz/baixar-exe", title: "Tabela Periódica em PDF - Baixe Tabela_Setup.exe", desc: "Instalador com resumo da tabela periódica para seu computador.", isSafe: false, reason: "Perigo! Arquivos de estudo são documentos, nunca programas .exe para instalar." },
-          { url: "http://ganhe-premios-estudantes.top/quimica", title: "Sorteio de iPad para Estudantes de Química", desc: "Responda à pesquisa de química e ganhe um tablet de graça.", isSafe: false, reason: "Cilada! Promoção enganosa tentando capturar dados pessoais de alunos." }
-        ],
-        medium: [
-          { url: "http://brasilescola.uol.com.br/quimica/tabela-periodica.htm", title: "Brasil Escola - Tabela Periódica Completa", desc: "Estude a organização da tabela periódica, famílias e períodos.", isSafe: true, reason: "Seguro! Portal educativo renomado no Brasil." },
-          { url: "http://www.todamateria.com.br/tabela-periodica/", title: "Toda Matéria - Resumo da Tabela Periódica", desc: "Explicação clara e ilustrada sobre todos os elementos químicos.", isSafe: true, reason: "Seguro! Site de apoio escolar confiável para provas." },
-          { url: "http://resumos-escolares-quimica.com/cadastro-sms", title: "Resumo Tabela Periódica - Digite o Celular", desc: "Informe seu telefone para receber os resumos de química via SMS.", isSafe: false, reason: "Cilada! Golpe para cadastrar cobrança indevida no celular." },
-          { url: "http://tabela-periodica-download.net/instalador.exe", title: "Tabela Periódica 3D Interativa - Instalador", desc: "Baixe o programa 3D com todos os elementos químicos para o PC.", isSafe: false, reason: "Perigo! Download executável não verificado em site genérico." }
-        ],
-        hard: [
-          { url: "http://pt.khanacademy.org/science/chemistry/periodic-table", title: "Khan Academy Brasil - Aulas de Tabela Periódica", desc: "Vídeos e exercícios gratuitos de química para estudantes.", isSafe: true, reason: "Seguro! Organização de ensino gratuito internacional (khanacademy.org)." },
-          { url: "http://iupac.org/what-we-do/periodic-table-of-elements/", title: "IUPAC - Tabela Periódica Oficial Internacional", desc: "A fonte internacional oficial que nomeia os elementos químicos.", isSafe: true, reason: "Seguro! Site oficial da organização internacional de química (iupac.org)." },
-          { url: "http://www.wikkipecia.org/wiki/tabela-periodica", title: "Wikipédia Escolar - Tabela Periódica dos Elementos", desc: "Enciclopédia livre com dados sobre cada elemento químico.", isSafe: false, reason: "Cilada Díficil! URL falsa (wikkipecia com 2 'K's e 'C' no lugar de 'D')." },
-          { url: "http://tabelaperiodica.org.estudos-quimica.net/pdf", title: "Tabela Periódica Resumida em PDF", desc: "Arquivo para impressão rápida em provas de química.", isSafe: false, reason: "Cilada Díficil! O domínio real é estudos-quimica.net." }
-        ]
+        "url": "https://bonus-minecraft.example/resgatar",
+        "title": "Gerador de contas Minecraft",
+        "desc": "Pede sua senha de e-mail e um código de verificação para entregar uma conta premium.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "minecraft.example"
       }
-    ];
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.minecraft.example/primeiros-passos",
+        "title": "Ajuda para começar a jogar",
+        "desc": "Um guia explica os controles e as opções de teste. A leitura não pede senha nem instalação.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.minecraft.example corresponde à referência minecraft.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://minecraft.example/guia",
+        "title": "Minecraft: perguntas para a aula",
+        "desc": "Material de consulta com perguntas sobre criação de mundos, sem pedir dados pessoais.",
+        "isSafe": true,
+        "reason": "O endereço minecraft.example corresponde à referência minecraft.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://pacotes-minecraft.example/download",
+        "title": "Pacote de mundos com ativador",
+        "desc": "Para abrir os mundos, pede instalar Ativador.exe de uma fonte não confirmada.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://comunidade.minecraft.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Minecraft. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "minecraft.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.minecraft.example/atividade",
+        "title": "Atividade com blocos no navegador",
+        "desc": "Uma atividade de demonstração abre no navegador, sem instalar programas ou criar uma conta.",
+        "isSafe": true,
+        "reason": "O endereço recursos.minecraft.example corresponde à referência minecraft.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://minecraft.example/seguranca",
+        "title": "Como proteger a conta do jogo",
+        "desc": "O material ensina a não compartilhar senhas e a pedir ajuda antes de baixar arquivos.",
+        "isSafe": true,
+        "reason": "O endereço minecraft.example corresponde à referência minecraft.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://minecraft-central.example/guia",
+        "title": "Minecraft: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Minecraft. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é minecraft.example, mas este cartão usa minecraft-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "minecraft.example"
+      },
+      {
+        "url": "https://minecraft.example.materiais-da-aula.example/resumo",
+        "title": "Minecraft: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Minecraft e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. minecraft.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência minecraft.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "minecraft.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://espaco.example/planetas",
+        "title": "Sistema solar: pesquisa para a escola",
+        "desc": "Texto com o nome dos planetas, autoria e fontes de consulta indicadas para a aula.",
+        "isSafe": true,
+        "reason": "O endereço espaco.example corresponde à referência espaco.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://ofertas-espaco.example/instalar",
+        "title": "Trabalho completo sobre os planetas",
+        "desc": "Oferece um trabalho em PDF, mas exige instalar Trabalho_Planetas.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://bonus-espaco.example/resgatar",
+        "title": "Prêmio para quem estuda astronomia",
+        "desc": "Promete um telescópio e pede a senha do e-mail e o código recebido por SMS para participar.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "espaco.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.espaco.example/perguntas",
+        "title": "Perguntas sobre planetas e estrelas",
+        "desc": "Explicações de astronomia para ler com o professor, sem cadastro ou pedido de pagamento.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.espaco.example corresponde à referência espaco.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://espaco.example/roteiro",
+        "title": "Roteiro de observação do céu",
+        "desc": "Uma atividade orientada pelo professor explica como observar o céu com segurança.",
+        "isSafe": true,
+        "reason": "O endereço espaco.example corresponde à referência espaco.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://pacotes-espaco.example/download",
+        "title": "Leitor especial de imagens espaciais",
+        "desc": "Exige instalar Leitor_Secreto.exe de origem não confirmada para mostrar imagens que deveriam abrir no navegador.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://comunidade.espaco.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Sistema solar. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "espaco.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.espaco.example/imagens",
+        "title": "Imagens para conhecer os planetas",
+        "desc": "A galeria educativa pode ser vista no navegador, sem instalar um visualizador.",
+        "isSafe": true,
+        "reason": "O endereço recursos.espaco.example corresponde à referência espaco.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://espaco.example/conferir",
+        "title": "Como conferir uma notícia sobre o espaço",
+        "desc": "O guia lembra de comparar autoria, data e outras fontes antes de compartilhar uma notícia.",
+        "isSafe": true,
+        "reason": "O endereço espaco.example corresponde à referência espaco.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://espaco-central.example/guia",
+        "title": "Sistema solar: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Sistema solar. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é espaco.example, mas este cartão usa espaco-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "espaco.example"
+      },
+      {
+        "url": "https://espaco.example.materiais-da-aula.example/resumo",
+        "title": "Sistema solar: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Sistema solar e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. espaco.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência espaco.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "espaco.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://roblox.example/robux",
+        "title": "Robux: como reconhecer ofertas enganosas",
+        "desc": "O material explica por que é preciso desconfiar de geradores e nunca fornecer a senha para ganhar moedas.",
+        "isSafe": true,
+        "reason": "O endereço roblox.example corresponde à referência roblox.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://ofertas-roblox.example/instalar",
+        "title": "Instalador de Robux infinitos",
+        "desc": "Promete moedas ilimitadas se você instalar Robux_Infinito.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://bonus-roblox.example/resgatar",
+        "title": "Gerador de Robux na hora",
+        "desc": "Pede o nome de usuário, a senha e o código de segurança da conta para entregar moedas.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "roblox.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.roblox.example/ajuda-conta",
+        "title": "Ajuda para proteger sua conta",
+        "desc": "A página orienta a conferir canais de suporte com um adulto e a guardar códigos em segredo.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.roblox.example corresponde à referência roblox.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://roblox.example/criacao",
+        "title": "Criando atividades com o professor",
+        "desc": "Um guia mostra ideias de criação de jogos, sem promessa de dinheiro ou moedas.",
+        "isSafe": true,
+        "reason": "O endereço roblox.example corresponde à referência roblox.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://pacotes-roblox.example/download",
+        "title": "Ferramenta para liberar todos os itens",
+        "desc": "Oferece instalar Liberador.exe de origem não confirmada para alterar o jogo.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://comunidade.roblox.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Roblox. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "roblox.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.roblox.example/cartoes",
+        "title": "Entenda os cartões de presente",
+        "desc": "O texto explica os cuidados antes de comprar ou resgatar um cartão. A aula não pede compra nem código.",
+        "isSafe": true,
+        "reason": "O endereço recursos.roblox.example corresponde à referência roblox.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://roblox.example/convivencia",
+        "title": "Regras para jogar em grupo",
+        "desc": "O material ensina a respeitar outras pessoas e a procurar ajuda quando uma conversa incomodar.",
+        "isSafe": true,
+        "reason": "O endereço roblox.example corresponde à referência roblox.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://roblox-central.example/guia",
+        "title": "Roblox: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Roblox. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é roblox.example, mas este cartão usa roblox-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "roblox.example"
+      },
+      {
+        "url": "https://roblox.example.materiais-da-aula.example/resumo",
+        "title": "Roblox: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Roblox e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. roblox.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência roblox.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "roblox.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://capcut.example/editor",
+        "title": "Conheça ferramentas de edição",
+        "desc": "Uma apresentação das ferramentas explica o que cada recurso faz, sem pedir instalação durante a aula.",
+        "isSafe": true,
+        "reason": "O endereço capcut.example corresponde à referência capcut.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://ofertas-capcut.example/instalar",
+        "title": "CapCut Pro liberado por instalador secreto",
+        "desc": "Promete recursos pagos sem custo e exige CapCut_Liberado.exe com a proteção do computador desligada.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://bonus-capcut.example/resgatar",
+        "title": "Efeitos grátis em troca de acesso",
+        "desc": "Pede a senha do seu e-mail e um código de verificação para liberar um pacote de edição.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "capcut.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.capcut.example/ajuda",
+        "title": "Ajuda para editar com um adulto",
+        "desc": "O tutorial ensina a cortar um vídeo e salvar um projeto, sem pedir senhas de outras contas.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.capcut.example corresponde à referência capcut.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://capcut.example/privacidade",
+        "title": "Cuidados ao publicar um vídeo",
+        "desc": "O guia lembra de conferir o fundo da imagem e pedir autorização às pessoas que aparecem.",
+        "isSafe": true,
+        "reason": "O endereço capcut.example corresponde à referência capcut.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://pacotes-capcut.example/download",
+        "title": "Pacote obrigatório de efeitos",
+        "desc": "Pede instalar Efeitos_Especiais.exe de origem não confirmada antes de permitir a leitura do tutorial.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://comunidade.capcut.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de CapCut. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "capcut.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.capcut.example/transicoes",
+        "title": "Exemplos de transições para a aula",
+        "desc": "Os exemplos podem ser vistos no navegador, sem um pacote de efeitos obrigatório.",
+        "isSafe": true,
+        "reason": "O endereço recursos.capcut.example corresponde à referência capcut.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://capcut.example/origem",
+        "title": "De onde baixar um editor",
+        "desc": "As orientações dizem para conferir a fonte e pedir ajuda ao responsável antes de qualquer instalação.",
+        "isSafe": true,
+        "reason": "O endereço capcut.example corresponde à referência capcut.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://capcut-central.example/guia",
+        "title": "CapCut: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de CapCut. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é capcut.example, mas este cartão usa capcut-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "capcut.example"
+      },
+      {
+        "url": "https://capcut.example.materiais-da-aula.example/resumo",
+        "title": "CapCut: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de CapCut e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. capcut.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência capcut.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "capcut.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://jogos.example/raciocinio",
+        "title": "Jogos de raciocínio no navegador",
+        "desc": "Uma seleção de atividades funciona no navegador, sem instalar programas.",
+        "isSafe": true,
+        "reason": "O endereço jogos.example corresponde à referência jogos.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://ofertas-jogos.example/instalar",
+        "title": "Plugin obrigatório para jogar",
+        "desc": "Diz que você precisa instalar Plugin_Game.exe e desligar a proteção do computador para abrir um jogo de navegador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://bonus-jogos.example/resgatar",
+        "title": "Bônus secreto para jogadores",
+        "desc": "Pede sua senha de e-mail e o código de segurança de outra conta para entregar um bônus.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "jogos.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.jogos.example/ajuda",
+        "title": "Ajuda para os jogos da aula",
+        "desc": "As instruções explicam os controles e como pausar, sem pedir telefone ou senha.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.jogos.example corresponde à referência jogos.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://jogos.example/regras",
+        "title": "Conheça as regras antes de jogar",
+        "desc": "A página mostra regras de um jogo de lógica e orienta a jogar junto do professor.",
+        "isSafe": true,
+        "reason": "O endereço jogos.example corresponde à referência jogos.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://pacotes-jogos.example/download",
+        "title": "Programa para melhorar os jogos",
+        "desc": "Exige instalar Launcher_Rapido.exe de fonte não confirmada para jogar uma atividade do navegador.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://comunidade.jogos.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Jogos no navegador. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "jogos.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.jogos.example/memoria",
+        "title": "Desafio de memória",
+        "desc": "O desafio de demonstração permite jogar sem cadastro, download ou pedido de dados.",
+        "isSafe": true,
+        "reason": "O endereço recursos.jogos.example corresponde à referência jogos.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://jogos.example/convites",
+        "title": "Cuidados com convites durante o jogo",
+        "desc": "Um guia ensina a não passar dados a desconhecidos e a pedir ajuda se alguém pressionar.",
+        "isSafe": true,
+        "reason": "O endereço jogos.example corresponde à referência jogos.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://jogos-central.example/guia",
+        "title": "Jogos no navegador: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Jogos no navegador. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é jogos.example, mas este cartão usa jogos-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "jogos.example"
+      },
+      {
+        "url": "https://jogos.example.materiais-da-aula.example/resumo",
+        "title": "Jogos no navegador: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Jogos no navegador e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. jogos.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência jogos.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "jogos.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://herois.example/quiz",
+        "title": "Quiz dos heróis para a turma",
+        "desc": "Perguntas de entretenimento sobre personagens fictícios. O resultado aparece na página, sem informar dados.",
+        "isSafe": true,
+        "reason": "O endereço herois.example corresponde à referência herois.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://ofertas-herois.example/instalar",
+        "title": "Resultado do quiz em PDF",
+        "desc": "Promete um PDF, mas manda instalar Resultado_Heroi.exe e desligar a proteção do computador para ler.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://bonus-herois.example/resgatar",
+        "title": "Descubra seu herói com login secreto",
+        "desc": "Pede sua senha de e-mail e o código de segurança para mostrar um resultado de entretenimento.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "herois.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.herois.example/ajuda",
+        "title": "Ajuda para fazer o quiz",
+        "desc": "As instruções explicam como responder e lembram que é uma brincadeira, sem valor de avaliação pessoal.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.herois.example corresponde à referência herois.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://herois.example/historias",
+        "title": "Teste seus conhecimentos sobre histórias",
+        "desc": "Perguntas sobre histórias para discutir com a turma, sem login em redes sociais.",
+        "isSafe": true,
+        "reason": "O endereço herois.example corresponde à referência herois.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://pacotes-herois.example/download",
+        "title": "Programa para descobrir seu personagem",
+        "desc": "Pede instalar Quiz_Heroi.exe de origem não confirmada, embora o teste seja apenas um conjunto de perguntas.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://comunidade.herois.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Heróis e quizzes. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "herois.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.herois.example/criacao",
+        "title": "Crie um herói com o professor",
+        "desc": "Ideias de atividade criativa para inventar personagens, sem enviar nome completo ou fotografias.",
+        "isSafe": true,
+        "reason": "O endereço recursos.herois.example corresponde à referência herois.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://herois.example/cuidados",
+        "title": "Quizzes e dados pessoais",
+        "desc": "O guia explica por que um teste de entretenimento não precisa de senha, telefone nem endereço.",
+        "isSafe": true,
+        "reason": "O endereço herois.example corresponde à referência herois.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://herois-central.example/guia",
+        "title": "Heróis e quizzes: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Heróis e quizzes. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é herois.example, mas este cartão usa herois-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "herois.example"
+      },
+      {
+        "url": "https://herois.example.materiais-da-aula.example/resumo",
+        "title": "Heróis e quizzes: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Heróis e quizzes e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. herois.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência herois.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "herois.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://fortnite.example/noticias",
+        "title": "Notícias e cuidados com eventos do jogo",
+        "desc": "O material ensina a conferir notícias e condições de eventos com um adulto, sem prometer recompensas.",
+        "isSafe": true,
+        "reason": "O endereço fortnite.example corresponde à referência fortnite.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://ofertas-fortnite.example/instalar",
+        "title": "V-Bucks infinitos pelo computador",
+        "desc": "Promete moedas ilimitadas se instalar Vbucks_Infinito.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://bonus-fortnite.example/resgatar",
+        "title": "Gerador de skins por acesso à conta",
+        "desc": "Pede a senha da conta e o código de segurança para colocar itens no inventário.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "fortnite.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.fortnite.example/ajuda",
+        "title": "Ajuda para reconhecer mensagens falsas",
+        "desc": "As dicas mostram como desconfiar de pedidos de senha feitos por supostos atendentes.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.fortnite.example corresponde à referência fortnite.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://fortnite.example/cartoes",
+        "title": "Entenda os cartões e códigos do jogo",
+        "desc": "O guia explica o que conferir antes de comprar ou resgatar um cartão. A página não pede seu código.",
+        "isSafe": true,
+        "reason": "O endereço fortnite.example corresponde à referência fortnite.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://pacotes-fortnite.example/download",
+        "title": "Injetor para liberar itens antigos",
+        "desc": "Exige instalar Injetor_Itens.exe de fonte não confirmada para modificar o jogo.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://comunidade.fortnite.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Fortnite. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "fortnite.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.fortnite.example/itens",
+        "title": "Atividade sobre itens virtuais",
+        "desc": "Uma atividade da aula explica itens virtuais, sem compra, instalação ou pedido de acesso à conta.",
+        "isSafe": true,
+        "reason": "O endereço recursos.fortnite.example corresponde à referência fortnite.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://fortnite.example/seguranca",
+        "title": "Proteja a conta e converse com um adulto",
+        "desc": "A leitura ensina a usar senha única e uma segunda etapa de verificação, sem compartilhar códigos.",
+        "isSafe": true,
+        "reason": "O endereço fortnite.example corresponde à referência fortnite.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://fortnite-central.example/guia",
+        "title": "Fortnite: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Fortnite. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é fortnite.example, mas este cartão usa fortnite-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "fortnite.example"
+      },
+      {
+        "url": "https://fortnite.example.materiais-da-aula.example/resumo",
+        "title": "Fortnite: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Fortnite e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. fortnite.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência fortnite.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "fortnite.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://computador.example/cuidados",
+        "title": "Computador lento: primeiros cuidados",
+        "desc": "O guia sugere conversar com o responsável e fechar programas que não estão em uso, sem instalar um acelerador.",
+        "isSafe": true,
+        "reason": "O endereço computador.example corresponde à referência computador.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://ofertas-computador.example/instalar",
+        "title": "Seu computador tem 14 vírus!",
+        "desc": "Uma propaganda afirma ter encontrado vírus sem realizar uma análise. Exige Limpa_PC.exe e pede desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://bonus-computador.example/resgatar",
+        "title": "Suporte pede acesso para ajudar",
+        "desc": "Uma pessoa pede sua senha e um código de segurança pelo chat antes de explicar quem é ou o que pretende fazer.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "computador.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.computador.example/ajuda",
+        "title": "Ajuda para manter os programas atualizados",
+        "desc": "O texto orienta a usar os mecanismos de atualização com a ajuda de um adulto.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.computador.example corresponde à referência computador.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://computador.example/backup",
+        "title": "Como guardar uma cópia dos trabalhos",
+        "desc": "Uma atividade ensina a fazer cópias de segurança com o professor, sem pedir acesso remoto.",
+        "isSafe": true,
+        "reason": "O endereço computador.example corresponde à referência computador.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://pacotes-computador.example/download",
+        "title": "Acelerador que promete velocidade em dobro",
+        "desc": "Pede instalar Acelerador_Magico.exe de origem não confirmada para dobrar a velocidade instantaneamente.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://comunidade.computador.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Cuidados com o computador. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "computador.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.computador.example/configuracoes",
+        "title": "Conheça as configurações do sistema",
+        "desc": "As imagens mostram onde encontrar informações do computador. Nada é alterado nesta aula.",
+        "isSafe": true,
+        "reason": "O endereço recursos.computador.example corresponde à referência computador.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://computador.example/alertas",
+        "title": "Alerta falso de vírus: o que fazer",
+        "desc": "O guia explica que uma propaganda alarmista não prova uma infecção e orienta a procurar um adulto.",
+        "isSafe": true,
+        "reason": "O endereço computador.example corresponde à referência computador.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://computador-central.example/guia",
+        "title": "Cuidados com o computador: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Cuidados com o computador. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é computador.example, mas este cartão usa computador-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "computador.example"
+      },
+      {
+        "url": "https://computador.example.materiais-da-aula.example/resumo",
+        "title": "Cuidados com o computador: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Cuidados com o computador e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. computador.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência computador.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "computador.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://scratch.example/ideias",
+        "title": "Scratch: ideias para programar",
+        "desc": "Uma atividade orientada pelo professor apresenta blocos de programação, sem criar uma conta nesta aula.",
+        "isSafe": true,
+        "reason": "O endereço scratch.example corresponde à referência scratch.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://ofertas-scratch.example/instalar",
+        "title": "Scratch especial com todos os recursos",
+        "desc": "Promete recursos secretos se instalar Scratch_Especial.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://bonus-scratch.example/resgatar",
+        "title": "Prêmio para criadores de projetos",
+        "desc": "Pede a senha do seu e-mail e um código de segurança para entregar um prêmio por programação.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "scratch.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.scratch.example/ajuda",
+        "title": "Ajuda para os primeiros projetos",
+        "desc": "O tutorial explica como combinar blocos e testar uma animação, sem instalar extensões.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.scratch.example corresponde à referência scratch.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://scratch.example/historias",
+        "title": "Histórias com programação",
+        "desc": "O material propõe criar personagens fictícios, sem enviar fotos nem dados pessoais.",
+        "isSafe": true,
+        "reason": "O endereço scratch.example corresponde à referência scratch.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://pacotes-scratch.example/download",
+        "title": "Pacote obrigatório de blocos secretos",
+        "desc": "Exige Blocos_Secretos.exe de origem não confirmada para abrir um tutorial de programação.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://comunidade.scratch.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Scratch. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "scratch.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.scratch.example/exemplos",
+        "title": "Projetos de exemplo para a aula",
+        "desc": "Os exemplos podem ser observados no navegador com o professor, sem fornecer senha.",
+        "isSafe": true,
+        "reason": "O endereço recursos.scratch.example corresponde à referência scratch.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://scratch.example/convivencia",
+        "title": "Convivência ao criar projetos",
+        "desc": "Um guia recomenda respeito, cuidado com dados pessoais e ajuda de um adulto diante de uma mensagem estranha.",
+        "isSafe": true,
+        "reason": "O endereço scratch.example corresponde à referência scratch.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://scratch-central.example/guia",
+        "title": "Scratch: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Scratch. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é scratch.example, mas este cartão usa scratch-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "scratch.example"
+      },
+      {
+        "url": "https://scratch.example.materiais-da-aula.example/resumo",
+        "title": "Scratch: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Scratch e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. scratch.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência scratch.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "scratch.example"
+      }
+    ]
+  },
+  {
+    "easy": [
+      {
+        "url": "https://quimica.example/tabela",
+        "title": "Tabela periódica para consultar",
+        "desc": "Uma tabela educativa mostra símbolos e nomes dos elementos, com fontes indicadas para a aula.",
+        "isSafe": true,
+        "reason": "O endereço quimica.example corresponde à referência quimica.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://ofertas-quimica.example/instalar",
+        "title": "Tabela periódica pronta em PDF",
+        "desc": "Promete um documento PDF, mas exige instalar Tabela_Setup.exe e desligar a proteção do computador.",
+        "isSafe": false,
+        "reason": "O cartão exige instalar um programa e desligar a proteção do computador. Isso não é necessário para uma consulta da aula. Não faça a instalação; peça ajuda ao professor. .exe é um formato de programa, não uma prova de vírus por si só.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://bonus-quimica.example/resgatar",
+        "title": "Prêmio para quem acerta química",
+        "desc": "Pede sua senha de e-mail e um código de verificação para participar de um suposto prêmio escolar.",
+        "isSafe": false,
+        "reason": "O pedido de senha e código é a pista principal: não envie esses segredos a outra pessoa em troca de prêmio, item ou ajuda. Procure o canal correto com um adulto de confiança.",
+        "referenceDomain": "quimica.example"
+      }
+    ],
+    "medium": [
+      {
+        "url": "https://ajuda.quimica.example/ajuda",
+        "title": "Ajuda para ler a tabela periódica",
+        "desc": "O texto explica como localizar um elemento e verificar as informações com o professor.",
+        "isSafe": true,
+        "reason": "O endereço ajuda.quimica.example corresponde à referência quimica.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://quimica.example/resumo",
+        "title": "Resumo de química para a turma",
+        "desc": "Um material de consulta reúne os conceitos da aula, sem pedir cadastro por telefone.",
+        "isSafe": true,
+        "reason": "O endereço quimica.example corresponde à referência quimica.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://pacotes-quimica.example/download",
+        "title": "Visualizador obrigatório da tabela",
+        "desc": "Exige instalar Tabela_3D.exe de fonte não confirmada antes de permitir consultar um resumo escolar.",
+        "isSafe": false,
+        "reason": "A origem do programa não foi confirmada e a tarefa pede uma instalação inesperada. Pare antes de executar o arquivo e confira com um adulto se ele é necessário e de onde veio.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://comunidade.quimica.example/comentarios",
+        "title": "Comentário de visitante: acesso especial",
+        "desc": "Na área de comentários, um visitante promete acesso especial a materiais de Tabela periódica. Ele pede seu número de celular e manda continuar a conversa em outro aplicativo, sem avisar um adulto.",
+        "isSafe": false,
+        "reason": "Mesmo dentro de um endereço conhecido, comentários de visitantes não são orientações da instituição. O pedido de telefone e conversa escondida é desnecessário para a aula. Não forneça dados; peça ajuda a um adulto.",
+        "referenceDomain": "quimica.example"
+      }
+    ],
+    "hard": [
+      {
+        "url": "https://recursos.quimica.example/atividade",
+        "title": "Atividade sobre símbolos químicos",
+        "desc": "Uma atividade no navegador permite praticar símbolos, sem instalar um programa.",
+        "isSafe": true,
+        "reason": "O endereço recursos.quimica.example corresponde à referência quimica.example e usa um subdomínio dela. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://quimica.example/fontes",
+        "title": "Como conferir uma fonte de ciência",
+        "desc": "O guia orienta a observar autoria e fontes e a perguntar ao professor quando surgir uma dúvida.",
+        "isSafe": true,
+        "reason": "O endereço quimica.example corresponde à referência quimica.example. O cartão oferece uma consulta compatível com a atividade, sem pedir senha, código ou instalação inesperada. São boas pistas para consultar, mas cada novo pedido ainda precisa ser avaliado.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://quimica-central.example/guia",
+        "title": "Tabela periódica: guia que se apresenta como oficial",
+        "desc": "O título diz que este é o guia oficial de Tabela periódica. A página mostra um logotipo parecido, mas o endereço no cartão é diferente da referência que o professor entregou.",
+        "isSafe": false,
+        "reason": "A referência é quimica.example, mas este cartão usa quimica-central.example. Um título ou logotipo parecido não confirma a origem. Procure o endereço conferido pelo professor antes de continuar; não há prova de que esta página pertença à mesma fonte.",
+        "referenceDomain": "quimica.example"
+      },
+      {
+        "url": "https://quimica.example.materiais-da-aula.example/resumo",
+        "title": "Tabela periódica: material para consultar",
+        "desc": "O cartão se apresenta como parte do portal de Tabela periódica e oferece um resumo para consultar. Confira onde termina o nome principal do endereço antes de seguir.",
+        "isSafe": false,
+        "reason": "O domínio deste cartão é materiais-da-aula.example. quimica.example aparece apenas no início, como parte de um subdomínio. Isso não faz o endereço pertencer à referência quimica.example. Peça ajuda para conferir a origem antes de continuar.",
+        "referenceDomain": "quimica.example"
+      }
+    ]
+  }
+];
 
     // Array holding procedural scenarios generated for the current gameplay
     let scenarios = [];
@@ -1234,43 +2033,53 @@
     let score = 0;
     let lives = 3;
     let roundEvaluations = {};
-    let isVHSActive = true;
+    let isVHSActive = false;
+    let gameEnded = false;
+    let furthestRoundIndex = 0;
+    let soundEnabled = false;
+    let audioCtx = null;
+    let modalReturnFocus = null;
+    let lastMistake = '';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     // =========================================
     // RETRO AUDIO SYNTHESIS (Web Audio API)
     // =========================================
     function playRetroErrorSound() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(160, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.35);
-      } catch(e) {}
+      playRetroSound(false);
     }
 
     function playRetroSuccessSound() {
+      playRetroSound(true);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const button = document.getElementById('sound-toggle');
+      button.textContent = soundEnabled ? 'Som: ligado' : 'Som: desligado';
+      button.setAttribute('aria-pressed', String(soundEnabled));
+      if (soundEnabled) playRetroSuccessSound();
+    }
+
+    function playRetroSound(correct) {
+      if (!soundEnabled) return;
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) return;
+        if (!audioCtx || audioCtx.state === 'closed') audioCtx = new Audio();
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
-        osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.16);
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.frequency.setValueAtTime(correct ? 523.25 : 220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(correct ? 783.99 : 110, audioCtx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(audioCtx.destination);
+        osc.onended = () => { osc.disconnect(); gain.disconnect(); };
         osc.start();
-        osc.stop(ctx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.3);
       } catch(e) {}
     }
 
@@ -1279,49 +2088,38 @@
     // =========================================
     function triggerVirusDamageEffect(reasonText) {
       playRetroErrorSound();
-
-      // Screen Damage Flash Overlay
-      const flash = document.getElementById('damage-flash');
-      if (flash) {
-        flash.classList.add('active');
-        setTimeout(() => flash.classList.remove('active'), 450);
-      }
-
-      // Screen Damage Shake
-      const container = document.querySelector('.browser-app-container');
-      if (container) {
-        container.classList.add('screen-damage-shake');
-        setTimeout(() => container.classList.remove('screen-damage-shake'), 550);
-      }
-
-      // Show Windows XP Virus Modal Popup
       const modal = document.getElementById('virus-modal');
       const msgEl = document.getElementById('virus-modal-msg');
       if (msgEl) {
-        msgEl.innerHTML = `<strong>⚠️ CILADA DETECTADA NO NAVEGADOR! ☠️</strong><br><br>${escapeHtml(reasonText)}`;
+        msgEl.innerHTML = `${escapeHtml(reasonText)}<br><br>Nenhum site foi aberto e nenhum arquivo foi baixado.`;
       }
       if (modal) {
+        modalReturnFocus = document.activeElement;
         modal.classList.add('show');
+        document.querySelector('.browser-app-container').inert = true;
+        modal.querySelector('button').focus();
       }
     }
 
-    function closeVirusModal() {
+    function closeVirusModal(restoreFocus = true) {
       const modal = document.getElementById('virus-modal');
+      const wasOpen = modal && modal.classList.contains('show');
       if (modal) {
         modal.classList.remove('show');
       }
+      document.querySelector('.browser-app-container').inert = false;
+      if (restoreFocus && wasOpen && modalReturnFocus && modalReturnFocus.isConnected && !modalReturnFocus.disabled) modalReturnFocus.focus();
+      else if (restoreFocus && wasOpen && !gameEnded) {
+        const target = document.querySelector('#serp-results button:not(:disabled)') || document.querySelector('#next-bar button');
+        if (target) target.focus();
+      }
+      modalReturnFocus = null;
     }
 
     function updateGlitchLevel() {
       const container = document.querySelector('.browser-app-container');
       if (!container) return;
       container.classList.remove('glitch-level-1', 'glitch-level-2');
-
-      if (lives === 2) {
-        container.classList.add('glitch-level-1');
-      } else if (lives <= 1) {
-        container.classList.add('glitch-level-2');
-      }
     }
 
     // =========================================
@@ -1426,7 +2224,7 @@
         virusSpawnerTimer = null;
       }
 
-      if (lives >= 3) {
+      if (lives >= 3 || gameEnded || !isVHSActive || reducedMotion.matches) {
         bugsContainer.innerHTML = '';
         return;
       }
@@ -1487,14 +2285,19 @@
 
       // 10 'o' items representing rounds 1..10
       scenarios.forEach((sc, idx) => {
-        const oDiv = document.createElement('div');
+        const oDiv = document.createElement('button');
+        oDiv.type = 'button';
         const isActive = (idx === currentRoundIndex);
-        const isCompleted = (idx < currentRoundIndex) || (roundEvaluations[idx] && roundEvaluations[idx].size === sc.results.length);
+        const isCompleted = roundEvaluations[idx]?.size === sc.results.length;
+        oDiv.setAttribute('aria-label', `Rodada ${idx + 1}${isCompleted ? ', concluída' : ''}`);
+        if (isActive) oDiv.setAttribute('aria-current', 'step');
+        oDiv.disabled = gameEnded || idx > furthestRoundIndex;
 
         oDiv.className = `google-pag-o-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
 
         // Active 'o' is Red (g-red), all other 'o's are Yellow (g-yellow)
         const oChar = document.createElement('span');
+        oChar.setAttribute('aria-hidden', 'true');
         const colorClass = isActive ? 'g-red' : 'g-yellow';
         oChar.className = `google-pag-o-char ${colorClass}`;
         oChar.innerText = 'o';
@@ -1506,14 +2309,7 @@
         oDiv.appendChild(oChar);
         oDiv.appendChild(numSpan);
 
-        if (isCompleted || isActive || idx <= currentRoundIndex) {
-          oDiv.onclick = () => {
-            currentRoundIndex = idx;
-            updateHUD();
-            loadRound(currentRoundIndex);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          };
-        }
+        oDiv.onclick = () => navigateRound(idx);
 
         pagContainer.appendChild(oDiv);
       });
@@ -1525,6 +2321,9 @@
     }
 
     function initGame() {
+      gameEnded = false;
+      furthestRoundIndex = 0;
+      lastMistake = '';
       generateGameRounds();
       currentRoundIndex = 0;
       score = 0;
@@ -1534,7 +2333,8 @@
       loadRound(currentRoundIndex);
       document.getElementById('stage-gameplay').style.display = 'block';
       document.getElementById('stage-gameover').style.display = 'none';
-      closeVirusModal();
+      closeVirusModal(false);
+      window.scrollTo(0, 0);
     }
 
     function updateHUD() {
@@ -1546,6 +2346,9 @@
 
       const roundEl = document.getElementById('hud-round');
       if (roundEl) roundEl.innerText = currentRoundIndex + 1;
+      document.getElementById('hud-answered').textContent = `${roundEvaluations[currentRoundIndex]?.size || 0} / ${scenarios[currentRoundIndex].results.length}`;
+      document.getElementById('nav-previous').disabled = gameEnded || currentRoundIndex === 0;
+      document.getElementById('nav-next').disabled = gameEnded || roundEvaluations[currentRoundIndex]?.size !== scenarios[currentRoundIndex].results.length;
 
       updateGlitchLevel();
       updateVirusBugs();
@@ -1554,10 +2357,12 @@
 
     function loadRound(index) {
       const scenario = scenarios[index];
+      if (!scenario) return;
       document.getElementById('search-input-field').value = scenario.query;
       document.getElementById('stats-query-text').innerText = scenario.query;
       document.getElementById('url-query-param').innerText = scenario.urlParam;
-      document.getElementById('next-bar').style.display = 'none';
+      document.getElementById('stats-result-count').textContent = scenario.results.length;
+      document.getElementById('next-bar').style.display = !gameEnded && roundEvaluations[index]?.size === scenario.results.length ? 'flex' : 'none';
 
       const resultsContainer = document.getElementById('serp-results');
       resultsContainer.innerHTML = '';
@@ -1567,78 +2372,102 @@
         cardDiv.className = 'serp-card-2006';
         cardDiv.id = `card-${index}-${rIdx}`;
         cardDiv.innerHTML = `
-          <a class="serp-title-2006" onclick="return false;">${escapeHtml(item.title)}</a>
+          <h2 class="serp-title-2006">${escapeHtml(item.title)}</h2>
           <div class="serp-snippet-2006">${escapeHtml(item.desc)}</div>
+          <div class="source-reference"><strong>Referência da fonte neste exercício:</strong> ${escapeHtml(item.referenceDomain)}</div>
           <div class="serp-url-2006">${escapeHtml(item.url)}</div>
           <div class="decision-box" id="actions-${index}-${rIdx}">
             <span class="decision-tag">Avaliação do Detetive:</span>
             <button class="btn-decision btn-safe" onclick="evaluateResult(${index}, ${rIdx}, true)">
-              🟢 É Seguro
+              🟢 Há boas pistas para consultar
             </button>
             <button class="btn-decision btn-danger" onclick="evaluateResult(${index}, ${rIdx}, false)">
-              🔴 É Cilada / Perigo
+              🔴 Parar e verificar
             </button>
           </div>
-          <div class="retro-feedback-box" id="feedback-${index}-${rIdx}"></div>
+          <div class="retro-feedback-box" id="feedback-${index}-${rIdx}" aria-live="polite"></div>
         `;
         resultsContainer.appendChild(cardDiv);
+        if (roundEvaluations[index]?.has(rIdx)) renderEvaluation(index, rIdx);
       });
 
       renderGooglePagination();
     }
 
     function evaluateResult(scenarioIdx, resultIdx, userChoiceSafe) {
+      if (gameEnded || lives <= 0 || scenarioIdx !== currentRoundIndex || typeof userChoiceSafe !== 'boolean' || document.getElementById('virus-modal').classList.contains('show')) return;
       const scenario = scenarios[scenarioIdx];
-      const item = scenario.results[resultIdx];
-      const actionsEl = document.getElementById(`actions-${scenarioIdx}-${resultIdx}`);
-      const feedbackEl = document.getElementById(`feedback-${scenarioIdx}-${resultIdx}`);
-
-      // Disable decision buttons for this card
-      const btns = actionsEl.querySelectorAll('button');
-      btns.forEach(b => b.disabled = true);
-
+      const item = scenario?.results[resultIdx];
+      if (!item || !Number.isInteger(resultIdx) || roundEvaluations[scenarioIdx]?.has(resultIdx)) return;
+      if (!roundEvaluations[scenarioIdx]) roundEvaluations[scenarioIdx] = new Map();
+      roundEvaluations[scenarioIdx].set(resultIdx, userChoiceSafe);
       const isCorrect = (userChoiceSafe === item.isSafe);
-
       if (isCorrect) {
         score += 10;
         playRetroSuccessSound();
-        feedbackEl.className = 'retro-feedback-box show correct';
-        feedbackEl.innerHTML = `<strong>✅ Resposta Correta! (+10 pts)</strong><br>${escapeHtml(item.reason)}`;
       } else {
-        lives -= 1;
-        feedbackEl.className = 'retro-feedback-box show wrong';
-        feedbackEl.innerHTML = `<strong>❌ Ops! Você errou nessa (-1 Vida).</strong><br>${escapeHtml(item.reason)}`;
-        triggerVirusDamageEffect(item.reason);
+        lives = Math.max(0, lives - 1);
+        lastMistake = item.reason;
       }
-
+      renderEvaluation(scenarioIdx, resultIdx);
       updateHUD();
+      if (lives === 0) { showGameOver(); return; }
+      if (roundEvaluations[scenarioIdx].size === scenario.results.length) document.getElementById('next-bar').style.display = 'flex';
+      if (!isCorrect) triggerVirusDamageEffect(item.reason);
+    }
 
-      if (!roundEvaluations[scenarioIdx]) {
-        roundEvaluations[scenarioIdx] = new Set();
-      }
-      roundEvaluations[scenarioIdx].add(resultIdx);
+    function renderEvaluation(scenarioIdx, resultIdx) {
+      const item = scenarios[scenarioIdx].results[resultIdx];
+      const isCorrect = roundEvaluations[scenarioIdx].get(resultIdx) === item.isSafe;
+      document.querySelectorAll(`#actions-${scenarioIdx}-${resultIdx} button`).forEach(button => button.disabled = true);
+      const feedback = document.getElementById(`feedback-${scenarioIdx}-${resultIdx}`);
+      feedback.className = `retro-feedback-box show ${isCorrect ? 'correct' : 'wrong'}`;
+      feedback.innerHTML = `<strong>${isCorrect ? '✅ Boa análise! (+10 pontos)' : '💡 Vamos aprender com esta pista. (-1 tentativa)'}</strong><br>${escapeHtml(item.reason)}`;
+    }
 
-      if (roundEvaluations[scenarioIdx].size === scenario.results.length) {
-        if (lives <= 0) {
-          setTimeout(showGameOver, 1200);
-        } else {
-          document.getElementById('next-bar').style.display = 'flex';
-        }
+    function navigateRound(index) {
+      if (gameEnded || !Number.isInteger(index) || index < 0 || index > furthestRoundIndex || document.getElementById('virus-modal').classList.contains('show')) return;
+      currentRoundIndex = index;
+      loadRound(index);
+      updateHUD();
+      window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      const first = document.querySelector('#serp-results button:not(:disabled)') || document.querySelector('#next-bar button');
+      if (first) first.focus({ preventScroll: true });
+    }
+
+    function isGameComplete() {
+      return lives > 0 && scenarios.every((scenario, index) => roundEvaluations[index]?.size === scenario.results.length);
+    }
+
+    function handleModalKeys(event) {
+      const modal = document.getElementById('virus-modal');
+      if (!modal.classList.contains('show')) return;
+      if (event.key === 'Escape') { event.preventDefault(); closeVirusModal(); return; }
+      if (event.key === 'Tab') {
+        const buttons = [...modal.querySelectorAll('button')];
+        const target = event.shiftKey ? buttons[buttons.length - 1] : buttons[0];
+        const boundary = event.shiftKey ? buttons[0] : buttons[buttons.length - 1];
+        if (document.activeElement === boundary || !modal.contains(document.activeElement)) { event.preventDefault(); target.focus(); }
       }
     }
 
     function nextRound() {
+      if (gameEnded || lives <= 0 || document.getElementById('virus-modal').classList.contains('show') || roundEvaluations[currentRoundIndex]?.size !== scenarios[currentRoundIndex].results.length) return;
       if (currentRoundIndex < scenarios.length - 1) {
-        currentRoundIndex++;
-        updateHUD();
-        loadRound(currentRoundIndex);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        furthestRoundIndex = Math.max(furthestRoundIndex, currentRoundIndex + 1);
+        navigateRound(currentRoundIndex + 1);
       } else {
         showGameOver();
       }
     }
 
     function showGameOver() {
+      if (gameEnded || (lives > 0 && !isGameComplete())) return;
+      const completed = isGameComplete();
+      gameEnded = true;
+      closeVirusModal();
+      updateHUD();
+      document.querySelectorAll('#serp-results button').forEach(button => button.disabled = true);
       document.getElementById('stage-gameplay').style.display = 'none';
       document.getElementById('stage-gameover').style.display = 'block';
 
@@ -1652,7 +2481,7 @@
 
       if (lives > 0 && score >= (maxPossibleScore * 0.75)) {
         goIcon.innerText = '🏆';
-        goTitle.innerText = 'Detetive Mestre da Web 2006!';
+        goTitle.innerText = 'Treinamento de Detetive concluído!';
         goSubtitle.innerText = 'Incrível! Você tem olhos de águia e superou todas as armadilhas difíceis!';
       } else if (lives > 0) {
         goIcon.innerText = '🛡️';
@@ -1661,31 +2490,17 @@
       } else {
         goIcon.innerText = '⚠️';
         goTitle.innerText = 'Fim de Jogo!';
-        goSubtitle.innerText = 'Você perdeu todas as vidas, mas aprendeu como se proteger na vida real!';
+        goSubtitle.innerText = `Suas tentativas acabaram. Leia esta dica e tente novamente: ${lastMistake}`;
       }
 
       // Save progress to Central Hub Profile (localStorage)
-      saveProgressToHub('website_inspector', score, maxPossibleScore);
+      saveProgressToHub('website_inspector', score, maxPossibleScore, completed);
+      document.getElementById('stage-gameover').focus();
+      window.scrollTo(0, 0);
     }
 
-    function saveProgressToHub(gameId, currentScore, maxScore) {
-      try {
-        let profile = JSON.parse(localStorage.getItem('cyberkids_profile') || '{}');
-        if (!profile.scores) profile.scores = {};
-        if (!profile.badges) profile.badges = [];
-
-        const prevScore = profile.scores[gameId] || 0;
-        if (currentScore > prevScore) {
-          profile.scores[gameId] = currentScore;
-        }
-
-        // Award badge if player achieved at least 50% of the score
-        if (currentScore >= (maxScore * 0.5) && !profile.badges.includes('link_inspector')) {
-          profile.badges.push('link_inspector');
-        }
-
-        localStorage.setItem('cyberkids_profile', JSON.stringify(profile));
-      } catch(e) {}
+    function saveProgressToHub(gameId, currentScore, maxScore, completed = false) {
+      CyberKidsProfile.record(gameId, currentScore, { completed });
     }
 
     function restartGame() {
@@ -1697,11 +2512,14 @@
       const webglCanvas = document.getElementById('webgl-crt-canvas');
       const browserApp = document.querySelector('.browser-app-container');
       const statusText = document.getElementById('vhs-status-text');
-      isVHSActive = !isVHSActive;
+      isVHSActive = !isVHSActive && !reducedMotion.matches;
+      document.getElementById('vhs-toggle').setAttribute('aria-pressed', String(isVHSActive));
+      browserApp.classList.toggle('effects-disabled', !isVHSActive);
 
       if (isVHSActive) {
         vhsShader.classList.remove('disabled');
         if (webglCanvas) webglCanvas.classList.remove('disabled');
+        initWebGLShader();
         browserApp.classList.add('crt-barrel-active');
         statusText.innerText = 'LIGADO';
       } else {
@@ -1710,24 +2528,19 @@
         browserApp.classList.remove('crt-barrel-active');
         statusText.innerText = 'DESLIGADO';
       }
+      updateVirusBugs();
     }
 
     function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        }[m];
-      });
+      return CyberKidsProfile.escapeHtml(str);
     }
 
     // =========================================
     // WEBGL CRT SHADER PROGRAM
     // =========================================
     let gl, canvasGL, uResolutionLoc, uTimeLoc;
+    let shaderFrame = null;
+    let renderShader = null;
 
     const vsSource = `
       attribute vec2 a_position;
@@ -1774,8 +2587,10 @@
     `;
 
     function initWebGLShader() {
+      if (renderShader) { if (shaderFrame === null) shaderFrame = requestAnimationFrame(renderShader); return; }
       canvasGL = document.getElementById('webgl-crt-canvas');
       if (!canvasGL) return;
+      try {
       gl = canvasGL.getContext('webgl', { alpha: true, premultipliedAlpha: false }) ||
            canvasGL.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: false });
       if (!gl) return;
@@ -1796,16 +2611,19 @@
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { gl.deleteShader(shader); return null; }
         return shader;
       }
 
       const vertShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
       const fragShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+      if (!vertShader || !fragShader) return;
 
       const shaderProgram = gl.createProgram();
       gl.attachShader(shaderProgram, vertShader);
       gl.attachShader(shaderProgram, fragShader);
       gl.linkProgram(shaderProgram);
+      if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) return;
       gl.useProgram(shaderProgram);
 
       const positionBuffer = gl.createBuffer();
@@ -1827,6 +2645,8 @@
       uTimeLoc = gl.getUniformLocation(shaderProgram, 'u_time');
 
       function render(time) {
+        shaderFrame = null;
+        if (!isVHSActive || reducedMotion.matches || document.hidden || gl.isContextLost()) return;
         gl.clearColor(0.0, 0.0, 0.0, 0.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
         if (isVHSActive) {
@@ -1834,14 +2654,28 @@
           gl.uniform1f(uTimeLoc, time * 0.001);
           gl.drawArrays(gl.TRIANGLES, 0, 6);
         }
-        requestAnimationFrame(render);
+        shaderFrame = requestAnimationFrame(render);
       }
-      requestAnimationFrame(render);
+      renderShader = render;
+      shaderFrame = requestAnimationFrame(render);
+      } catch (error) {
+        canvasGL.classList.add('disabled');
+      }
     }
 
     // Initialize game and WebGL shader on load
     initGame();
-    initWebGLShader();
+    document.addEventListener('keydown', handleModalKeys);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && isVHSActive) initWebGLShader();
+    });
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches && isVHSActive) toggleVHS(); });
+    window.addEventListener('pagehide', () => {
+      clearInterval(virusSpawnerTimer);
+      cancelAnimationFrame(shaderFrame);
+      shaderFrame = null;
+      if (audioCtx && audioCtx.state !== 'closed') audioCtx.close().catch(() => {});
+    });
   </script>
 </body>
 </html>

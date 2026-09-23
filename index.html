@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Central de Jogos — Detetive Web</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Central de Jogos | Detetive Web</title>
+  <script src="profile.js"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -14,7 +16,7 @@
       --gold-light: #fef3c7;
       --gold-dark: #b45309;
       --orange: #f97316;
-      --orange-intense: #ea580c;
+      --orange-intense: #c2410c;
       --orange-light: #ffedd5;
       --border-color: #cbd5e1;
       --border-dark: #0f172a;
@@ -133,7 +135,7 @@
     }
 
     .rank-tag {
-      background: var(--orange-intense);
+      background: #9a3412;
       color: #ffffff;
       font-size: 11px;
       font-weight: 900;
@@ -146,7 +148,7 @@
 
     /* SCORE BANNER */
     .score-tile {
-      background: linear-gradient(135deg, #f97316, #ea580c);
+      background: #9a3412;
       color: #ffffff;
       border: 3px solid var(--border-dark);
       padding: 16px;
@@ -185,7 +187,7 @@
     }
     .medals-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
     }
     .medal-box {
@@ -243,6 +245,7 @@
        RIGHT COLUMN: GAMES ARENA (FULL-WIDTH GLUED)
        ========================================= */
     .main-games-view {
+      min-width: 0;
       padding: 24px;
       background-color: #f1f5f9;
       display: flex;
@@ -281,7 +284,7 @@
     /* GAMES GRID */
     .games-catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
       gap: 20px;
     }
 
@@ -382,7 +385,7 @@
     }
 
     .btn-game-launch {
-      background: linear-gradient(180deg, #f97316, #ea580c);
+      background: #c2410c;
       color: #ffffff;
       border: 3px solid var(--border-dark);
       padding: 14px;
@@ -398,7 +401,7 @@
       letter-spacing: 0.5px;
     }
     .btn-game-launch:hover {
-      background: linear-gradient(180deg, #ea580c, #c2410c);
+      background: #9a3412;
       transform: translate(-2px, -2px);
       box-shadow: 5px 5px 0px var(--border-dark);
     }
@@ -414,19 +417,22 @@
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(15, 23, 42, 0.7);
+      background: transparent;
       z-index: 10000;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
+      border: 0;
+      max-width: none;
+      max-height: none;
+      color: var(--text-main);
     }
-    .modal-overlay.show {
-      opacity: 1;
-      pointer-events: auto;
+    .modal-overlay[open] {
+      display: flex;
+    }
+    .modal-overlay::backdrop {
+      background: rgba(15, 23, 42, 0.7);
     }
 
     .modal-flat-box {
@@ -491,9 +497,29 @@
       font-size: 12px;
       font-weight: 900;
     }
+    :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 4px; }
+    .player-name-input:focus-visible { outline: 3px solid #1d4ed8; }
+    .profile-name-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .profile-note { font-size: 12px; line-height: 1.5; margin-top: 5px; color: var(--text-muted); }
+    .hero-callout { flex-wrap: wrap; gap: 10px; }
+    .game-title-text { overflow-wrap: anywhere; }
+    .medal-box.locked { opacity: 1; background: #e2e8f0; }
+    .avatar-pick-card { color: var(--text-main); }
+    .hero-callout h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+    .skip-link { position: absolute; top: -100px; left: 16px; background: #fff; padding: 12px; z-index: 30000; }
+    .skip-link:focus { top: 10px; }
+    @media (max-width: 420px) {
+      .avatar-flat-grid { grid-template-columns: repeat(2, 1fr); }
+      .modal-flat-box { padding: 16px; }
+      .hero-callout { padding: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#games">Ir para os jogos</a>
 
   <!-- EDGE-TO-EDGE 2-COLUMN APP LAYOUT -->
   <div class="app-screen-layout">
@@ -502,13 +528,15 @@
     <aside class="sidebar-profile">
 
       <div class="profile-card">
-        <div class="avatar-frame" id="player-avatar-icon" onclick="openAvatarModal()" title="Clique para trocar seu avatar">
+        <button type="button" class="avatar-frame" id="player-avatar-icon" onclick="openAvatarModal()" aria-label="Trocar avatar">
           🕵️‍♂️
-        </div>
+        </button>
         <button class="avatar-btn-change" onclick="openAvatarModal()">Trocar Avatar</button>
 
         <div style="width: 100%; margin-top: 4px;">
-          <input type="text" class="player-name-input" id="player-name-field" value="Agente Secreto" onchange="updatePlayerName(this.value)" placeholder="Seu Nome">
+          <label class="profile-name-label" for="player-name-field">Seu apelido de agente</label>
+          <input type="text" class="player-name-input" id="player-name-field" value="Agente Secreto" onchange="updatePlayerName(this.value)" placeholder="Um apelido inventado" maxlength="32" autocomplete="off" aria-describedby="profile-note">
+          <p class="profile-note" id="profile-note">Use um apelido, sem seu nome completo. Seu perfil fica somente neste navegador.</p>
         </div>
 
         <div class="rank-tag" id="player-rank-tag">
@@ -526,7 +554,7 @@
       <div class="medals-section">
         <div class="medals-header">
           <span>🏅 Medalhas</span>
-          <span id="stat-badges-count" style="color:var(--orange-intense);">0 / 4</span>
+          <span id="stat-badges-count" style="color:var(--orange-intense);">0 / 6</span>
         </div>
         <div class="medals-grid">
           <div class="medal-box locked" id="badge-link-inspector" title="Medalha: Mestre dos Links">
@@ -538,6 +566,8 @@
           <div class="medal-box locked" id="badge-chat-patrol" title="Medalha: Vigilante do Chat">
             💬
           </div>
+          <div class="medal-box locked" id="badge-password-guardian" title="Medalha: Guardião das Senhas">🔑</div>
+          <div class="medal-box locked" id="badge-privacy-guardian" title="Medalha: Guardião da Privacidade">🛡️</div>
           <div class="medal-box locked" id="badge-supreme" title="Medalha: Detetive Supremo">
             🏆
           </div>
@@ -550,18 +580,18 @@
           👨‍🏫 Guia da Atividade
         </button>
         <button class="btn-side-util reset" onclick="resetStudentProgress()">
-          🔄 Resetar Turma
+          🔄 Reiniciar perfil
         </button>
       </div>
 
     </aside>
 
     <!-- RIGHT COLUMN: ARENA DE JOGOS (GRUDADA NA DIREITA) -->
-    <main class="main-games-view">
+    <main class="main-games-view" id="games" tabindex="-1">
 
       <!-- HERO CALLOUT -->
       <div class="hero-callout">
-        <h2>Escolha um Jogo e Comece! 🚀</h2>
+        <h1>Escolha um Jogo e Comece! 🚀</h1>
         <span>Jogue e Ganhe Pontos</span>
       </div>
 
@@ -638,20 +668,18 @@
         <article class="game-play-card">
           <div class="game-poster-box theme-senha">
             <span>🔑</span>
-            <div class="status-badge-chip soon">🟡 Em Breve</div>
+            <div class="status-badge-chip ready">🟢 Jogar</div>
           </div>
           <div class="game-card-main">
             <div class="game-title-text">
               Crie sua Senha Secreta!
             </div>
             <div class="game-bottom-action">
-              <div class="record-pill-row" style="background:#f1f5f9; color:#64748b;">
-                <span>Status:</span>
-                <strong>Em Produção</strong>
+              <div class="record-pill-row">
+                <span>Recorde:</span>
+                <strong id="record-secret-password">0 pts</strong>
               </div>
-              <button class="btn-game-launch disabled" onclick="alert('Este jogo estará disponível em breve!')">
-                🔒 EM BREVE
-              </button>
+              <a href="secret-password.html" class="btn-game-launch">▶ JOGAR AGORA</a>
             </div>
           </div>
         </article>
@@ -660,20 +688,18 @@
         <article class="game-play-card">
           <div class="game-poster-box theme-privacidade">
             <span>🛡️</span>
-            <div class="status-badge-chip soon">🟡 Em Breve</div>
+            <div class="status-badge-chip ready">🟢 Jogar</div>
           </div>
           <div class="game-card-main">
             <div class="game-title-text">
               Escudo de Privacidade!
             </div>
             <div class="game-bottom-action">
-              <div class="record-pill-row" style="background:#f1f5f9; color:#64748b;">
-                <span>Status:</span>
-                <strong>Em Produção</strong>
+              <div class="record-pill-row">
+                <span>Recorde:</span>
+                <strong id="record-privacy-shield">0 pts</strong>
               </div>
-              <button class="btn-game-launch disabled" onclick="alert('Este jogo estará disponível em breve!')">
-                🔒 EM BREVE
-              </button>
+              <a href="privacy-shield.html" class="btn-game-launch">▶ JOGAR AGORA</a>
             </div>
           </div>
         </article>
@@ -685,146 +711,100 @@
   </div>
 
   <!-- MODAL DO PROFESSOR -->
-  <div class="modal-overlay" id="modal-teacher">
+  <dialog class="modal-overlay" id="modal-teacher" aria-labelledby="teacher-title">
     <div class="modal-flat-box">
       <div class="modal-head">
-        <h3>👨‍🏫 Guia da Atividade</h3>
-        <button class="modal-btn-x" onclick="closeTeacherModal()">X</button>
+        <h2 id="teacher-title">👨‍🏫 Guia da Atividade</h2>
+        <button class="modal-btn-x" onclick="closeTeacherModal()" aria-label="Fechar guia">X</button>
       </div>
       <div style="font-size:14px; line-height:1.6; color:#1e293b;">
         <p><strong>🎯 Objetivo:</strong> Ensinar crianças de 10 a 12 anos a navegar na web com atenção contra vírus, phishing, desinformação e aliciadores em chats.</p>
         <br>
         <p><strong>⏱️ Dinâmica Rápida:</strong></p>
         <ol style="margin-left:20px; margin-top:8px;">
-          <li>Cada aluno coloca seu nome e escolhe seu avatar.</li>
+          <li>Cada aluno escolhe um apelido inventado e seu avatar. Não usem dados pessoais nem senhas reais.</li>
           <li>Jogam o <strong>Descubra se é uma Cilada</strong> (analisar links e phishing).</li>
           <li>Jogam o <strong>Fato ou Fake no Celular</strong> (analisar notícias e golpes).</li>
           <li>Jogam o <strong>Vigilante do Chat</strong> (desmascarar perfis falsos e golpistas).</li>
-          <li>Debate final sobre quem conquistou a medalha de <strong>Detetive Supremo</strong>!</li>
+          <li>Praticam no <strong>Senha Secreta</strong> e no <strong>Escudo de Privacidade</strong>, usando apenas exemplos fictícios.</li>
+          <li>Compartilham o que aprenderam. A medalha de <strong>Detetive Supremo</strong> chega ao completar os cinco jogos.</li>
         </ol>
+        <p style="margin-top:16px;">Em uma aula de 50 minutos, apresente a atividade por 5 minutos, reserve 35 minutos para jogos em grupos e 10 minutos para conversar. Cada grupo pode explorar jogos diferentes. Completar todos os jogos pode exigir mais de uma aula.</p>
+        <p style="margin-top:12px;">Os exemplos são simulações. Fora do jogo, não é preciso investigar ou confrontar alguém: interrompa a conversa, bloqueie ou denuncie e procure um adulto de confiança.</p>
+        <p style="margin-top:12px;">O botão Reiniciar perfil apaga apelido, avatar, recordes e medalhas apenas neste navegador. Use-o entre alunos em computadores compartilhados.</p>
       </div>
     </div>
-  </div>
+  </dialog>
 
   <!-- MODAL DE TROCA DE AVATAR -->
-  <div class="modal-overlay" id="modal-avatar">
+  <dialog class="modal-overlay" id="modal-avatar" aria-labelledby="avatar-title">
     <div class="modal-flat-box">
       <div class="modal-head">
-        <h3>🎨 Escolha seu Avatar</h3>
-        <button class="modal-btn-x" onclick="closeAvatarModal()">X</button>
+        <h2 id="avatar-title">🎨 Escolha seu Avatar</h2>
+        <button class="modal-btn-x" onclick="closeAvatarModal()" aria-label="Fechar escolha de avatar">X</button>
       </div>
       <div class="avatar-flat-grid">
-        <div class="avatar-pick-card" onclick="selectAvatar('🕵️‍♂️', 'Detetive')">
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🕵️‍♂️', 'Detetive')">
           <span>🕵️‍♂️</span>
           <span>Detetive</span>
-        </div>
-        <div class="avatar-pick-card" onclick="selectAvatar('🤖', 'Cyber Bot')">
+        </button>
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🤖', 'Cyber Bot')">
           <span>🤖</span>
           <span>Cyber Bot</span>
-        </div>
-        <div class="avatar-pick-card" onclick="selectAvatar('🦊', 'Raposa')">
+        </button>
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🦊', 'Raposa')">
           <span>🦊</span>
           <span>Raposa</span>
-        </div>
-        <div class="avatar-pick-card" onclick="selectAvatar('🐱', 'Gato')">
+        </button>
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🐱', 'Gato')">
           <span>🐱</span>
           <span>Gato</span>
-        </div>
-        <div class="avatar-pick-card" onclick="selectAvatar('🧙‍♂️', 'Mago')">
+        </button>
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🧙‍♂️', 'Mago')">
           <span>🧙‍♂️</span>
           <span>Mago</span>
-        </div>
-        <div class="avatar-pick-card" onclick="selectAvatar('🦸‍♀️', 'Heroína')">
+        </button>
+        <button type="button" class="avatar-pick-card" onclick="selectAvatar('🦸‍♀️', 'Heroína')">
           <span>🦸‍♀️</span>
           <span>Heroína</span>
-        </div>
+        </button>
       </div>
     </div>
-  </div>
+  </dialog>
 
   <script>
-    // =========================================
-    // PERFIL & PROGRESSO (localStorage)
-    // =========================================
-    const DEFAULT_PROFILE = {
-      name: "Agente Secreto",
-      avatar: "🕵️‍♂️",
-      avatarLabel: "Detetive",
-      scores: {
-        website_inspector: 0,
-        fake_detector: 0,
-        chat_patrol: 0
-      },
-      badges: []
-    };
-
-    function loadProfile() {
-      try {
-        const data = localStorage.getItem('cyberkids_profile');
-        if (!data) return DEFAULT_PROFILE;
-        return Object.assign({}, DEFAULT_PROFILE, JSON.parse(data));
-      } catch(e) {
-        return DEFAULT_PROFILE;
-      }
-    }
-
-    function saveProfile(profile) {
-      try {
-        localStorage.setItem('cyberkids_profile', JSON.stringify(profile));
-      } catch(e) {}
-    }
-
     function renderDashboard() {
-      const profile = loadProfile();
-
-      document.getElementById('player-avatar-icon').innerText = profile.avatar;
+      const profile = CyberKidsProfile.load();
+      document.getElementById('player-avatar-icon').textContent = profile.avatar;
       document.getElementById('player-name-field').value = profile.name;
-
-      const scoreInspector = profile.scores.website_inspector || 0;
-      const scoreFakes = profile.scores.fake_detector || 0;
-      const scoreChatPatrol = profile.scores.chat_patrol || 0;
-      const totalScore = scoreInspector + scoreFakes + scoreChatPatrol;
-
-      document.getElementById('stat-total-score').innerText = totalScore;
-      document.getElementById('record-inspector').innerText = `${scoreInspector} pts`;
-      document.getElementById('record-fakes').innerText = `${scoreFakes} pts`;
-      const recordPatrolEl = document.getElementById('record-chat-patrol');
-      if (recordPatrolEl) {
-        recordPatrolEl.innerText = `${scoreChatPatrol} pts`;
-      }
-
-      const badges = profile.badges || [];
-      const badgeInspector = document.getElementById('badge-link-inspector');
-      const badgeFakes = document.getElementById('badge-fake-hunter');
-      const badgeChat = document.getElementById('badge-chat-patrol');
-      const badgeSupreme = document.getElementById('badge-supreme');
-
-      if (badgeInspector) {
-        badgeInspector.className = badges.includes('link_inspector') ? 'medal-box unlocked' : 'medal-box locked';
-      }
-
-      if (badgeFakes) {
-        badgeFakes.className = badges.includes('fake_hunter') ? 'medal-box unlocked' : 'medal-box locked';
-      }
-
-      if (badgeChat) {
-        badgeChat.className = badges.includes('chat_patrol') ? 'medal-box unlocked' : 'medal-box locked';
-      }
-
-      // Desbloqueia Detetive Supremo ao conquistar as 3 medalhas dos 3 jogos disponíveis
-      if (badges.includes('link_inspector') && badges.includes('fake_hunter') && badges.includes('chat_patrol')) {
-        if (badgeSupreme) badgeSupreme.className = 'medal-box unlocked';
-        if (!badges.includes('supreme_detective')) {
-          badges.push('supreme_detective');
-          profile.badges = badges;
-          saveProfile(profile);
-        }
-      } else {
-        if (badgeSupreme) badgeSupreme.className = 'medal-box locked';
-      }
-
-      document.getElementById('stat-badges-count').innerText = `${badges.length} / 4`;
-
+      const records = {
+        website_inspector: 'record-inspector', fake_detector: 'record-fakes',
+        chat_patrol: 'record-chat-patrol', secret_password: 'record-secret-password',
+        privacy_shield: 'record-privacy-shield'
+      };
+      Object.entries(records).forEach(([game, id]) => {
+        document.getElementById(id).textContent = `${profile.scores[game]} pts`;
+      });
+      const totalScore = Object.values(profile.scores).reduce((sum, score) => sum + score, 0);
+      document.getElementById('stat-total-score').textContent = totalScore;
+      const medals = {
+        link_inspector: ['badge-link-inspector', 'Mestre dos Links'],
+        fake_hunter: ['badge-fake-hunter', 'Caçador de Fakes'],
+        chat_patrol: ['badge-chat-patrol', 'Vigilante do Chat'],
+        password_guardian: ['badge-password-guardian', 'Guardião das Senhas'],
+        privacy_guardian: ['badge-privacy-guardian', 'Guardião da Privacidade'],
+        supreme_detective: ['badge-supreme', 'Detetive Supremo']
+      };
+      Object.entries(medals).forEach(([badge, [id, name]]) => {
+        const element = document.getElementById(id);
+        const unlocked = profile.badges.includes(badge);
+        element.className = `medal-box ${unlocked ? 'unlocked' : 'locked'}`;
+        element.title = `${name}: ${unlocked ? 'conquistada' : 'complete o jogo para conquistar'}`;
+        if (badge === 'supreme_detective' && !unlocked) element.title = `${name}: complete os cinco jogos`;
+        element.setAttribute('role', 'img');
+        element.setAttribute('aria-label', element.title);
+      });
+      document.getElementById('stat-badges-count').textContent = `${profile.badges.length} / 6`;
       const rankEl = document.getElementById('player-rank-tag');
       if (totalScore >= 500) {
         rankEl.innerText = 'Nível 3 • Mestre 🏆';
@@ -836,40 +816,40 @@
     }
 
     function updatePlayerName(newName) {
-      const profile = loadProfile();
+      const profile = CyberKidsProfile.load();
       profile.name = newName.trim() || "Agente Secreto";
-      saveProfile(profile);
+      CyberKidsProfile.save(profile);
       renderDashboard();
     }
 
     function selectAvatar(emoji, label) {
-      const profile = loadProfile();
+      const profile = CyberKidsProfile.load();
       profile.avatar = emoji;
       profile.avatarLabel = label;
-      saveProfile(profile);
+      CyberKidsProfile.save(profile);
       renderDashboard();
       closeAvatarModal();
     }
 
     function resetStudentProgress() {
-      if (confirm('Deseja zerar os pontos e medalhas para iniciar uma nova turma?')) {
-        localStorage.removeItem('cyberkids_profile');
+      if (confirm('Reiniciar este perfil? Apelido, avatar, pontos e medalhas serão apagados somente neste navegador.')) {
+        CyberKidsProfile.reset();
         renderDashboard();
       }
     }
 
     function openTeacherModal() {
-      document.getElementById('modal-teacher').classList.add('show');
+      document.getElementById('modal-teacher').showModal();
     }
     function closeTeacherModal() {
-      document.getElementById('modal-teacher').classList.remove('show');
+      document.getElementById('modal-teacher').close();
     }
 
     function openAvatarModal() {
-      document.getElementById('modal-avatar').classList.add('show');
+      document.getElementById('modal-avatar').showModal();
     }
     function closeAvatarModal() {
-      document.getElementById('modal-avatar').classList.remove('show');
+      document.getElementById('modal-avatar').close();
     }
 
     window.addEventListener('click', (e) => {
@@ -878,7 +858,10 @@
       if (e.target === teacherModal) closeTeacherModal();
       if (e.target === avatarModal) closeAvatarModal();
     });
-
+    window.addEventListener('pageshow', renderDashboard);
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'cyberkids_profile' || event.key === null) renderDashboard();
+    });
     renderDashboard();
   </script>
 </body>
